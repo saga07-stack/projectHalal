@@ -33,6 +33,9 @@ public class Constant {
 	/** CSS保存用フォルダの名前 */
 	public static final String CSS_FOLDER = "/css/";
 
+	/** JavaScriptファイル保存用フォルダの名前 */
+	public static final String JS_FOLDER = "/js/";
+
 	/** 商品画像ファイル保存用フォルダの名前 */
 	public static final String IMAGE_FOLDER = "/images/";
 

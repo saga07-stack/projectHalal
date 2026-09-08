@@ -1,31 +1,102 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title th:text="#{top}+' | '+ #{shop.title}"> </title>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<title th:text="#{top}+' | '+ #{shop.title}"> </title>
 </head>
 <body class="user index">
-	<div>
-		<h2 class="title">
-				<span th:if="${sortType==1}" th:text="#{sort.latest.title}"></span>
-				<span th:if="${sortType==2 || sortType==null}" th:text="#{sort.hotsell.title}"></span>
-		</h2>
+	<!--/* ヘッダー */-->
+	<header>
+		<div th:replace="~{common/header :: layout-header}"></div>
+	</header>
+	<!--/* ナビゲーションバー */-->
+	<nav th:if="${session.user == null or session.user.authority == 2}" class="navi_area">
+		<ul class="navi_menu">
+			<li><a th:href="@{/}" th:text="#{top}"></a></li>
+			<li><a id="showAll"  >show all</a></li>
+			<li><a th:href="@{/client/basket/list}" th:text="#{basket}"></a></li>
+			<th:block th:if="${session.user != null}">
+				<li><a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}"></a></li>
+			</th:block>
+		</ul>
+	</nav>
+	<div class="container">
+		<!--/* サイドバー */-->
+		<aside th:class="${session.user == null or session.user.authority == 2} ? ${'search'} : ${'admin_menu'}" >
+			<!--/* 検索メニュー(非会員、一般会員用) */-->
+			<div class="search_area" th:if="${session.user == null or session.user.authority == 2}">
+				<h2 th:class="title" th:text="#{category.select.title}"></h2>
+				<div class="form">
+					<!-- 商品一覧画面以外で表示 -->
+					<form th:if="${sortType == null}" th:action="@{/client/item/list/1}">
+						<select name="categoryId">
+							<option th:value="#{constants.category.select.none.no}" th:text="#{constants.category.select.none}"></option>
+							<option th:each="category: ${categories}"
+								th:value="${category.id}" th:text="${category.name}"></option>
+						</select> <input type="submit" th:value="#{select}" />
+					</form>
+					<!-- 商品一覧画面上で表示 -->
+					<form th:unless="${sortType == null}" th:action="@{/client/item/list/} + ${sortType}">
+						<select name="categoryId">
+							<option th:value="#{constants.category.select.none.no}" th:text="#{constants.category.select.none}"></option>
+							<option th:each="category: ${categories}"
+								th:value="${category.id}" th:text="${category.name}" th:selected="${category.id} == ${categoryId}"></option>
+						</select> <input type="submit" th:value="#{select}" />
+					</form>
+				</div>
+			</div>
+
+			<!--/* メニュー(運用管理者、及びシステム管理者用) */-->
+			<div th:if="${session.user != null and session.user.authority != 2}">
+				<h2 th:class="title" th:text="#{admin.menu}"></h2>
+				<ul class="menu">
+					<li>
+						<a th:href="@{/admin/user/list}" th:class="display_list" th:text="#{admin.menu.user.list}"></a>
+					</li>
+					<li th:if="${session.user.authority == 1}">
+						<a th:href="@{/admin/order/list}" th:class="display_list" th:text="#{admin.menu.order.list}"></a>
+					</li>
+					<li th:if="${session.user.authority == 1}">
+						<a th:href="@{/admin/item/list}" th:class="display_list" th:text="#{admin.menu.item.list}"></a>
+					</li>
+					<li th:if="${session.user.authority == 1}">
+						<a th:href="@{/admin/category/list}" th:class="display_list" th:text="#{admin.menu.category.list}"></a>
+					</li>
+				</ul>
+			</div>
+		</aside>
+		<!--/* メイン */-->
+		<article class="main">
+			<div>
+				<h2 class="title">
+					<span th:if="${sortType==1}" th:text="#{sort.latest.title}"></span>
+					<span th:if="${sortType==2 || sortType==null}" th:text="#{sort.hotsell.title}"></span>
+				</h2>
+			</div>
+			<div th:if="${#lists.isEmpty(items)}">
+				<p th:text="#{msg.client.item.list.none}"></p>
+			</div>
+			<div class="item_list">
+				<th:block th:each="item, status: ${items}" th:if="${status.count le 10}">
+					<!--/* 1件分の商品情報 */-->
+					<div class="item">
+						<div class="item_name" th:text="${item.name}"></div>
+						<a th:href="@{/client/item/detail/}+${item.id}">
+							<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />
+							<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
+						</a>
+					</div>
+				</th:block>
+			</div>
+		</article>
 	</div>
-	<div th:if="${#lists.isEmpty(items)}">
-		<p th:text="#{msg.client.item.list.none}"></p>
-	</div>
-	<div class="item_list">
-	<th:block th:each="item, status: ${items}" th:if="${status.count le 10}">
-		<!--/* 1件分の商品情報 */-->
-		<div class="item">
-			<div class="item_name" th:text="${item.name}"></div>
-			<a th:href="@{/client/item/detail/}+${item.id}">
-			    <img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />
-			    <img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
-			</a>
-		</div>
-	</div>
-	</th:block>
+	<!--/* フッター */-->
+	<footer>
+		<div th:replace="~{common/footer :: layout-footer}"></div>
+	</footer>
 </body>
 </html>
