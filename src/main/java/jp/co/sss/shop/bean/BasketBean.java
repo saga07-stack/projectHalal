@@ -28,6 +28,8 @@ public class BasketBean {
 	 */
 	private Integer orderNum = 1;
 
+	private String imagePath;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -118,6 +120,14 @@ public class BasketBean {
 		return orderNum;
 	}
 
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
 	/**
 	 * 買い物かごに入れる商品個数のセット
 	 * @param orderNum 注文個数
@@ -125,5 +135,10 @@ public class BasketBean {
 	public void setOrderNum(Integer orderNum) {
 		this.orderNum = orderNum;
 	}
-
+ public BasketBean(Integer id, String name, Integer price, String imagePath) {
+	 		this.id = id;
+		this.name = name;
+		this.stock = price;
+		this.imagePath = imagePath;
+ }
 }

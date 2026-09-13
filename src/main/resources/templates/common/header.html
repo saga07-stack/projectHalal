@@ -4,17 +4,65 @@
 <meta charset="UTF-8" />
 </head>
 <body>
-<div th:fragment="layout-header" class="container">
-	<h1 th:class="site_title" th:text="#{shop.title}"></h1>
-	<div th:if="${session.user != null and session.user.authority == 2}" class="user_info">
-		<a th:href="@{/client/user/detail}" th:text="${session.user.name}"></a>さん | <a th:href="@{/logout}" th:text="#{logout}"></a>
+<div th:fragment="layout-header" >
+<div id="header">
+	<!-- Left: Logo/Shop Title -->
+	<div id="showAll" class="header-logo">
+	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" />
+		
 	</div>
-	<div th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}" class="user_info">
-		<a th:href="@{/admin/user/detail/{id}(id=${session.user.id})}" th:text="${session.user.name}"></a>さん | <a th:href="@{/logout}" th:text="#{logout}"></a>
+
+	<!-- Center: Search Bar -->
+	<div class="header-search">
+		<form class="search-form" action="#" method="get">
+			<input type="text" class="search-input" placeholder="Search items..." name="keyword" />
+			<button type="submit" class="search-btn">Search</button>
+		</form>
 	</div>
-	<div th:if="${session.user == null}" class="user_info">
-		<a th:href="@{/login}" th:text="#{login}"></a> | <a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}"></a>
+
+	<!-- Right: User Auth Links & Navigation Menu -->
+	<div class="header-right">
+		<!-- Navigation Menu -->
+		<nav th:if="${session.user == null or session.user.authority == 2}" class="header-nav">
+			<ul class="header-menu">
+				<li class="menu-item"><a id="showAll" class="menu-link">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+</svg>
+				
+				</a></li>
+				<li class="menu-item"><button id="CartButtonList"   class="menu-link">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-dash" viewBox="0 0 16 16">
+      <path d="M6.5 7a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z"/>
+      <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+     </svg>
+				</button></li>
+				<th:block th:if="${session.user != null}">
+					<li class="menu-item"><a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}" class="menu-link"></a></li>
+				</th:block>
+			</ul>
+		</nav>
+
+		<!-- User Auth Links -->
+		<div class="header-auth-section">
+			<div th:if="${session.user == null}" class="header-auth">
+				<a th:href="@{/login}" th:text="#{login}" class="auth-link"></a>
+				<span class="divider">|</span>
+				<a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}" class="auth-link"></a>
+			</div>
+			<div th:if="${session.user != null and session.user.authority == 2}" class="header-user">
+				<a th:href="@{/client/user/detail}" th:text="${session.user.name}" class="user-name"></a>
+				<span class="divider">|</span>
+				<a th:href="@{/logout}" th:text="#{logout}" class="auth-link"></a>
+			</div>
+			<div th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}" class="header-user">
+				<a th:href="@{/admin/user/detail/{id}(id=${session.user.id})}" th:text="${session.user.name}" class="user-name"></a>
+				<span class="divider">|</span>
+				<a th:href="@{/logout}" th:text="#{logout}" class="auth-link"></a>
+			</div>
+		</div>
 	</div>
+</div>
 </div>
 </body>
 </html>
