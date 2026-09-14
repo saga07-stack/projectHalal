@@ -1,0 +1,522 @@
+================================================================================
+PROJECT NAME: Nepali Pasal (Shared Shop Name) - E-Commerce Web Application
+================================================================================
+
+PROJECT OVERVIEW:
+================================================================================
+This is a full-stack Java Spring Boot e-commerce web application that enables
+users to browse products, manage shopping carts, place orders, and provides
+administrative capabilities for managing items, categories, users, and orders.
+
+The application targets multi-user authentication with role-based access control
+supporting three authority levels: System Admin (0), Operational Admin (1), and
+Regular Customers (2).
+
+Database: Oracle Database (PDBORCL)
+Server Port: 55000
+Context Path: /shared_shop
+Java Version: 17
+Spring Boot Version: 3.1.5
+
+================================================================================
+TECHNOLOGY STACK:
+================================================================================
+BACKEND:
+  - Spring Boot 3.1.5
+  - Spring Web MVC
+  - Spring Data JPA (Object-Relational Mapping)
+  - Spring Validation (Input Validation)
+  - Thymeleaf (Template Engine)
+  - Oracle JDBC Driver 11 (ojdbc11.jar)
+  - Maven (Build Tool)
+
+FRONTEND:
+  - HTML5
+  - CSS3 (Responsive Design with Modern Gradients)
+  - JavaScript (Vanilla JS for dynamic functionality)
+  - Thymeleaf for server-side template rendering
+  - Bootstrap-inspired custom CSS grid system
+
+DATABASE:
+  - Oracle Database 11g
+  - JPA Hibernate ORM
+  - Sequence Generators for ID generation
+
+================================================================================
+PROJECT STRUCTURE:
+================================================================================
+
+src/main/java/jp/co/sss/shop/
+├── annotation/          → Custom annotations for validation
+│   ├── LoginCheck.java  → Login status validation
+│   ├── ItemCheck.java   → Item validation
+│   ├── EmailCheck.java  → Email format validation
+│   └── CategoryCheck.java → Category validation
+│
+├── bean/                → Data transfer objects (session-like objects)
+│   ├── UserBean.java    → User session data
+│   ├── ItemBean.java    → Item data container
+│   ├── CategoryBean.java → Category data container
+│   ├── OrderBean.java   → Order data container
+│   ├── OrderItemBean.java → Order item data
+│   └── BasketBean.java  → Shopping cart item container
+│
+├── entity/              → JPA Entity classes (Database mapping)
+│   ├── User.java        → User database entity
+│   ├── Item.java        → Product database entity
+│   ├── Category.java    → Category database entity
+│   ├── Order.java       → Order database entity
+│   └── OrderItem.java   → Order-Product junction entity
+│
+├── repository/          → Data Access Layer (Spring Data JPA)
+│   ├── UserRepository.java
+│   ├── ItemRepository.java
+│   ├── CategoryRepository.java
+│   ├── OrderRepository.java
+│   └── OrderItemRepository.java
+│
+├── controller/          → MVC Controllers (Request handling)
+│   ├── login/
+│   │   ├── LoginController.java  → Login/logout functionality
+│   │   └── LogoutController.java
+│   ├── client/
+│   │   ├── item/        → Customer product browsing
+│   │   ├── user/        → Customer profile management
+│   │   ├── order/       → Customer order management
+│   │   └── basket/      → Shopping cart management
+│   ├── admin/           → Admin panel controllers
+│   ├── ErrorController.java → Global error handling
+│
+├── RestController/      → REST API Endpoints
+│   └── ItemsRestController.java
+│       ├── GET /items/all          → Fetch all products
+│       ├── GET /items/cart/add/{id} → Add item to cart
+│       └── GET /items/cart/list    → Retrieve cart contents
+│
+├── RestControllerDTO/   → Data Transfer Objects for REST
+│   └── ItemDto.java     → Item DTO for API responses
+│
+├── form/                → Form binding classes
+│   ├── LoginForm.java   → Login form data
+│   ├── UserForm.java    → User registration/update form
+│   ├── ItemForm.java    → Item management form
+│   ├── CategoryForm.java → Category management form
+│   └── OrderForm.java   → Order form data
+│
+├── DTOService/          → Business logic layer
+│   └── ItemService.java → Item operations
+│
+├── service/             → Additional services
+│   └── UploadFileService.java → File upload handling
+│
+├── config/              → Spring configuration
+│   └── WebMvcConfig.java → MVC configuration
+│
+├── util/                → Utility classes
+│   ├── Constant.java    → Application constants
+│   └── URLCheck.java    → URL validation
+│
+├── validator/           → Input validation classes
+│   ├── LoginValidator.java
+│   ├── ItemValidator.java
+│   ├── EmailValidator.java
+│   └── CategoryValidator.java
+│
+├── filter/              → Servlet filters (interceptors)
+│
+├── annotation/          → Custom annotations
+│
+└── SharedShopNameApplication.java → Main entry point
+
+src/main/resources/
+├── templates/
+│   ├── login.html       → Modern login page (recently redesigned)
+│   ├── index.html       → Home page (shows new items)
+│   ├── error.html       → Error page
+│   ├── common/
+│   │   ├── header.html  → Navigation header
+│   │   ├── footer.html  → Page footer
+│   │   ├── layout_3block.html → 3-column layout template
+│   │   ├── layout_4block.html → 4-column layout template
+│   │   └── layout_5block.html → 5-column layout template
+│   ├── admin/
+│   │   └── user/        → Admin user management pages
+│   ├── client/
+│   │   ├── item/        → Customer product pages
+│   │   ├── user/        → Customer profile pages
+│   │   ├── order/       → Order pages
+│   │   └── basket/      → Shopping cart pages
+│
+├── static/
+│   ├── css/
+│   │   ├── stylesheet.css → Main stylesheet (1300+ lines, comprehensive)
+│   │   └── layout.css     → Layout styles
+│   ├── js/
+│   │   └── common.js    → Shared JavaScript functionality
+│   └── images/          → Static images
+│
+├── application.properties → Main config file
+├── application-local.properties → Local development config
+├── application-aws.properties → AWS production config
+├── messages.properties → i18n Japanese messages
+└── ValidationMessages.properties → Validation error messages
+
+================================================================================
+CORE FEATURES:
+================================================================================
+
+1. USER MANAGEMENT
+   ✓ User Registration (email, password, name, address, phone)
+   ✓ User Login with session management
+   ✓ Password validation
+   ✓ User profile update
+   ✓ User deletion
+   ✓ Role-based access control (3 authority levels)
+   ✓ Authority checking via annotations
+
+2. PRODUCT MANAGEMENT
+   ✓ Browse all products
+   ✓ Filter products by category
+   ✓ View product details (name, price, description, stock, image)
+   ✓ Search functionality
+   ✓ Product images with fallback support (no_image.jpg)
+   ✓ Admin product CRUD operations
+   ✓ Stock management
+
+3. SHOPPING CART
+   ✓ Add items to cart
+   ✓ View cart contents
+   ✓ Modify item quantities
+   ✓ Remove items
+   ✓ Cart persistence in session
+
+4. ORDER MANAGEMENT
+   ✓ Place orders
+   ✓ View order history
+   ✓ Order payment selection
+   ✓ Address confirmation
+   ✓ Order status tracking
+
+5. CATEGORY MANAGEMENT
+   ✓ Create categories
+   ✓ Update category information
+   ✓ Delete categories
+   ✓ Assign products to categories
+
+6. ADMIN PANEL
+   ✓ User management (list, create, update, delete)
+   ✓ Item management
+   ✓ Category management
+   ✓ Order viewing and management
+   ✓ Admin menu dashboard
+
+7. RECENT ENHANCEMENTS (Current Work)
+   ✓ Modern login page UI with gradient background
+   ✓ Auto-load items on page load
+   ✓ Back-to-top button with history navigation
+   ✓ Session storage for last loaded items
+   ✓ Logo click navigation to home
+   ✓ Responsive design for all screen sizes
+
+================================================================================
+KEY CONTROLLERS & ENDPOINTS:
+================================================================================
+
+LOGIN:
+  GET  /login                      → Show login page
+  POST /login                      → Process login
+  GET  /logout                     → Logout user
+  GET  /admin/menu                 → Admin menu
+
+CLIENT (Customer):
+  GET  /                           → Home page
+  GET  /client/item/list/{page}    → Product list (paginated)
+  GET  /client/item/detail/{id}    → Product details
+  GET  /client/basket/list         → Shopping cart
+  GET  /client/order/list          → Order history
+  GET  /client/user/detail         → User profile
+  GET  /client/user/regist/input/init → Registration page
+
+ADMIN:
+  GET  /admin/user/list            → Users list
+  GET  /admin/item/list            → Items list
+  GET  /admin/category/list        → Categories list
+  GET  /admin/order/list           → Orders list
+
+REST API:
+  GET  /items/all                  → Get all products (JSON)
+  GET  /items/cart/add/{id}        → Add to cart
+  GET  /items/cart/list            → Get cart items
+
+================================================================================
+DATABASE ENTITIES & RELATIONSHIPS:
+================================================================================
+
+USERS TABLE:
+  - id (PK)
+  - email (UNIQUE)
+  - password
+  - name
+  - postal_code
+  - address
+  - phone_number
+  - authority (0=System Admin, 1=Operator, 2=Customer)
+  - delete_flag
+  - insert_date
+
+ITEMS TABLE:
+  - id (PK)
+  - category_id (FK → Categories)
+  - name
+  - price
+  - description
+  - stock
+  - image (filename)
+  - delete_flag
+  - insert_date
+
+CATEGORIES TABLE:
+  - id (PK)
+  - name
+  - description
+  - delete_flag
+  - insert_date
+
+ORDERS TABLE:
+  - id (PK)
+  - user_id (FK → Users)
+  - order_date
+  - shipping_address
+  - payment_method
+  - status
+  - total_price
+  - delete_flag
+
+ORDER_ITEMS TABLE (Junction):
+  - id (PK)
+  - order_id (FK → Orders)
+  - item_id (FK → Items)
+  - quantity
+  - unit_price
+
+================================================================================
+CONFIGURATION PROPERTIES:
+================================================================================
+
+LOCAL DEVELOPMENT (application-local.properties):
+  server.servlet.context-path=/shared_shop
+  server.port=55000
+  spring.datasource.url=jdbc:oracle:thin:@SVSAIKEN:1521/PDBORCL
+  spring.datasource.username=JAVAPRJ2026
+  spring.datasource.password=JAVAPRJ2026
+  spring.thymeleaf.cache=false (Development mode - no caching)
+
+FILE UPLOAD:
+  spring.servlet.multipart.location=${user.dir}/temp
+  spring.servlet.multipart.max-file-size=1MB
+  spring.servlet.multipart.max-request-size=10MB
+
+INTERNATIONALIZATION:
+  Messages in Japanese (messages.properties)
+  Support for multiple languages via Thymeleaf i18n
+
+================================================================================
+FRONTEND STYLING & DESIGN:
+================================================================================
+
+MODERN LOGIN PAGE:
+  - Gradient background (purple: #667eea to #764ba2)
+  - Card-based design with shadow effects
+  - Smooth slide-up animation on page load
+  - Professional form inputs with focus states
+  - Hover effects on buttons
+  - Fully responsive (desktop, tablet, mobile)
+  - iOS-friendly font sizing (16px on mobile to prevent zoom)
+
+PRODUCT GRID:
+  - CSS Grid layout (auto-fill, minmax)
+  - Responsive columns (280px base, 260px tablet, 200px mobile, 1 column on phones)
+  - Card-based product display
+  - Hover animations (scale, shadow, border color change)
+  - Product images with fallback support
+  - Dual buttons: Favourite (outline style) and Add to Cart (filled style)
+
+HEADER NAVIGATION:
+  - Flex-based layout (logo left, search center, nav/auth right)
+  - Light blue gradient background
+  - Responsive menu adaptation
+  - Mobile-friendly hamburger consideration
+  - Logo clickable for home navigation
+
+RESPONSIVE BREAKPOINTS:
+  - Desktop: 1200px+
+  - Tablet: 768px - 1199px
+  - Mobile: 480px - 767px
+  - Small Mobile: < 480px
+
+================================================================================
+RECENT JAVASCRIPT ENHANCEMENTS (common.js):
+================================================================================
+
+KEY FUNCTIONS:
+  1. loadAllItems() 
+     - Fetches all items from /items/all API
+     - Dynamically creates product cards with HTML
+     - Stores data in sessionStorage for persistence
+     - Handles image errors with fallback
+
+  2. isLoginPage()
+     - Detects if current page is login page
+     - Prevents unnecessary API calls on login page
+
+  3. Auto-load on DOMContentLoaded
+     - Automatically loads items when page loads
+     - Only on non-login pages (checks isLoginPage())
+
+  4. Logo click handler
+     - Navigates to home on login page
+     - Loads items on other pages
+
+  5. Back-to-top button handler
+     - Calls window.history.back()
+     - Reloads items after navigation
+     - Only on non-login pages
+
+SESSION STORAGE:
+  - lastLoadedItems: Stores JSON array of products
+  - Persists across page navigation during session
+
+ERROR HANDLING:
+  - Image 404 fallback to /images/common/no_image.jpg
+  - Cart authorization checking (401 status → redirect to login)
+  - API error logging to console
+
+================================================================================
+VALIDATION & SECURITY:
+================================================================================
+
+INPUT VALIDATION:
+  - Email validation (custom @EmailCheck annotation)
+  - Password validation (non-null, minimum length)
+  - Item validation (category exists, price valid)
+  - Category validation (name required)
+  - Login validation (email/password required)
+
+FORM VALIDATION:
+  - Spring @Valid annotation on form objects
+  - Custom validators for complex rules
+  - Error messages in Japanese from messages.properties
+
+AUTHENTICATION:
+  - Session-based authentication
+  - @LoginCheck annotation for protected endpoints
+  - Authority checking (0, 1, 2 levels)
+  - Session invalidation on logout
+
+================================================================================
+DEPLOYMENT OPTIONS:
+================================================================================
+
+LOCAL DEVELOPMENT:
+  - Profile: spring.profiles.active=local
+  - Database: Oracle at SVSAIKEN:1521/PDBORCL
+  - Port: 55000
+  - Hot reload: Spring DevTools enabled
+
+AWS PRODUCTION:
+  - Profile: spring.profiles.active=aws
+  - Configuration: application-aws.properties
+  - Requires AWS RDS Oracle setup
+
+BUILD & RUN:
+  - Maven build: mvn clean install
+  - Run: mvn spring-boot:run
+  - Or: java -jar shared_shop_name-0.0.1-SNAPSHOT.jar
+
+================================================================================
+FILE UPLOAD FEATURE:
+================================================================================
+
+SUPPORTED:
+  - Product images
+  - User documents
+  - Maximum file size: 1MB
+  - Maximum request size: 10MB
+  - Temporary storage: ${user.dir}/temp
+
+IMAGE HANDLING:
+  - Images stored in src/main/resources/static/images/
+  - Categorized folders: common/, logo/, products/
+  - Fallback: no_image.jpg for missing images
+  - Frontend error handling with onerror callback
+
+================================================================================
+KNOWN FEATURES & LIMITATIONS:
+================================================================================
+
+CURRENT STATUS:
+  ✓ Full CRUD for Users, Items, Categories, Orders
+  ✓ Shopping cart functionality (session-based)
+  ✓ Product search and filtering
+  ✓ Admin dashboard
+  ✓ Modern UI on login page
+  ✓ Responsive design
+  ✓ REST API for items
+  ✓ Thymeleaf templating
+
+TODO/FUTURE IMPROVEMENTS:
+  - Database persistence for cart (not just session)
+  - Payment gateway integration
+  - Email notifications
+  - Advanced search and filters
+  - Wishlist/Favorites
+  - Product reviews and ratings
+  - Social sharing
+  - Mobile app version
+  - Performance optimization (caching)
+  - Security hardening
+
+================================================================================
+HOW TO USE (FOR AI ASSISTANT):
+================================================================================
+
+When injecting Claude AI into this project:
+
+1. QUICK CONTEXT:
+   - E-commerce Spring Boot app with Oracle DB
+   - Multi-tier architecture (Controller→Service→Repository→Entity)
+   - Thymeleaf templating with responsive CSS
+   - REST APIs for frontend JavaScript interaction
+
+2. FILE NAVIGATION:
+   - Backend logic: src/main/java/jp/co/sss/shop/**
+   - Frontend: src/main/resources/templates/ and src/main/resources/static/
+   - Config: src/main/resources/application*.properties
+   - DB Entities: entity/ folder
+   - Controllers: controller/ folder (client/, admin/, login/)
+
+3. COMMON PATTERNS:
+   - All controllers return ModelAndView or String (Thymeleaf view name)
+   - REST controllers return ResponseEntity<?>
+   - Services handle business logic, repositories handle DB
+   - Forms use Spring validation with @Valid
+
+4. MODIFICATION TIPS:
+   - CSS changes: stylesheet.css (all modern UI in this file)
+   - Add new endpoints: Create controller + @RequestMapping
+   - Add new entity: Create entity, repository, form, validator
+   - Frontend API calls: Modify common.js fetch() functions
+
+5. DEBUGGING:
+   - Check application logs for SQL queries
+   - Browser console for JavaScript errors
+   - Network tab for API call issues
+   - Session tracking for authentication issues
+
+================================================================================
+PROJECT STATUS: ACTIVE DEVELOPMENT
+Last Modified: 2026-09-14
+Version: 0.0.1-SNAPSHOT
+
+Team/Author: SystemShared (SSS - Shared Shop System)
+================================================================================
