@@ -8,7 +8,7 @@
 <div id="header">
 	<!-- Left: Logo/Shop Title -->
 	<div id="showAll" class="header-logo">
-	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" />
+<a th:href= "@{/}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
 		
 	</div>
 
@@ -48,7 +48,7 @@
 			<div th:if="${session.user == null}" class="header-auth">
 				<a th:href="@{/login}" th:text="#{login}" class="auth-link"></a>
 				<span class="divider">|</span>
-				<a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}" class="auth-link"></a>
+				
 			</div>
 			<div th:if="${session.user != null and session.user.authority == 2}" class="header-user">
 				<a th:href="@{/client/user/detail}" th:text="${session.user.name}" class="user-name"></a>

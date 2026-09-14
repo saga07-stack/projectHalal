@@ -9,45 +9,60 @@
 </head>
 
 <body class="user_login">
-<div class="user_container">
-	<h2 th:class="page_title" th:text="#{login}"></h2>
-	<div class="login_content">
-	<p th:class="description" th:text="#{msg.login.input}"></p>
-	<div class="login_form_area">
-		<form th:action="@{/login}" method="post" class="login_form" th:object="${loginForm}">
-			<th:block th:if="${#fields.hasErrors()}">
-			<div class="error_list">
-				<ul>
-					<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
-				</ul>
-				<br />
+<div id="userLogin">
+	<div class="login-wrapper">
+		<div class="login-card">
+			<div class="login-header">
+				<h1 th:class="login-title" th:text="#{login}"></h1>
+				<p th:class="login-subtitle" th:text="#{msg.login.input}"></p>
 			</div>
-			</th:block>
-			<table>
-				<tbody>
-					<tr>
-						<th th:class="label" th:text="#{loginForm.email}"></th>
-						<td class="input"><input type="text" th:field="*{email}" /></td>
-					</tr>
-					<tr>
-						<th th:class="label" th:text="#{loginForm.password}"></th>
-						<td class="input"><input type="password" th:field="*{password}" /></td>
-					</tr>
-					<tr>
-						<th class="label"></th>
-						<td class="input"><input type="submit" th:value="#{login}" /></td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-	</div>
+
+			<form th:action="@{/login}" method="post" class="login-form" th:object="${loginForm}">
+				<!-- Error Messages -->
+				<th:block th:if="${#fields.hasErrors()}">
+					<div class="login-errors">
+						<ul class="error-list">
+							<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+						</ul>
+					</div>
+				</th:block>
+
+				<!-- Email Field -->
+				<div class="form-group">
+					<label th:for="email" class="form-label" th:text="#{loginForm.email}"></label>
+					<input type="text" th:field="*{email}" class="form-input" placeholder="Enter your email" />
+				</div>
+
+				<!-- Password Field -->
+				<div class="form-group">
+					<label th:for="password" class="form-label" th:text="#{loginForm.password}"></label>
+					<input type="password" th:field="*{password}" class="form-input" placeholder="Enter your password" />
+				</div>
+
+				<!-- Login Button -->
+				<button type="submit" class="btn-login" th:value="#{login}" th:text="#{login}"></button>
+			</form>
+
+			<!-- Register Link -->
+			<div class="login-footer">
+				<p class="footer-text">
+					<span th:text="#{client.regist}"></span> 
+					<a th:href="@{/client/user/regist/input/init}" class="register-link">
+						<span>Register here</span>
+					</a>
+				</p>
+			</div>
+		</div>
+
+		<!-- Back to Top Button -->
+		<div class="back-link-wrapper">
+			<a th:href="@{/}" class="back-to-home">
+				<button id="backToTopButton" class="btn-back" th:text="#{msg.back.to.top}"></button>
+			</a>
+		</div>
 	</div>
 </div>
-	<p class="complete_link">
-	<button id="showAll" th:text="#{msg.back.to.top}" > </button>
-		
-	</p>
-   <script type="text/javascript" th:src="@{/js/common.js}" defer></script>
+<script th:src="@{/js/common.js}"></script>
 </body>
 
 </html>
