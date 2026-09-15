@@ -113,11 +113,10 @@ public class URLCheck {
 		if (!URLCheck.isURLForStaticFile(requestURL)
 				&& !requestURL.endsWith("/login")
 				&& !requestURL.endsWith(contextPath + "/")
-				&& requestURL.indexOf("/client/basket/list/") == -1
+				&& requestURL.indexOf("/client/item/list/") == -1
 				&& requestURL.indexOf("/client/item/detail/") == -1
 				&& requestURL.indexOf("/client/user/delete/") == -1
 				&& requestURL.indexOf("/items/cart/add/") == -1
-				&& requestURL.indexOf("/items/cart/list") == -1  // ✅ Allow cart list (common.js line 152)
 				&& !requestURL.endsWith("/items/all")
 				
 				&& !requestURL.endsWith("/client/user/regist/input/init")
