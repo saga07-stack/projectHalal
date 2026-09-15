@@ -25,8 +25,8 @@ public class ItemsRestController {
 	@Autowired ItemRepository itemRepository;
 
 	@Autowired ItemService itemService;
-	@Autowired
-	UserRepository userRepository;
+	
+	@Autowired UserRepository userRepository;
 	
 	@Autowired
 	HttpSession session;
@@ -72,7 +72,36 @@ public class ItemsRestController {
 	    return ResponseEntity.ok(basketBeans);
 	}
 	
+	@GetMapping("/favorite/list")
+	public ResponseEntity<?> getFavoriteList(HttpSession session) {
+		
+		if(session.getAttribute("user") == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+		}else {
+			System.out.println("ユーザーがログインしています");
+		//ItemDto item = itemService.getItemById(id);
+			
+			// カートに商品を追加する処理をここに実装する
+			
+			  
+			return ResponseEntity.ok("お気に入りリストを取得しました");
+		}
 	
 	
-
+	}
+	
+	@GetMapping("/search/{keyword}")
+	public ResponseEntity<?> searchItems(@PathVariable String keyword) {
+		
+		List<ItemDto> items = itemService.getAllItems().stream()
+				.filter(item -> item.getName().toLowerCase().contains(keyword.toLowerCase()))
+				.toList();
+		if(items.isEmpty()) {
+			System.out.println("商品が見つかりません");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
+		}
+		return ResponseEntity.ok(items);
+		
+	}
+	
 }

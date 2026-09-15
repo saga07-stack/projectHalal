@@ -87,6 +87,7 @@ public class URLCheck {
 				|| requestURL.endsWith(contextPath + "/")
 				|| requestURL.endsWith("/login")
 				|| requestURL.indexOf("/client/item/list/") != -1
+				|| requestURL.indexOf("/items/favorite/list/") != -1
 				|| requestURL.indexOf("client") != -1
 				|| requestURL.indexOf("admin") == -1
 				|| requestURL.endsWith("/logout")) {
