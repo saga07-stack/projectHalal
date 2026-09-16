@@ -15,13 +15,13 @@
 		<div th:replace="~{common/header :: layout-header}"></div>
 	</header>
 	<!--/* ナビゲーションバー */-->
-	<nav th:if="${session.user == null or session.user.authority == 2}" class="navi_area">
+	<!-- <nav th:if="${session.user == null or session.user.authority == 2}" class="navi_area">
 		<div th:replace="~{common/menu :: layout-menu}"></div>
 	</nav>
-	<div class="container">
+	 --><div class="container">
 		<!--/* サイドバー */-->
-		<aside th:replace="~{common/sidebar :: layout-sidebar}"></aside>
-		<!--/* メイン */-->
+	<!-- 	<aside th:replace="~{common/sidebar :: layout-sidebar}"></aside>
+ -->		<!--/* メイン */-->
 		<article class="main">
 			<div th:replace="${body}"></div>
 		</article>

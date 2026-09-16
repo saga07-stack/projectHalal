@@ -213,7 +213,7 @@ if (CartButtonList) {
 //------------------favourite list button----------------------
 
 
-const favouriteBtn = document.getElementById("favouriteBtn");
+const favouriteBtn = document.getElementById("favouriteListBtn");
 
 favouriteBtn.addEventListener("click", () => {
 
@@ -225,7 +225,7 @@ favouriteBtn.addEventListener("click", () => {
             }
         })
         .then((data) => {
-            window.location.href = `${FixedUrl}client/basket/list`;
+            window.location.href = `${FixedUrl}favourite/list`;
             console.log("Cart data:", data.name);
         })
         .catch((error) => {
@@ -247,10 +247,11 @@ if (searchForm) {
 }
 
 searchForm.addEventListener("submit", (event) => {
+	event.preventDefault(); // Prevent default form submission
     const searchInput = document.querySelector(".search-input");
 
     console.log("Search form submitted " + searchInput.value);
-    fetch(`${FixedUrl}items/search/${searchInput.value}`)
+	fetch(`${FixedUrl}items/search?keyword=${encodeURIComponent(searchInput.value)}`)
 	.then((response) => response.json())
 	.then((data)=>{
 		itemsContainer.innerHTML = ""; // Clear previous items

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
@@ -76,6 +77,8 @@ public class ItemsRestController {
 	public ResponseEntity<?> getFavoriteList(HttpSession session) {
 		
 		if(session.getAttribute("user") == null) {
+			System.out.println("ユーザーがログインしていません");
+			
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
 		}else {
 			System.out.println("ユーザーがログインしています");
@@ -90,11 +93,11 @@ public class ItemsRestController {
 	
 	}
 	
-	@GetMapping("/search/{keyword}")
-	public ResponseEntity<?> searchItems(@PathVariable String keyword) {
+	@GetMapping("/search")
+	public ResponseEntity<?> searchItems(@RequestParam String keyword) {
 		
 		List<ItemDto> items = itemService.getAllItems().stream()
-				.filter(item -> item.getName().toLowerCase().contains(keyword.toLowerCase()))
+				.filter(item -> item.getName().toLowerCase().startsWith(keyword.toLowerCase()))
 				.toList();
 		if(items.isEmpty()) {
 			System.out.println("商品が見つかりません");
