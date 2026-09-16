@@ -91,4 +91,18 @@ public class ItemService {
 		return basketBeans;
 	}
 	
+	public ItemDto itemsDetails (int id ) {
+		
+		ItemDto item = itemRepository.findById(id)
+				.map(itemEntity -> new ItemDto(
+						itemEntity.getName(),
+						itemEntity.getDescription(),
+						itemEntity.getPrice(),
+						itemEntity.getImage(),
+						itemEntity.getId(),
+						itemEntity.getCategory().getName()))
+				.orElse(null);
+		return item;
+				
+	}
 }

@@ -350,13 +350,13 @@ public class URLCheck {
 				&& !requestURL.endsWith("/login")
 				&& !requestURL.endsWith(contextPath + "/")
 				&& requestURL.indexOf("/client/item/list/") == -1
-				&& requestURL.indexOf("/client/item/detail/") == -1
+				&& requestURL.indexOf("/items/detail/") == -1
 				&& requestURL.indexOf("/client/user/delete/") == -1
 				&& requestURL.indexOf("/items/cart/add/") == -1
 			//	&& requestURL.indexOf("/items/search/") == -1
 				&& !requestURL.endsWith("/items/all")
 				&& requestURL.indexOf("/items/search/") != -1
-				&& requestURL.indexOf("/items/favourite/list/") != -1
+				&& requestURL.indexOf("/items/favourites/list") != -1
 				&& !requestURL.endsWith("/client/user/regist/input/init")
 				&& !requestURL.endsWith("/client/user/regist/input")
 				&& !requestURL.endsWith("/client/user/regist/input/check")

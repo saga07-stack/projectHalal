@@ -25,7 +25,7 @@ function loadAllItems() {
                 // Create main item card
                 const itemCard = document.createElement("div");
                 itemCard.className = "item-card";
-
+                 itemCard.setAttribute("data-item-id", item.id);
                 // Image container
                 const imageContainer = document.createElement("div");
                 imageContainer.className = "item-image-container";
@@ -34,6 +34,23 @@ function loadAllItems() {
                 image.className = "item-image";
                 image.src = `/shared_shop/images/${item.imagePath}`;
                 image.alt = item.name || "Product Image";
+				
+				
+				image.addEventListener("click", ()=>{
+					//console.log("image clicked", item.id);
+					
+				//	alert("image clicked "+ `${FixedUrl}items/detail/${item.id}`);
+					window.location.href = `${FixedUrl}items/detail/${item.id}`
+					/*fetch(`${FixedUrl}items/detail/${item.id}`)
+					.then((response) => response.json())
+					.then((data)=>{
+						console.log("Item detail data:", data);
+					})
+					.catch((error)=>{
+						console.log("Error fetching item detail:", error);
+					})*/
+					
+				})
 
                 // Case 2: file exist gardaina bhane (404), automatically fallback ma switch garne
                 image.onerror = function() {
@@ -213,11 +230,10 @@ if (CartButtonList) {
 //------------------favourite list button----------------------
 
 
-const favouriteBtn = document.getElementById("favouriteListBtn");
+/*const addFavouriteBtn = document.getElementById("favouriteListBtn");
 
-favouriteBtn.addEventListener("click", () => {
+addFavouriteBtn.addEventListener("click", () => {
 
-    alert("buttongot clicked");
     fetch(`${FixedUrl}items/favorite/list`)
         .then((response) => {
             if (response.status === 401) {
@@ -232,7 +248,7 @@ favouriteBtn.addEventListener("click", () => {
             console.error("Error fetching favourite items:", error);
 
         })
-});
+});*/
 
 //------------------favourite list button-----------comes to end here -----------
 
@@ -383,7 +399,8 @@ searchForm.addEventListener("submit", (event) => {
 
 		
 	});
-
-
-
+	
+	itemCard.addEventListener("click", ()=>{
+	alert("clicked")	
+		})
 
