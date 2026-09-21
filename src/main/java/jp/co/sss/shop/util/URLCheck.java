@@ -87,7 +87,6 @@ public class URLCheck {
 				|| requestURL.endsWith(contextPath + "/")
 				|| requestURL.endsWith("/login")
 				|| requestURL.indexOf("/client/item/list/") != -1
-				|| requestURL.indexOf("/items/favorite/list/") != -1
 				|| requestURL.indexOf("client") != -1
 				|| requestURL.indexOf("admin") == -1
 				|| requestURL.endsWith("/logout")) {
@@ -118,6 +117,7 @@ public class URLCheck {
 				&& requestURL.indexOf("/client/item/detail/") == -1
 				&& requestURL.indexOf("/client/user/delete/") == -1
 				&& requestURL.indexOf("/items/cart/add/") == -1
+				&& requestURL.indexOf("/items/search") == -1
 				&& !requestURL.endsWith("/items/all")
 				
 				&& !requestURL.endsWith("/client/user/regist/input/init")

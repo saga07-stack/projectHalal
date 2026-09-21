@@ -250,7 +250,7 @@ searchForm.addEventListener("submit", (event) => {
     const searchInput = document.querySelector(".search-input");
 
     console.log("Search form submitted " + searchInput.value);
-    fetch(`${FixedUrl}items/search/${searchInput.value}`)
+    fetch(`${FixedUrl}items/search${searchInput.value}`)
 	.then((response) => response.json())
 	.then((data)=>{
 		itemsContainer.innerHTML = ""; // Clear previous items

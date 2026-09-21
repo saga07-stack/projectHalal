@@ -10,4 +10,6 @@ import jp.co.sss.shop.entity.OrderItem;
  * @author System Shared
  */
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
+
+
 }
