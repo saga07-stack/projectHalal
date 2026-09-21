@@ -73,6 +73,10 @@
 			<a th:if="${not pages.last}" th:href="@{${url}(page=(${pages.totalPages}-1))}">&gt;&gt;</a>
 		</li>
 	</ul>
+	
+	<form th:action ="@{/admin/menu}"             > 
+	<input type="submit" value="Back" class="menu_button" />
+	</form>
 
 </body>
 

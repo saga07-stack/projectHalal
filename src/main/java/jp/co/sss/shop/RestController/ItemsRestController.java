@@ -77,6 +77,8 @@ public class ItemsRestController {
 	public ResponseEntity<?> getFavoriteList(HttpSession session) {
 		
 		if(session.getAttribute("user") == null) {
+			System.out.println("ユーザーがログインしていません");
+			
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
 		}else {
 			System.out.println("ユーザーがログインしています");
@@ -92,10 +94,15 @@ public class ItemsRestController {
 	}
 	
 	@GetMapping("/search")
-	public ResponseEntity<?> searchItems(@RequestParam("keyword") String keyword) {
-	
-		List<ItemDto> items = itemService.searchItems(keyword);
-		if(items == null) {
+
+	public ResponseEntity<?> searchItems(@RequestParam String keyword) {
+		
+		List<ItemDto> items = itemService.getAllItems().stream()
+				.filter(item -> item.getName().toLowerCase().startsWith(keyword.toLowerCase()))
+				.toList();
+		if(items.isEmpty()) {
+			System.out.println("商品が見つかりません");
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
 		}else {
 			return ResponseEntity.ok(itemService.searchItems(keyword));

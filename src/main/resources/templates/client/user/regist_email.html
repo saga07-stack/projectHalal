@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{user}+#{title.input.new}+' - Email Verification | '+ #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body class="user user_regist_email">
+	<div class="email-verification-container">
+		<!-- Main Content Card -->
+		<div class="verification-card">
+			<!-- Header Section -->
+			<div class="verification-header">
+				<h2 class="verification-title">Email Verification</h2>
+				<p class="verification-subtitle">Please verify your email address to proceed with registration</p>
+			</div>
+
+			<!-- Step Indicator -->
+			<div class="step-indicator">
+				<div class="step" id="step1-indicator" th:classappend="${verificationSent != true} ? 'active'">
+					<div class="step-number">1</div>
+					<p class="step-label">Email Input</p>
+				</div>
+				<div class="step-line"></div>
+				<div class="step" id="step2-indicator" th:classappend="${verificationSent == true} ? 'active'">
+					<div class="step-number">2</div>
+					<p class="step-label">Verify Code</p>
+				</div>
+			</div>
+
+			<!-- Step 1: Email Input Form -->
+			<div class="form-step" id="step1-form" th:classappend="${verificationSent != true} ? 'active'">
+				<form th:action="@{/client/user/regist/email/send}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
+					
+					<!-- Error Messages -->
+				<!-- 	<th:block th:if="${#fields.hasErrors()}">
+						<div class="error-alert">
+							<ul class="error-list">
+								<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+							</ul>
+						</div>
+					</th:block> -->
+
+					<div class="form-group">
+						<label class="form-label" for="email">Email Address</label>
+						<div class="email-input-wrapper">
+							<input 
+								type="email" 
+								id="email" 
+								th:field="*{email}"
+								class="form-input email-input"
+								placeholder="Enter your email address"
+								required
+								autocomplete="email" />
+							<span class="input-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+									<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741z"/>
+								</svg>
+							</span>
+						</div>
+						<small class="form-help-text">We'll send a verification code to this email</small>
+					</div>
+
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary btn-send-code">Send Verification Code</button>
+					</div>
+
+					<div class="form-footer">
+						<p class="back-to-login">Already have an account? <a th:href="@{/login}" class="link-primary">Login here</a></p>
+					</div>
+				</form>
+			</div>
+
+			<!-- Step 2: Verification Code Form -->
+			<div class="form-step" id="step2-form" th:classappend="${verificationSent == true} ? 'active'">
+				<form th:action="@{/client/user/regist/email/verify}" method="post" class="verification-form" id="verificationForm" th:object="${emailVerificationForm}">
+					
+					<!-- Error Messages -->
+					<th:block th:if="${#fields.hasErrors('verificationCode')}">
+						<div class="error-alert">
+							<ul class="error-list">
+								<li th:each="err:${#fields.detailedErrors('verificationCode')}" th:text="${err.message}"></li>
+							</ul>
+						</div>
+					</th:block>
+
+					<!-- Display Email Being Verified -->
+					<div class="email-display">
+						<p class="email-display-text">
+							Verification code sent to:
+							<strong class="email-address" id="emailDisplay" th:text="*{email}">your-email@example.com</strong>
+						</p>
+					</div>
+
+					<div class="form-group">
+						<label class="form-label" for="verificationCode">Verification Code</label>
+						<input 
+							type="text" 
+							id="verificationCode" 
+							th:field="*{verificationCode}"
+							class="form-input verification-code-input"
+							placeholder="Enter 6-digit code"
+							maxlength="6"
+							pattern="[0-9]{6}"
+							required
+							autocomplete="off" />
+						<small class="form-help-text">Enter the 6-digit code sent to your email</small>
+					</div>
+
+					<!-- Resend Code Section -->
+					<div class="resend-section">
+						<p id="resendMessage" class="resend-message">Didn't receive the code? 
+							<button type="button" class="link-primary resend-btn" id="resendBtn">Resend Code</button>
+						</p>
+						<div id="resendTimer" class="resend-timer hidden">
+							<p>Resend available in <span id="timerCount">60</span> seconds</p>
+						</div>
+					</div>
+
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary btn-verify-code">Verify Code</button>
+						<button type="button" class="btn btn-secondary btn-back-to-email" onclick="goBackToStep1()">Back</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<!-- Additional Info Section -->
+		<div class="info-section">
+			<div class="info-box">
+				<h3 class="info-title">Why email verification?</h3>
+				<ul class="info-list">
+					<li>Secure your account with a verified email</li>
+					<li>Receive important notifications and updates</li>
+					<li>Easy password recovery if needed</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- JavaScript for Form Flow -->
+	<!-- <script th:inline="javascript">
+		let resendTimer = null;
+
+		// Initialize on page load
+		document.addEventListener('DOMContentLoaded', function() {
+			const verificationSent = [[${verificationSent}]];
+			if (verificationSent === true || verificationSent === 'true') {
+				startResendTimer();
+			}
+		});
+
+		function goBackToStep1() {
+			// Hide step 2, show step 1
+			document.getElementById('step2-form').classList.remove('active');
+			document.getElementById('step1-form').classList.add('active');
+			
+			// Update step indicator
+			document.getElementById('step1-indicator').classList.add('active');
+			document.getElementById('step2-indicator').classList.remove('active');
+		}
+
+		function goToStep2() {
+			// Hide step 1, show step 2
+			document.getElementById('step1-form').classList.remove('active');
+			document.getElementById('step2-form').classList.add('active');
+			
+			// Update step indicator
+			document.getElementById('step1-indicator').classList.remove('active');
+			document.getElementById('step2-indicator').classList.add('active');
+
+			// Update email display
+			const email = document.getElementById('email').value;
+			document.getElementById('emailDisplay').textContent = email;
+
+			// Start resend timer
+			startResendTimer();
+		}
+
+		function startResendTimer() {
+			const timerDuration = 60;
+			let secondsRemaining = timerDuration;
+
+			document.getElementById('resendMessage').classList.add('hidden');
+			document.getElementById('resendTimer').classList.remove('hidden');
+
+			clearInterval(resendTimer);
+			resendTimer = setInterval(() => {
+				secondsRemaining--;
+				document.getElementById('timerCount').textContent = secondsRemaining;
+
+				if (secondsRemaining <= 0) {
+					clearInterval(resendTimer);
+					document.getElementById('resendMessage').classList.remove('hidden');
+					document.getElementById('resendTimer').classList.add('hidden');
+				}
+			}, 1000);
+		}
+
+		// Email input form submission
+		document.getElementById('emailInputForm').addEventListener('submit', function(e) {
+			const email = document.getElementById('email').value;
+			if (email && email.includes('@')) {
+				// Only go to step 2 after successful server response
+				// The server will handle the actual submission and validation
+				return true;
+			}
+		});
+
+		// Resend button
+		document.getElementById('resendBtn').addEventListener('click', function() {
+			const email = document.getElementById('email').value;
+			
+			// Create a form to resend code
+			const resendForm = document.createElement('form');
+			resendForm.method = 'POST';
+			resendForm.action = '[[${#mvc.url("T(jp.co.sss.shop.controller.client.user.RegistUserController)").build()}]]/regist/email/resend';
+			
+			const emailInput = document.createElement('input');
+			emailInput.type = 'hidden';
+			emailInput.name = 'email';
+			emailInput.value = email;
+			
+			resendForm.appendChild(emailInput);
+			document.body.appendChild(resendForm);
+			resendForm.submit();
+		});
+
+		// Verification code input - only allow digits
+		document.getElementById('verificationCode').addEventListener('input', function(e) {
+			this.value = this.value.replace(/[^0-9]/g, '');
+			if (this.value.length === 6) {
+				// Auto-submit when user enters 6 digits (optional)
+				// document.getElementById('verificationForm').submit();
+			}
+		});
+
+		// Handle form responses (server should indicate success/failure)
+		// You can add logic here to check if verification was successful
+		// and auto-navigate to the registration input page
+	</script> -->
+</body>
+
+</html>
