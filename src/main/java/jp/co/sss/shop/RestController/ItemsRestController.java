@@ -94,6 +94,7 @@ public class ItemsRestController {
 	}
 	
 	@GetMapping("/search")
+
 	public ResponseEntity<?> searchItems(@RequestParam String keyword) {
 		
 		List<ItemDto> items = itemService.getAllItems().stream()
@@ -101,9 +102,12 @@ public class ItemsRestController {
 				.toList();
 		if(items.isEmpty()) {
 			System.out.println("商品が見つかりません");
+
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
+		}else {
+			return ResponseEntity.ok(itemService.searchItems(keyword));
 		}
-		return ResponseEntity.ok(items);
+		
 		
 	}
 	

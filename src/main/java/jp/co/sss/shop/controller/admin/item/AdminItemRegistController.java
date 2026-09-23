@@ -129,6 +129,10 @@ public class AdminItemRegistController {
 	@RequestMapping(path = "/admin/item/regist/check", method = RequestMethod.POST)
 	public String registInputCheck(@Valid @ModelAttribute ItemForm form, BindingResult result) {
 
+		
+		
+		
+		
 		// 選択したカテゴリの名前をFormクラスにセット
 		if (form.getCategoryId() != null) {
 			//カテゴリーIDで検索し、結果が無ければnullを返す
@@ -156,6 +160,9 @@ public class AdminItemRegistController {
 		//ファイルアップロード処理呼び出す 戻り値 成功時:ファイル名、失敗時:null
 		String imageName = upfileService.saveUploadFile(form.getImageFile());
 		if (imageName != null) {
+			long maxSize = 1024 * 1024;
+			
+			
 			//ファイルアップロードが正常にできた場合
 			// 一時的にアップロードしたファイルの名前をFormクラスにセット
 			form.setImage(imageName);

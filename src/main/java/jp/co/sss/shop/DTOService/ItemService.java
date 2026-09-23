@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.RestControllerDTO.ItemDto;
 import jp.co.sss.shop.bean.BasketBean;
@@ -89,6 +91,11 @@ public class ItemService {
 	public List<BasketBean> getCartItems() {
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 		return basketBeans;
+	}
+	
+	public List<ItemDto> searchItems(String keyword){
+		
+		return itemRepository.findByNameContainingAndDeleteFlag(keyword, 0);
 	}
 	
 }
