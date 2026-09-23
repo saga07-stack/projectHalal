@@ -362,7 +362,7 @@ public class URLCheck {
 				&& requestURL.indexOf("/items/favourite/list/") != -1
 				&& !requestURL.endsWith("/client/user/regist/input/init")
 				&& !requestURL.endsWith("/client/user/regist/email")
-				
+				&& !requestURL.endsWith("/client/user/regist/email/send")	
 				&& !requestURL.endsWith("/client/user/regist/input")
 				&& !requestURL.endsWith("/client/user/regist/input/check")
 				&& !requestURL.endsWith("/client/user/regist/check")

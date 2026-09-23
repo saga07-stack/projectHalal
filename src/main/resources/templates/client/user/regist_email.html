@@ -50,6 +50,7 @@
 							<input 
 								type="email" 
 								id="email" 
+								name ="email"
 								th:field="*{email}"
 								class="form-input email-input"
 								placeholder="Enter your email address"
@@ -92,8 +93,7 @@
 						<p class="email-display-text">
 							Verification code sent to:
 							<strong class="email-address" id="emailDisplay" th:text="*{email}">your-email@example.com</strong>
-						</p>
-					</div>
+						</p> 
 
 					<div class="form-group">
 						<label class="form-label" for="verificationCode">Verification Code</label>
@@ -142,7 +142,7 @@
 	</div>
 
 	<!-- JavaScript for Form Flow -->
-	<!-- <script th:inline="javascript">
+	<!--  <script th:inline="javascript">
 		let resendTimer = null;
 
 		// Initialize on page load
@@ -217,8 +217,7 @@
 			// Create a form to resend code
 			const resendForm = document.createElement('form');
 			resendForm.method = 'POST';
-			resendForm.action = '[[${#mvc.url("T(jp.co.sss.shop.controller.client.user.RegistUserController)").build()}]]/regist/email/resend';
-			
+			resendForm.action = '/client/user/regist/email/resend';			
 			const emailInput = document.createElement('input');
 			emailInput.type = 'hidden';
 			emailInput.name = 'email';
@@ -241,7 +240,10 @@
 		// Handle form responses (server should indicate success/failure)
 		// You can add logic here to check if verification was successful
 		// and auto-navigate to the registration input page
-	</script> -->
+	</script>
+	
+	 -->
+	
 </body>
 
 </html>
