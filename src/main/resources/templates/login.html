@@ -5,62 +5,67 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
 	<title th:text="#{login}+' | '+ #{shop.title}"> </title>
 </head>
 
 <body class="user_login">
-<div id="userLogin">
-	<div class="login-wrapper">
-		<div class="login-card">
-			<div class="login-header">
-				<h1 th:class="login-title" th:text="#{login}"></h1>
-				<p th:class="login-subtitle" th:text="#{msg.login.input}"></p>
-			</div>
-
-			<form th:action="@{/login}" method="post" class="login-form" th:object="${loginForm}">
-				<!-- Error Messages -->
-				<th:block th:if="${#fields.hasErrors()}">
-					<div class="login-errors">
-						<ul class="error-list">
-							<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
-						</ul>
-					</div>
-				</th:block>
-
-				<!-- Email Field -->
-				<div class="form-group">
-					<label th:for="email" class="form-label" th:text="#{loginForm.email}"></label>
-					<input type="text" th:field="*{email}" class="form-input" placeholder="Enter your email" />
-				</div>
-
-				<!-- Password Field -->
-				<div class="form-group">
-					<label th:for="password" class="form-label" th:text="#{loginForm.password}"></label>
-					<input type="password" th:field="*{password}" class="form-input" placeholder="Enter your password" />
-				</div>
-
-				<!-- Login Button -->
-				<button type="submit" class="btn-login" th:value="#{login}" th:text="#{login}"></button>
-			</form>
-
-			<!-- Register Link -->
-			<div class="login-footer">
-				<p class="footer-text">
-					<span th:text="#{client.regist}"></span> 
-					<a th:href="@{/client/user/regist/email}" class="register-link">
-						<span>Register here</span>
-					</a>
-				</p>
-			</div>
+<div class="form-container login-form">
+	<div class="form-card">
+		<button class="form-back-btn" onclick="window.history.back()" aria-label="Back">
+			<svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+		</button>
+		<div class="form-header">
+			<h1 class="form-title" th:text="#{login}"></h1>
+			<p class="form-subtitle" th:text="#{msg.login.input}"></p>
 		</div>
 
-		<!-- Back to Top Button -->
-		<div class="back-link-wrapper">
-			<a th:href="@{/}" class="back-to-home">
-				<button id="backToTopButton" class="btn-back" th:text="#{msg.back.to.top}"></button>
-			</a>
+		<form th:action="@{/login}" method="post" class="login-form" th:object="${loginForm}">
+			<!-- Error Messages -->
+			<th:block th:if="${#fields.hasErrors()}">
+				<div class="error-container">
+					<ul class="error-list">
+						<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+					</ul>
+				</div>
+			</th:block>
+
+			<!-- Email Field -->
+			<div class="form-group">
+				<label th:for="email" class="form-label required" th:text="#{loginForm.email}"></label>
+				<input type="text" th:field="*{email}" class="form-input" placeholder="Enter your email" />
+			</div>
+
+			<!-- Password Field -->
+			<div class="form-group">
+				<label th:for="password" class="form-label required" th:text="#{loginForm.password}"></label>
+				<input type="password" th:field="*{password}" class="form-input" placeholder="Enter your password" />
+			</div>
+
+			<!-- Login Button -->
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary btn-full-width" th:text="#{login}"></button>
+			</div>
+		</form>
+
+		<!-- Register Link -->
+		<div class="form-footer">
+			<p class="form-footer-text">
+				<span th:text="#{client.regist}"></span> 
+				<a th:href="@{/client/user/regist/email}" class="form-footer-link">
+					<span>Register here</span>
+				</a>
+				<br>
+			<span> Forgot Password ? </span><a th:href="@{/client/user/password/reset/input}" class="form-footer-link" > Reset password   </a>
+			</p>
 		</div>
 	</div>
+
+	<!-- Back to Top Button -->
+	<div style="margin-top: var(--spacing-xl); width: 100%; max-width: 500px;">
+		<a th:href="@{/}" class="btn btn-outline btn-full-width" th:text="#{msg.back.to.top}"></a>
+	</div>
+</div>
 </div>
 <script th:src="@{/js/common.js}"></script>
 </body>

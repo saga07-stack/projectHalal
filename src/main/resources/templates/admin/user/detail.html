@@ -5,55 +5,61 @@
 <head>
 	<title th:text="#{user}+#{title.detail}+' | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body class="admin user_detail_admin">
-	<h2 th:class="title" th:text="#{user}+#{title.detail}"></h2>
-	<div class="info_form_area" th:object="${userBean}">
-		<div class="detail_area">
-			<ul class="input_list">
-				<li>
-					<span class="input_title">[[#{userForm.email}]]</span>
-					<span class="input_value" th:text="*{email}"></span>
-				</li>
-				<li>
-					<span class="input_title">[[#{userForm.name}]]</span>
-					<span class="input_value" th:text="*{name}"></span>
-				</li>
-				<li>
-					<span class="input_title">[[#{userForm.postalCode}]]</span>
-					<span class="input_value" th:text="*{postalCode}"></span>
-				</li>
-				<li>
-					<span class="input_title">[[#{userForm.address}]]</span>
-					<span class="input_value" th:text="*{address}"></span>
-				</li>
-				<li>
-					<span class="input_title">[[#{userForm.phoneNumber}]]</span>
-					<span class="input_value" th:text="*{phoneNumber}"></span>
-				</li>
-				<li>
-					<span class="input_title">[[#{data.authority}]]</span>
-					<span class="input_value" th:switch="*{authority}">
-						<span th:case="0">[[#{auth.system.str}]]</span>
-						<span th:case="1">[[#{auth.admin.str}]]</span>
-						<span th:case="2">[[#{auth.client.str}]]</span>
-					</span>
-				</li>
-			</ul>
-		</div>
+	<div class="form-container admin-form">
+		<div class="form-card admin">
+			<div class="form-header with-border">
+				<h2 class="form-title" th:text="#{user}+#{title.detail}"></h2>
+				<p class="form-subtitle">User Details</p>
+			</div>
 
-		<div class="detail_button_area">
-			<form th:action="@{/admin/user/list}" method="post">
-				<input type="submit" value="戻る" class="back_button" />
-			</form>
-			<form th:action="@{/admin/user/update/input/{id}(id=*{id})}" method="post">
-				<input type="submit" value="変更" />
-			</form>
-			<form th:action="@{/admin/user/delete/check/{id}(id=*{id})}" method="post">
-				<input type="submit" value="削除" class="delete" disabled th:if="${userBean.id==session.user.id}" />
-				<input type="submit" value="削除" class="delete" th:unless="${userBean.id==session.user.id}" />
-			</form>
+			<div class="info_form_area" th:object="${userBean}">
+				<div class="detail_area">
+					<div class="input-list">
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.email}]]</label>
+							<span class="form-help-text" th:text="*{email}"></span>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.name}]]</label>
+							<span class="form-help-text" th:text="*{name}"></span>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.postalCode}]]</label>
+							<span class="form-help-text" th:text="*{postalCode}"></span>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.address}]]</label>
+							<span class="form-help-text" style="display: block; white-space: pre-wrap;" th:text="*{address}"></span>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.phoneNumber}]]</label>
+							<span class="form-help-text" th:text="*{phoneNumber}"></span>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{data.authority}]]</label>
+							<span class="form-help-text" th:switch="*{authority}">
+								<span th:case="0">[[#{auth.system.str}]]</span>
+								<span th:case="1">[[#{auth.admin.str}]]</span>
+								<span th:case="2">[[#{auth.client.str}]]</span>
+							</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-actions" style="margin-top: var(--spacing-lg);">
+					<div style="display: flex; gap: var(--spacing-md); width: 100%;">
+						<a th:href="@{/admin/user/list}" class="btn btn-secondary back_button" style="flex: 1;">戻る</a>
+						<a th:href="@{/admin/user/update/input/{id}(id=*{id})}" class="btn btn-primary" style="flex: 1;">変更</a>
+						<form th:action="@{/admin/user/delete/check/{id}(id=*{id})}" method="post" style="flex: 1; margin: 0;">
+							<button type="submit" class="btn btn-danger delete" style="width: 100%;" th:disabled="${userBean.id==session.user.id}">削除</button>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

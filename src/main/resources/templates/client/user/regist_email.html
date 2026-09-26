@@ -6,16 +6,17 @@
 	<title th:text="#{user}+#{title.input.new}+' - Email Verification | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
 </head>
 
 <body class="user user_regist_email">
-	<div class="email-verification-container">
+	<div class="form-container verification-form">
 		<!-- Main Content Card -->
-		<div class="verification-card">
+		<div class="form-card">
 			<!-- Header Section -->
-			<div class="verification-header">
-				<h2 class="verification-title">Email Verification</h2>
-				<p class="verification-subtitle">Please verify your email address to proceed with registration</p>
+			<div class="form-header with-border">
+				<h2 class="form-title" th:text="#{title.email.verification}">Email Verification</h2>
+				<p class="form-subtitle">Please verify your email address to proceed with registration</p>
 			</div>
 
 			<!-- Step Indicator -->
@@ -35,14 +36,22 @@
 			<div class="form-step" id="step1-form" th:classappend="${verificationSent != true} ? 'active'">
 				<form th:action="@{/client/user/regist/email/send}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
 					
+					<th:block th:if="${error}"  > 
+					
+					<p style="color:red;" > the email address that you are trying to create <br>
+					 is already registered with us. Please use a different email address or <a th:href="@{/login}">login</a> if you already have an account.
+					</p>
+					
+					</th:block>
+					
 					<!-- Error Messages -->
-				<!-- 	<th:block th:if="${#fields.hasErrors()}">
-						<div class="error-alert">
+					<th:block th:if="${#fields.hasErrors()}">
+						<div class="error-container">
 							<ul class="error-list">
 								<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
 							</ul>
 						</div>
-					</th:block> -->
+					</th:block> 
 
 					<div class="form-group">
 						<label class="form-label" for="email">Email Address</label>
@@ -66,11 +75,11 @@
 					</div>
 
 					<div class="form-actions">
-						<button type="submit" class="btn btn-primary btn-send-code">Send Verification Code</button>
+						<button type="submit" class="btn btn-primary btn-full-width btn-send-code">Send Verification Code</button>
 					</div>
 
 					<div class="form-footer">
-						<p class="back-to-login">Already have an account? <a th:href="@{/login}" class="link-primary">Login here</a></p>
+						<p class="form-footer-text">Already have an account? <a th:href="@{/login}" class="form-footer-link">Login here</a></p>
 					</div>
 				</form>
 			</div>
@@ -81,7 +90,7 @@
 					
 					<!-- Error Messages -->
 					<th:block th:if="${#fields.hasErrors('verificationCode')}">
-						<div class="error-alert">
+						<div class="error-container">
 							<ul class="error-list">
 								<li th:each="err:${#fields.detailedErrors('verificationCode')}" th:text="${err.message}"></li>
 							</ul>
@@ -113,14 +122,14 @@
 					<!-- Resend Code Section -->
 					<div class="resend-section">
 						<p id="resendMessage" class="resend-message">Didn't receive the code? 
-							<button type="button" class="link-primary resend-btn" id="resendBtn">Resend Code</button>
+							<button type="button" class="form-footer-link resend-btn" id="resendBtn">Resend Code</button>
 						</p>
 						<div id="resendTimer" class="resend-timer hidden">
 							<p>Resend available in <span id="timerCount">60</span> seconds</p>
 						</div>
 					</div>
 
-					<div class="form-actions">
+					<div class="form-actions two-buttons">
 						<button type="submit" class="btn btn-primary btn-verify-code">Verify Code</button>
 						<button type="button" class="btn btn-secondary btn-back-to-email" onclick="goBackToStep1()">Back</button>
 					</div>

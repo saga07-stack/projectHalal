@@ -5,70 +5,85 @@
 <head>
 	<title th:text="#{user}+#{title.update.input}+' | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body th:object="${userForm}" class="admin user_update_input_admin">
-	<h2 th:class="title" th:text="#{user}+#{title.update.input}"></h2>
-	<p th:class="input_message" th:text="#{msg.update.input}"></p>
-	<div class="user_info_form_area" th:object="${userForm}">
-		<form th:action="@{/admin/user/update/check}" method="post" class="user_info_form">
-			<th:block th:if="${#fields.hasErrors()}">
-				<ul class="error_list">
-					<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
-				</ul>
-				<br />
-			</th:block>
-			</th:block>
-			<ul class="input_list">
-				<li>
-					<label><span class="input_title">[[#{userForm.email}]]</span></label>
-					<input type="text" th:field="*{email}" />
-				</li>
-				<li>
-					<label><span class="input_title">[[#{userForm.password}]]</span></label>
-					<input type="password" th:field="*{password}" />
-				</li>
-				<li>
-					<label><span class="input_title">[[#{userForm.name}]]</span></label>
-					<input type="text" th:field="*{name}" />
-				</li>
-				<li>
-					<label><span class="input_title">[[#{userForm.postalCode}]]</span></label>
-					<input type="text" th:field="*{postalCode}" />
-				</li>
-				<li>
-					<label><span class="input_title">[[#{userForm.address}]]</span></label>
-					<textarea rows="6" th:field="*{address}"></textarea>
-				</li>
-				<li>
-					<label><span class="input_title">[[#{userForm.phoneNumber}]]</span></label>
-					<input type="text" th:field="*{phoneNumber}" />
-				</li>
+	<div class="form-container admin-form">
+		<div class="form-card admin">
+			<div class="form-header with-border">
+				<h2 class="form-title" th:text="#{user}+#{title.update.input}"></h2>
+				<p class="form-subtitle" th:text="#{msg.update.input}"></p>
+			</div>
 
-				<li th:if="${session.user.authority == 0 or session.user.authority == 1}">
-					<label><span class="input_title">[[#{data.authority}]]</span></label>
-					<div class="radio_label" th:if="${session.user.authority == 0 and session.user.id!=userForm.id}">
-						<input type="radio" name="authority" value="0"
-							th:checked="*{authority == 0}" />[[#{auth.system.str}]]
-						<input type="radio" name="authority" value="1"
-							th:checked="*{authority == 1}" />[[#{auth.admin.str}]]
-						<input type="radio" name="authority" value="2"
-							th:checked="*{authority == 2}" />[[#{auth.client.str}]]
-					</div>
-					<th:block th:if="${session.user.authority == 1 or session.user.id==userForm.id}">
-						<th:block th:switch="*{authority}">
-							<span class="input_value" th:case="0">[[#{auth.system.str}]]</span>
-							<span class="input_value" th:case="1">[[#{auth.admin.str}]]</span>
-							<span class="input_value" th:case="2">[[#{auth.client.str}]]</span>
+			<div class="user_info_form_area" th:object="${userForm}">
+				<form th:action="@{/admin/user/update/check}" method="post" class="user_info_form">
+					<th:block th:if="${#fields.hasErrors()}">
+						<div class="error-container">
+							<ul class="error-list">
+								<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+							</ul>
+						</div>
 					</th:block>
-				</li>
-			</ul>
-			<input type="hidden" th:field="*{id}" />
-			<input type="submit" value="確認" class="send_button" />
-		</form>
-		<form th:action="@{/admin/user/detail/{id}(id=*{id})}" method="post">
-			<input type="submit" value="戻る" class="back_button" />
-		</form>
+
+					<div class="input-list">
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.email}]]</label>
+							<input type="text" th:field="*{email}" class="form-input" />
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.password}]]</label>
+							<input type="password" th:field="*{password}" class="form-input" />
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.name}]]</label>
+							<input type="text" th:field="*{name}" class="form-input" />
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.postalCode}]]</label>
+							<input type="text" th:field="*{postalCode}" class="form-input" />
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.address}]]</label>
+							<textarea rows="6" th:field="*{address}" class="form-textarea"></textarea>
+						</div>
+						<div class="form-group">
+							<label class="form-label">[[#{userForm.phoneNumber}]]</label>
+							<input type="text" th:field="*{phoneNumber}" class="form-input" />
+						</div>
+
+						<div class="form-group" th:if="${session.user.authority == 0 or session.user.authority == 1}">
+							<label class="form-label">[[#{data.authority}]]</label>
+							<div th:if="${session.user.authority == 0 and session.user.id!=userForm.id}" class="form-radio">
+								<label>
+									<input type="radio" name="authority" value="0" th:checked="*{authority == 0}" />[[#{auth.system.str}]]
+								</label>
+								<label>
+									<input type="radio" name="authority" value="1" th:checked="*{authority == 1}" />[[#{auth.admin.str}]]
+								</label>
+								<label>
+									<input type="radio" name="authority" value="2" th:checked="*{authority == 2}" />[[#{auth.client.str}]]
+								</label>
+							</div>
+							<th:block th:if="${session.user.authority == 1 or session.user.id==userForm.id}">
+								<th:block th:switch="*{authority}">
+									<span class="form-help-text" th:case="0">[[#{auth.system.str}]]</span>
+									<span class="form-help-text" th:case="1">[[#{auth.admin.str}]]</span>
+									<span class="form-help-text" th:case="2">[[#{auth.client.str}]]</span>
+								</th:block>
+							</th:block>
+						</div>
+					</div>
+
+					<input type="hidden" th:field="*{id}" />
+
+					<div class="form-actions two-buttons">
+						<button type="submit" class="btn btn-primary send_button">確認</button>
+						<a th:href="@{/admin/user/detail/{id}(id=*{id})}" class="btn btn-secondary back_button">戻る</a>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 </body>
 

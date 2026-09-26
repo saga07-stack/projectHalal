@@ -5,47 +5,58 @@
 <head>
 	<title th:text="#{item}+#{title.detail}+' | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
 <body class="admin item_detail_admin">
-	<h2 th:class="title" th:text="#{item}+#{title.detail}"></h2>
-
-	<div class="info_form_area" th:object="${item}">
-		<div class="item_detail_area">
-			<div class="item_image_area">
-				<span th:if="*{image != null}">
-					<img th:src="@{/images/{image}(image=*{image})}"></img>
-				</span>
-				<span th:if="*{image == null}">
-					<img th:src="@{/images/common/no_image.jpg}"></img>
-				</span>
+	<div class="form-container admin-form">
+		<div class="form-card admin">
+			<div class="form-header with-border">
+				<h2 class="form-title" th:text="#{item}+#{title.detail}"></h2>
+				<p class="form-subtitle">Item Details</p>
 			</div>
-			<dl class="item_detail_list">
-				<dt>[[#{itemForm.name}]]</dt>
-				<dd th:text="*{name}"></dd>
-				<dt>[[#{itemForm.price}]]</dt>
-				<dd th:text="*{price}"></dd>
-				<dt>[[#{itemForm.stock}]]</dt>
-				<dd th:text="*{stock}"></dd>
-				<dt>[[#{data.category}]]</dt>
-				<dd th:text="*{categoryName}"></dd>
-				<dt>[[#{itemForm.description}]]</dt>
-				<dd th:text="*{description}"></dd>
-			</dl>
-		</div>
 
-		<div class="detail_button_area">
-			<form th:action="@{/admin/item/list}" method="post">
-				<input type="submit" value="戻る" class="back_button" />
-			</form>
+			<div class="info_form_area" th:object="${item}">
+				<div class="item_detail_area" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--spacing-lg); align-items: start;">
+					<div class="item_image_area">
+						<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);" />
+						<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}" style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);" />
+					</div>
 
-			<form th:action="@{/admin/item/update/input/{id}(id=*{id})}" method="post">
-				<input type="submit" value="変更" />
-			</form>
+					<div class="item_detail_list" style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+						<div>
+							<p style="margin: 0; font-weight: 600; color: var(--color-text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">[[#{itemForm.name}]]</p>
+							<p style="margin: 6px 0 0 0; color: var(--color-text-primary); font-size: 16px; font-weight: 600;" th:text="*{name}"></p>
+						</div>
+						<div>
+							<p style="margin: 0; font-weight: 600; color: var(--color-text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">[[#{itemForm.price}]]</p>
+							<p style="margin: 6px 0 0 0; color: var(--color-primary); font-size: 18px; font-weight: 700;" th:text="*{price}"></p>
+						</div>
+						<div>
+							<p style="margin: 0; font-weight: 600; color: var(--color-text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">[[#{itemForm.stock}]]</p>
+							<p style="margin: 6px 0 0 0; color: var(--color-text-secondary);" th:text="*{stock}"></p>
+						</div>
+						<div>
+							<p style="margin: 0; font-weight: 600; color: var(--color-text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">[[#{data.category}]]</p>
+							<p style="margin: 6px 0 0 0; color: var(--color-text-secondary);" th:text="*{categoryName}"></p>
+						</div>
+						<div>
+							<p style="margin: 0; font-weight: 600; color: var(--color-text-primary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">[[#{itemForm.description}]]</p>
+							<p style="margin: 6px 0 0 0; color: var(--color-text-secondary); line-height: 1.6; white-space: pre-wrap;" th:text="*{description}"></p>
+						</div>
+					</div>
+				</div>
 
-			<form th:action="@{/admin/item/delete/check/{id}(id=*{id})}" method="post">
-				<input type="submit" value="削除" class="delete" />
-			</form>
+				<div class="form-actions" style="margin-top: var(--spacing-lg);">
+					<div style="display: flex; gap: var(--spacing-md); width: 100%;">
+						<a th:href="@{/admin/item/list}" class="btn btn-secondary back_button" style="flex: 1;">戻る</a>
+						<a th:href="@{/admin/item/update/input/{id}(id=*{id})}" class="btn btn-primary" style="flex: 1;">変更</a>
+						<form th:action="@{/admin/item/delete/check/{id}(id=*{id})}" method="post" style="flex: 1; margin: 0;">
+							<button type="submit" class="btn btn-danger delete" style="width: 100%;">削除</button>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
