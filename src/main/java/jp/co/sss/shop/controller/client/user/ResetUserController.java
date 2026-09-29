@@ -139,10 +139,12 @@ public class ResetUserController {
 			if (newPassword == null || newPassword.length() < 8) {
 				return new PasswordResetResponse(false, "パスワードは8文字以上である必要があります");
 			}
-
-			// TODO: Update user password in database
+                   
+	 		// TODO: Update user password in database
 			// userService.updatePassword(email, newPassword);
-          //     userRepo.updatePasswordByEmail(email, newPassword);
+	       userRepo.updatePasswordByEmail(email, newPassword);
+
+
 			// Clear session attributes
 			session.removeAttribute("resetVerificationCode");
 			session.removeAttribute("resetEmail");

@@ -141,8 +141,9 @@ public class RegistUserController {
 		userBean.setPostalCode(userForm.getPostalCode());
 		userBean.setAddress(userForm.getAddress());
 		userBean.setPhoneNumber(userForm.getPhoneNumber());
-		int authority = 2;
-		userBean.setAuthority(authority);
+
+		userBean.setAuthority(2);
+
 		session.setAttribute("registUser", userBean);
 		String email = (String) session.getAttribute("email");
 		model.addAttribute("email", email);
@@ -165,7 +166,8 @@ public class RegistUserController {
      userObj.setPostalCode(user.getPostalCode());
      userObj.setAddress(user.getAddress());
      userObj.setPhoneNumber(user.getPhoneNumber());
-    userObj.setAuthority(user.getAuthority());
+
+     userObj.setAuthority(user.getAuthority());
      userRepo.save(userObj);
      session.removeAttribute("registUser");
 		return "client/user/regist_complete";
