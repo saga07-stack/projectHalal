@@ -96,25 +96,76 @@ button {
 }
 
 .form-container {
+	/* ------------------------------------------------------------------
+	 * MOBILE-FIRST BASE (no viewport-breakout here on purpose)
+	 * ------------------------------------------------------------------
+	 * On phones/tablets the parent shell (#mainParent, see layout.css) is
+	 * already effectively edge-to-edge, so a 100vw "breakout" is not
+	 * needed there and can actually TRIGGER a horizontal-scroll/overflow
+	 * bug on some mobile browsers & devtools device emulation (100vw can
+	 * be computed slightly wider than the real visible viewport). To keep
+	 * this rock-solid on every phone/tablet size (360×800, 412×924,
+	 * 412×952, 768×1024, etc.) we simply use width:100% here. The
+	 * viewport-breakout centering trick is applied ONLY on wide desktop
+	 * screens below, where the legacy fixed 960px ".container" would
+	 * otherwise make the card look off-center.
+	 * ------------------------------------------------------------------ */
+	width: 100%;
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: var(--spacing-md);
-	background: linear-gradient(135deg, var(--color-primary-bg) 0%, #ffe8d6 100%);
+	box-sizing: border-box;
+	/* Use responsive horizontal padding so the card stays comfortably
+	   inset from the viewport edges on very wide screens. clamp() gives
+	   a flexible padding that scales with viewport width while keeping
+	   a minimum and maximum. */
+	padding: var(--spacing-md) clamp(16px, 4vw, 120px);
+
 	font-family: var(--font-family-base);
+	overflow-x: hidden;
+}
+
+/* ------------------------------------------------------------------
+ * VIEWPORT BREAKOUT CENTERING — DESKTOP ONLY (≥1000px)
+ * ------------------------------------------------------------------
+ * This page is rendered inside a legacy fixed-width (960px) ".container"
+ * wrapper defined in layout.css. On wide/large displays (e.g. 16" laptops)
+ * that fixed wrapper can make this card look off-center relative to the
+ * actual browser viewport. The rule below breaks the container out of
+ * that constraint using the classic "full-bleed" technique
+ * (width: 100vw + left: 50% + margin-left: -50vw) so that centering is
+ * always calculated against the real viewport width, not the parent's
+ * fixed width. Scoped to ≥1000px so it never interferes with phone/tablet
+ * layouts (where the breakout is unnecessary and risky).
+ * ------------------------------------------------------------------ */
+@media (min-width: 1000px) {
+	.form-container {
+		position: relative;
+		left: 50%;
+		right: 50%;
+		margin-left: -50vw;
+		margin-right: -50vw;
+		width: 100vw;
+		max-width: 100vw;
+	}
 }
 
 .form-card {
 	background: var(--color-bg-white);
 	width: 100%;
 	max-width: 100%;
+	/* Ensure the card is horizontally centered within any parent, and never
+	   stretches to fill the full-bleed .form-container width */
+	margin: 0 auto;
+	flex: 0 1 auto;
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-md);
 	padding: var(--spacing-xl) var(--spacing-md);
 	animation: slideUp var(--transition-slow) ease-out;
 	position: relative;
 	overflow: hidden;
+	box-sizing: border-box;
 }
 
 .form-card.admin {
@@ -302,6 +353,33 @@ button {
 	padding-right: 40px;
 }
 
+/* Email input with trailing icon (used on regist_email.html and similar
+ * verification forms). Positioned with flex + absolute icon so it never
+ * wraps or overflows horizontally on narrow phones (360–412px wide). */
+.email-input-wrapper {
+	position: relative;
+	width: 100%;
+	display: block;
+}
+
+.email-input-wrapper .email-input {
+	padding-right: 44px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.email-input-wrapper .input-icon {
+	position: absolute;
+	top: 50%;
+	right: var(--spacing-md);
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color-text-light);
+	pointer-events: none;
+}
+
 .form-help-text {
 	font-size: 12px;
 	color: var(--color-text-light);
@@ -448,6 +526,7 @@ button {
 }
 
 .btn-outline {
+	text-decoration: none;
 	background: transparent;
 	color: var(--color-primary);
 	border: 2px solid var(--color-primary);
@@ -673,22 +752,34 @@ button {
 	word-break: break-word;
 }
 
-.form-container.login-form {
+/* .form-container.login-form {
 	background: linear-gradient(135deg, #edf9fe 0%, #f0f8fb 100%);
-}
+} */
 
 .form-container.registration-form {
 	background: linear-gradient(135deg, var(--color-primary-bg) 0%, #ffe8d6 100%);
 }
 
-.form-container.verification-form {
+/* .form-container.verification-form {
 	background: linear-gradient(135deg, var(--color-secondary-bg) 0%, #e3f2fd 100%);
-}
+} */
 
 .form-container.admin-form {
 	background: linear-gradient(135deg, #fff8f5 0%, #ffe0d6 100%);
 }
-
+.info-titles{
+	color: var(--color-text-primary);
+	font-weight: 600;
+}
+.info-lists{
+	margin: 0;
+	padding-left: 18px;
+}
+.info-lists > li  {
+	list-style: disc;
+	color: var(--color-text-secondary);
+	margin: 6px 0;
+}
 .input-list {
 	width: 100%;
 	list-style: none;
@@ -715,6 +806,29 @@ button {
 	align-items: flex-start;
 	gap: var(--spacing-sm);
 	margin-bottom: var(--spacing-md);
+}
+
+/* Small screens: reduce horizontal padding so content fits neatly */
+@media (max-width: 420px) {
+	.form-container {
+		padding: var(--spacing-sm) 12px;
+	}
+
+	.form-card {
+		padding: var(--spacing-lg) 12px;
+	}
+}
+
+/* Very large screens: limit card width for readability and keep it centered */
+@media (min-width: 1600px) {
+	.form-card {
+		max-width: 720px;
+	}
+}
+
+/* Small tweak for the info box spacing */
+.info-section {
+	margin-top: var(--spacing-lg);
 }
 
 .form-checkbox input,
