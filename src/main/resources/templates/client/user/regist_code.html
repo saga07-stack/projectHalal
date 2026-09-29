@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
+
+<title th:text="#{confirm}+' | '+ #{shop.title}"> </title>
+</head>
+<body>
+
+<div class="form-container verification-form">
+	<div class="form-card compact">
+		<button class="form-back-btn" onclick="goBack()" aria-label="Back">
+			<svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+		</button>
+
+		<div class="form-header">
+			<div class="form-logo">🛒 Nepali Pasal</div>
+			<div class="icon-circle">
+				<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M22 6l-10 7L2 6"/>
+					<rect x="2" y="4" width="20" height="16" rx="2"/>
+				</svg>
+			</div>
+			<h1 class="form-title small">कोड प्रमाणित गर्नुहोस्</h1>
+			<p class="form-subtitle">हामीले तपाईंको इमेलमा 6 अंकको कोड पठाएका छौं</p>
+		</div>
+
+		<div class="display-value" th:text ="*{email}" id="emailDisplay">user@example.com</div>
+
+		<div class="otp-inputs" id="otpInputs">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="0">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="1">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="2">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="3">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="4">
+			<input type="text" inputmode="numeric" maxlength="1" data-index="5">
+		</div>
+
+		<div class="field-error" id="errorMsg">कोड मिलेन, फेरि प्रयास गर्नुहोस्</div>
+
+		<div class="timer" id="timerText">
+			कोड फेरि पठाउनुहोस् <span class="timer-countdown" id="countdown">00:60</span> मा
+		</div>
+
+		<div class="form-actions">
+			<button class="btn btn-primary btn-full-width" id="verifyBtn" onclick="verifyCode()">प्रमाणित गर्नुहोस्</button>
+		</div>
+
+		<div class="form-footer">
+			<p class="form-footer-text">
+				कोड पाउनुभएन? <a  th:href="@{/client/user/regist/email/re_send}"  class="resend-link disabled" id="resendLink" >पुन: पठाउनुहोस्</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+<script>
+
+const FixedUrl = "http://localhost:55000/shared_shop/";
+
+function verifyCode() {
+const code = [...document.querySelectorAll('#otpInputs input')].map(i => i.value).join('');
+console.log('Verifying code:', code);
+fetch(`${FixedUrl}client/user/regist/email/verify` )
+.then (response => response.text())
+.then(data => {
+console.log('Verification response:', data);
+if(code === data){
+window.location.href= `${FixedUrl}client/user/regist/input/init`;
+}else{
+alert("error: code does not match");
+}
+})
+
+}
+//---- Resend countdown timer ----
+let seconds = 60;
+const countdownEl = document.getElementById('countdown');
+const resendLink = document.getElementById('resendLink');
+const timerText = document.getElementById('timerText');
+
+const timerInterval = setInterval(() => {
+  seconds--;
+  const mm = String(Math.floor(seconds / 60)).padStart(2, '0');
+  const ss = String(seconds % 60).padStart(2, '0');
+  countdownEl.textContent = `${mm}:${ss}`;
+  if (seconds <= 0) {
+    clearInterval(timerInterval);
+    timerText.style.display = 'none';
+    resendLink.classList.remove('disabled');
+  }
+}, 1000);
+
+function resendCode(e) {
+  e.preventDefault();
+  if (resendLink.classList.contains('disabled')) return;
+  // ---- Call your resend-OTP API here ----
+  alert('कोड पुन: पठाइयो: ' + email);
+  seconds = 60;
+  resendLink.classList.add('disabled');
+  timerText.style.display = 'block';
+}
+
+function goBack() {
+	window.history.back();
+}
+</script>
+
+</body>
+</html>

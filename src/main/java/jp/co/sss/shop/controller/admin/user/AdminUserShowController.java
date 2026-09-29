@@ -44,8 +44,12 @@ public class AdminUserShowController {
 	 * @return "admin/user/list" 一覧画面　表示
 	 */
 	@RequestMapping(path = "/admin/user/list", method = { RequestMethod.GET, RequestMethod.POST })
-	public String showUserList(Model model, Pageable pageable) {
+	public String showUserList(Model model, Pageable pageable ) {
 
+		if(session.getAttribute("user") ==null) {
+			return "redirect:/login";
+		}
+		
 		// 会員情報の登録数の取得と新規追加可否チェック
 		//count()メソッドを使用してレコード数を取得
 		Long usersCount = userRepository.count();

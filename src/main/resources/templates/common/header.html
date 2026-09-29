@@ -7,14 +7,33 @@
 <div th:fragment="layout-header" >
 <div id="header">
 	<!-- Left: Logo/Shop Title -->
-	<div id="showAll" class="header-logo">
-<a th:href= "@{/}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
-		
-	</div>
+	
+	<div  id="showAll" class="header-logo">
+	<section th:if="${session.user == null or session.user.authority == 2}" > 
+	
+<a  th:href= "@{/}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+	</section>
+
+<section  th:if="${session.user != null  and session.user.authority == 1}"  > 
+<a    th:href= "@{/admin/menu}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+
+
+
+<section  th:if="${ session.user == null or  session.user.authority == 0}"  > 
+<a    th:href= "@{/admin/menu}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+
+</section></section>
+
+
+		</div>
+			
+	
 
 	<!-- Center: Search Bar -->
-	<div class="header-search">
+	<div th:if="${session.user == null  or session.user.authority == 2}" class="header-search">
+ 
 		<form class="search-form" th:action="@{/items/search}"  method="get">
+
 			<input type="text" class="search-input" placeholder="Search items..." name="keyword" />
 			<button type="submit" class="search-btn">Search</button>
 		</form>
