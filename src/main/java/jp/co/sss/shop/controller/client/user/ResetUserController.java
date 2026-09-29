@@ -142,7 +142,7 @@ public class ResetUserController {
 
 			// TODO: Update user password in database
 			// userService.updatePassword(email, newPassword);
-
+          //     userRepo.updatePasswordByEmail(email, newPassword);
 			// Clear session attributes
 			session.removeAttribute("resetVerificationCode");
 			session.removeAttribute("resetEmail");

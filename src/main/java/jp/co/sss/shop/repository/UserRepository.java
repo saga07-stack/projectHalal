@@ -50,6 +50,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	 * @return 会員エンティティ
 	 */
 	User findByIdAndDeleteFlag(Integer id, int deleteFlg);
+
+	void updatePasswordByEmail(String email, String newPassword);
 	
 	
 
