@@ -111,4 +111,10 @@ public class ItemsRestController {
 		
 	}
 	
+	@GetMapping("/detail/{id}")
+	public ItemDto getItemsDetail(@PathVariable int id) {
+		
+		return itemService.itemsDetails(id);
+	}
+	
 }
