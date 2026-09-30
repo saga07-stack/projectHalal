@@ -73,6 +73,8 @@ public class LoginController {
 			Integer authority = ((UserBean) session.getAttribute("user")).getAuthority();
 			if (authority.intValue() == Constant.AUTH_CLIENT) {
 				// 一般会員ログインした場合、トップ画面表示処理にリダイレクト
+			
+				
 				returnStr = "redirect:/";
 			} else {
 

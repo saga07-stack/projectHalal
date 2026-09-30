@@ -404,4 +404,12 @@ searchForm.addEventListener("submit", (event) => {
 	itemCard.addEventListener("click", ()=>{
 	alert("clicked")	
 		})
-
+		
+		const orderListBtn = document.getElementById("orderListBtn");
+		if(orderListBtn){
+			console.log("orderListBtn found");
+			}else{
+			console.log("orderListBtn not found");
+			}
+		
+		

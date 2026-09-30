@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 </head>
+
 <body>
 <div th:fragment="layout-header" >
 <div id="header">
@@ -57,7 +58,7 @@
      </svg>
 				</button></li>
 				<th:block th:if="${session.user != null}">
-					<li class="menu-item"><a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}" class="menu-link"></a></li>
+					<li id="orderListBtn" class="menu-item"><a   th:href="@{/client/order/list}" th:text="#{order}+#{title.list}" class="menu-link"></a></li>
 				</th:block>
 			</ul>
 		</nav>
@@ -83,5 +84,6 @@
 	</div>
 </div>
 </div>
+<script th:src="@{/js/common.js}" defer></script>
 </body>
 </html>

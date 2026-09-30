@@ -166,7 +166,7 @@ public class RegistUserController {
      userObj.setPostalCode(user.getPostalCode());
      userObj.setAddress(user.getAddress());
      userObj.setPhoneNumber(user.getPhoneNumber());
-
+ 
      userObj.setAuthority(user.getAuthority());
      userRepo.save(userObj);
      session.removeAttribute("registUser");
