@@ -125,7 +125,8 @@ public class RegistUserController {
 		if (userBean == null) {
 			userBean = new UserBean();
 		}
-
+		String email = (String) session.getAttribute("email");
+		model.addAttribute("email", email);
 		model.addAttribute("userForm", userBean);
 		return "client/user/regist_input";
 	}
@@ -140,9 +141,12 @@ public class RegistUserController {
 		userBean.setPostalCode(userForm.getPostalCode());
 		userBean.setAddress(userForm.getAddress());
 		userBean.setPhoneNumber(userForm.getPhoneNumber());
+
 		userBean.setAuthority(2);
+
 		session.setAttribute("registUser", userBean);
-		
+		String email = (String) session.getAttribute("email");
+		model.addAttribute("email", email);
 		return "client/user/regist_check";
 	}
 
@@ -162,6 +166,7 @@ public class RegistUserController {
      userObj.setPostalCode(user.getPostalCode());
      userObj.setAddress(user.getAddress());
      userObj.setPhoneNumber(user.getPhoneNumber());
+
      userObj.setAuthority(user.getAuthority());
      userRepo.save(userObj);
      session.removeAttribute("registUser");
