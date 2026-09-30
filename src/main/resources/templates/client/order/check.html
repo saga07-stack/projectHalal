@@ -12,7 +12,7 @@
 	<p th:class="check_message" th:text="#{msg.order.check}" th:if="${orderItemBeans != null}"></p>
 	<p th:class="check_error_message" th:text="#{msg.order.stop}" th:if="${orderItemBeans == null}"></p>
 
-	<!-- 在庫不足のメッセージ -->
+	<!-- Insufficient Stock Messages -->
 	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
 	<div>
 		<br />
@@ -26,7 +26,7 @@
 	</div>
 	</th:block>
 
-	<!-- 注文情報 -->
+	<!-- Order Information -->
 	<th:block th:if="${orderItemBeans != null}">
 	<table class="list_table item_detail">
 		<tr>
@@ -86,15 +86,15 @@
 			</tr>
 		</table>
 		<form th:action="@{/client/order/complete}" method="post">
-			<input class="send_button" type="submit" value="ご注文の確定" th:if="${orderItemBeans != null}"/>
+			<input class="send_button" type="submit" value="Confirm Order" th:if="${orderItemBeans != null}"/>
 		</form>
 		<form th:action="@{/client/order/payment/back}" method="post" class="update">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" value="Back" class="back_button" />
 		</form>
 	</div>
 	</th:block>
 	
-	<!-- 注文情報がない場合、トップへ戻る -->
+	<!-- No Order Information Available, Return to Top -->
 	<th:block  th:unless="${orderItemBeans != null}">
 	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>	
 	</th:block>

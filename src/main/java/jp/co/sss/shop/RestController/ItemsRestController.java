@@ -111,10 +111,13 @@ public class ItemsRestController {
 		
 	}
 	
-	@GetMapping("/detail/{id}")
-	public ItemDto getItemsDetail(@PathVariable int id) {
-		
-		return itemService.itemsDetails(id);
-	}
 	
+	
+	
+//	@GetMapping("/detail/{id}")
+//	public ItemDto getItemsDetail(@PathVariable int id) {
+//		System.out.println("triggred");
+//		return itemService.itemsDetails(id);
+//	}
+//	
 }

@@ -24,11 +24,11 @@ public class BasketController {
 			return "redirect:/login";
 		}
 		
-		return "client/basket/list";
-	}
+		 return "client/basket/list";
+	} 
+	  
 	
-	
-	
+	   
 	
 	
 }

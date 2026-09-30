@@ -32,7 +32,7 @@
 				<th th:text="#{data.item.price}"></th>
 				<th th:text="#{category}"></th>
 			</tr>
-			<!--/* 商品一覧 */-->
+			<!--/* Product List */-->
 			<tr th:each="item, status: ${items}">
 				<td class="image">
 					<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jp.co.sss.shop.repository.ItemRepository;
@@ -17,12 +18,12 @@ public class ItemDetails {
 	
 	@GetMapping("/items/details/{id}")
 	public String itemDetails(
-			@RequestParam ("id") int id,
+			@PathVariable ("id") Integer id,
 			Model model
 			) {
 		
 	 model.addAttribute("item", itemRepository.findById(id).orElse(null));
-	  return "client/item/details";
+	  return "client/item/detail";
 	}
 	
 	
