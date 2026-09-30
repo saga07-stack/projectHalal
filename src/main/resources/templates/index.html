@@ -9,16 +9,16 @@
 <title th:text="#{top}+' | '+ #{shop.title}"> </title>
 </head>
 <body class="user index">
-	<!--/* ヘッダー */-->
+	<!--/* Header */-->
 	<header>
 		<div th:replace="~{common/header :: layout-header}"></div>
 	</header>
-	<!--/* ナビゲーションバー */-->
+	<!--/* Navigation Bar */-->
 	
 	<div class="container">
-		<!--/* サイドバー */-->
+		<!--/* Sidebar */-->
 		<!-- <aside th:class="${session.user == null or session.user.authority == 2} ? ${'search'} : ${'admin_menu'}" >
-			/* 検索メニュー(非会員、一般会員用) */
+			/* Search Menu (for non-members and general members) */
 			<div class="search_area" th:if="${session.user == null or session.user.authority == 2}">
 				<h2 th:class="title" th:text="#{category.select.title}"></h2>
 				<div class="form">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 
-			/* メニュー(運用管理者、及びシステム管理者用) */
+			/* Menu (for operational and system administrators) */
 			<div th:if="${session.user != null and session.user.authority != 2}">
 				<h2 th:class="title" th:text="#{admin.menu}"></h2>
 				<ul class="menu">
@@ -49,7 +49,7 @@
 				</ul>
 			</div>
 		</aside> -->
-		<!--/* メイン */-->
+		<!--/* Main */-->
 		<article class="main">
 			<div>
 				<h2 class="title">
@@ -59,7 +59,7 @@
 			
 			<div class="item_list">
 				<th:block th:each="item, status: ${items}" th:if="${status.count le 10}">
-					<!--/* 1件分の商品情報 */-->
+					<!--/* Product Information */-->
 					<div class="item">
 						<div class="item_name" th:text="${item.name}"></div>
 						<a th:href="@{/client/item/detail/}+${item.id}">
@@ -78,7 +78,7 @@
  
 
 </div>
-	<!--/* フッター */-->
+	<!--/* Footer */-->
 	<footer>
 		<div th:replace="~{common/footer :: layout-footer}"></div>
 	</footer>

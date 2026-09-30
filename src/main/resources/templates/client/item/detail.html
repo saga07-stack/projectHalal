@@ -9,37 +9,79 @@
 
 <body class="user">
 
-	<h2 th:class="title" th:text="#{item}+#{title.detail}"></h2>
+	<!--
+		Parent scoping strategy (see layout.css header comment for the pattern
+		used across this project): every rule for this page's modern detail
+		layout is written as "#itemDetailPage .some-child" so it can NEVER leak
+		out and affect any other template that happens to reuse plain class
+		names such as .title, .description, etc. To restyle a child element,
+		change it under the #itemDetailPage parent in stylesheet.css only.
+	-->
+	<div id="itemDetailPage" th:object="${item}">
 
-	<div class="info_form_area" th:object="${item}">
-		<div class="item_detail_area">
-			<div class="item_image_area">
-				<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}"></img>
-				<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}"></img>
+		<h2 class="item-detail-page-title" th:text="#{item}+#{title.detail}"></h2>
+
+		<div class="item-detail-card">
+
+			<!-- ---- Left: image gallery ---- -->
+			<div class="item-detail-gallery">
+				<div class="item-detail-image-frame">
+					<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}"
+						th:alt="*{name}" class="item-detail-image" />
+					<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}"
+						th:alt="*{name}" class="item-detail-image" />
+				</div>
 			</div>
-			<dl class="item_detail_list">
-				<dt>[[#{data.item.name}]]</dt>
-				<dd th:text="*{name}"></dd>
-				<dt>[[#{data.item.price}]]</dt>
-				<dd th:text="*{price}"></dd>
-				<dt>[[#{data.item.stock}]]</dt>
-				<dd th:if="*{stock > 5}" th:text="#{data.in.stock}"></dd>
-				<dd th:if="*{stock >= 1 and 5 >= stock }" th:text="*{stock}"></dd>
-				<dd th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></dd>
-				<dt>[[#{data.category}]]</dt>
-				<dd th:text="*{categoryName}"></dd>
-				<dt>[[#{data.description}]]</dt>
-				<dd th:text="*{description}"></dd>
-			</dl>
-		</div>
-		<div class="detail_button_area">
-			<form th:action="@{/client/basket/add}" method="post" class="user_info_form" th:if="*{stock > 0}">
-				<input type="hidden" th:field="*{id}" />
-				<input type="submit" value="買い物かごに入れる" class="send_button" />
-			</form>
-			<form th:action="@{/client/item/list/1}" method="post">
-				<input type="submit" value="戻る" class="back_button" />
-			</form>
+
+			<!-- ---- Right: information panel ---- -->
+			<div class="item-detail-info">
+
+				<span class="item-detail-category-badge" th:text="*{category.Name}"></span>
+
+				<h1 class="item-detail-name" th:text="*{name}"></h1>
+
+				<p class="item-detail-price">
+					<span class="item-detail-currency">$</span><span th:text="*{price}"></span>
+				</p>
+
+				<div class="item-detail-stock">
+					<span class="item-detail-stock-label" th:text="#{data.item.stock}"></span>
+					<span class="item-detail-stock-badge in-stock" th:if="*{stock > 5}" th:text="#{data.in.stock}"></span>
+					<span class="item-detail-stock-badge low-stock" th:if="*{stock >= 1 and 5 >= stock}" th:text="*{stock}"></span>
+					<span class="item-detail-stock-badge out-of-stock" th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></span>
+				</div>
+
+				<div class="item-detail-description">
+					<h2 class="item-detail-section-title" th:text="#{data.description}"></h2>
+					<p class="item-detail-description-text" th:text="*{description}"></p>
+				</div>
+
+				<!--
+					Future-details extension point: add any additional item
+					attributes (e.g. origin, weight, ingredients, halal
+					certification info, allergens...) here as new
+					".item-detail-extra-row" blocks. Styling for this section
+					is already provided (parent-scoped) in stylesheet.css so no
+					extra CSS work is needed when new fields are added.
+				-->
+				<div class="item-detail-extra">
+					<!-- <div class="item-detail-extra-row">
+						<span class="item-detail-extra-label">Label</span>
+						<span class="item-detail-extra-value">Value</span>
+					</div> -->
+				</div>
+
+				<div class="item-detail-actions">
+					<form th:action="@{/client/basket/add}" method="post" class="item-detail-form" th:if="*{stock > 0}">
+						<input type="hidden" th:field="*{id}" />
+						<input type="submit" value="Add to Cart" class="item-detail-btn item-detail-btn-primary" />
+					</form>
+					<form th:action="@{/}" method="post" class="item-detail-form">
+						<input type="submit" value="Back" class="item-detail-btn item-detail-btn-secondary" />
+					</form>
+				</div>
+
+			</div>
 		</div>
 	</div>
 

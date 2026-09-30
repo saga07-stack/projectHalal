@@ -20,6 +20,7 @@ public class BasketController {
 	@Autowired HttpSession session;
 	
 	
+<<<<<<< HEAD
 //	@RequestMapping(path ="client/basket/list", method = { RequestMethod.GET,RequestMethod.POST})
 //	public String basketList(HttpSession session,
 //			Model model  ) throws InterruptedException {
@@ -36,7 +37,20 @@ public class BasketController {
 //	}
 //	
 	
+=======
+	@RequestMapping(path ="client/basket/list", method = { RequestMethod.GET,RequestMethod.POST})
+	public String basketList(HttpSession session,
+			Model model  ) {
+		if(session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+		
+		 return "client/basket/list";
+	} 
+	  
+>>>>>>> ad0105e57d6115ed46bc97871b0adea00465af4c
 	
+	   
 	
 	
 }

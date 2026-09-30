@@ -40,7 +40,8 @@ function loadAllItems() {
 					//console.log("image clicked", item.id);
 					
 				//	alert("image clicked "+ `${FixedUrl}items/detail/${item.id}`);
-					window.location.href = `${FixedUrl}items/detail/${item.id}`
+					window.location.href = `${FixedUrl}items/details/${item.id}`
+					
 					/*fetch(`${FixedUrl}items/detail/${item.id}`)
 					.then((response) => response.json())
 					.then((data)=>{
