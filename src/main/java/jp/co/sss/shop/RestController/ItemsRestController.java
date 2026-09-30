@@ -1,5 +1,6 @@
 package jp.co.sss.shop.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import jp.co.sss.shop.RestControllerDTO.ItemDto;
 import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
 
 @RestController
@@ -31,6 +33,9 @@ public class ItemsRestController {
 	
 	@Autowired
 	HttpSession session;
+	
+	@Autowired 
+	OrderRepository orderRepository;
 	@GetMapping("/all")
 	public List<ItemDto> getItems() {
 		
@@ -42,17 +47,30 @@ public class ItemsRestController {
 	
 	@GetMapping("/cart/add/{id}")
 	public ResponseEntity<?> addToCart(@PathVariable int id, HttpSession session) {
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 		
 		if(session.getAttribute("user") == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
-		}else {
+		}
 			System.out.println("ユーザーがログインしています");
 		ItemDto item = itemService.getItemById(id);
 			if (item == null) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
-			}
-			// カートに商品を追加する処理をここに実装する
+			}else {
+			//	List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+				if (basketBeans == null) {
+					// 買い物かごが空の場合
+					basketBeans = new ArrayList<>();
+					BasketBean basketBeanNew = new BasketBean(item.getId(),item.getName(),item.getStock());
+					basketBeans.add(basketBeanNew);
+				}
+				
+				System.out.println("basketBeans:" + basketBeans.size());
+				orderRepository.save(basketBeans);
+				
 			
+			// カートに商品を追加する処理をここに実装する
+			session.setAttribute("basketBeans", basketBeans);
 			  
 			return ResponseEntity.ok(itemService.getItemById(id));
 		}

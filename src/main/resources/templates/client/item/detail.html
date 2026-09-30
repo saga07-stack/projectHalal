@@ -3,8 +3,8 @@
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 
 <head>
-	<title th:text="#{item}+#{title.detail}+' | '+ #{shop.title}"> </title>
-	<meta charset="UTF-8" />
+<title th:text="#{item}+#{title.detail}+' | '+ #{shop.title}"></title>
+<meta charset="UTF-8" />
 </head>
 
 <body class="user">
@@ -26,10 +26,11 @@
 			<!-- ---- Left: image gallery ---- -->
 			<div class="item-detail-gallery">
 				<div class="item-detail-image-frame">
-					<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}"
-						th:alt="*{name}" class="item-detail-image" />
-					<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}"
-						th:alt="*{name}" class="item-detail-image" />
+					<img th:if="*{image != null}"
+						th:src="@{/images/{image}(image=*{image})}" th:alt="*{name}"
+						class="item-detail-image" /> <img th:if="*{image == null}"
+						th:src="@{/images/common/no_image.jpg}" th:alt="*{name}"
+						class="item-detail-image" />
 				</div>
 			</div>
 
@@ -46,9 +47,12 @@
 
 				<div class="item-detail-stock">
 					<span class="item-detail-stock-label" th:text="#{data.item.stock}"></span>
-					<span class="item-detail-stock-badge in-stock" th:if="*{stock > 5}" th:text="#{data.in.stock}"></span>
-					<span class="item-detail-stock-badge low-stock" th:if="*{stock >= 1 and 5 >= stock}" th:text="*{stock}"></span>
-					<span class="item-detail-stock-badge out-of-stock" th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></span>
+					<span class="item-detail-stock-badge in-stock" th:if="*{stock > 5}"
+						th:text="#{data.in.stock}"></span> <span
+						class="item-detail-stock-badge low-stock"
+						th:if="*{stock >= 1 and 5 >= stock}" th:text="*{stock}"></span> <span
+						class="item-detail-stock-badge out-of-stock" th:if="*{stock == 0}"
+						th:text="#{data.out.of.stock}"></span>
 				</div>
 
 				<div class="item-detail-description">
@@ -72,18 +76,36 @@
 				</div>
 
 				<div class="item-detail-actions">
-					<form th:action="@{/client/basket/add}" method="post" class="item-detail-form" th:if="*{stock > 0}">
-						<input type="hidden" th:field="*{id}" />
-						<input type="submit" value="Add to Cart" class="item-detail-btn item-detail-btn-primary" />
+					<button th:if="*{stock > 0}" type="button" class="btn btn-cart" id="detailAddToCart"
+						th:attr="data-item-id=${item.id}">Add to Cart</button>
+					<form th:action="@{/client/basket/add}" method="post"
+						class="item-detail-form" >
+						<input type="hidden" th:field="*{id}" /> <input type="submit"
+							value="Add to Cart"
+							class="item-detail-btn item-detail-btn-primary" />
 					</form>
 					<form th:action="@{/}" method="post" class="item-detail-form">
-						<input type="submit" value="Back" class="item-detail-btn item-detail-btn-secondary" />
+						<input type="submit" value="Back"
+							class="item-detail-btn item-detail-btn-secondary" />
 					</form>
 				</div>
 
 			</div>
 		</div>
 	</div>
+	
+	<script> 
+	document.addEventListener("DOMContentLoaded", () => {
+	    const detailBtn = document.getElementById("detailAddToCart");
+	    if (detailBtn) {
+	        detailBtn.addEventListener("click", () => {
+	            addToCart(detailBtn.dataset.itemId, detailBtn);
+	        });
+	    }
+	});
+	
+	
+	</script>
 
 </body>
 

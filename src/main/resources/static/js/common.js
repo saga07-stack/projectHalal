@@ -117,7 +117,7 @@ function loadAllItems() {
                 addToCartButton.textContent = "Add to Cart";
                 addToCartButton.setAttribute("data-item-id", item.id);
 
-                addToCartButton.addEventListener("click", () => {
+              addToCartButton.addEventListener("click", () => {
                     addToCartButton.value = item.id;
                     console.log("addToCartButton clicked", addToCartButton.value);
                     fetch(`${FixedUrl}items/cart/add/${addToCartButton.value}`)
@@ -355,8 +355,12 @@ searchForm.addEventListener("submit", (event) => {
 		                addToCartButton.className = "btn btn-cart";
 		                addToCartButton.textContent = "Add to Cart";
 		                addToCartButton.setAttribute("data-item-id", item.id);
+						
+						addToCartButton.addEventListener("click", ()=>{
+							addToCart(item.id, addToCartButton);
+						})
 
-		                addToCartButton.addEventListener("click", () => {
+		                /*addToCartButton.addEventListener("click", () => {
 		                    addToCartButton.value = item.id;
 		                    console.log("addToCartButton clicked", addToCartButton.value);
 		                    fetch(`${FixedUrl}items/cart/add/${addToCartButton.value}`)
@@ -381,7 +385,7 @@ searchForm.addEventListener("submit", (event) => {
 		                        addToCartButton.textContent = originalText;
 		                        addToCartButton.classList.remove("active");
 		                    }, 2000);
-		                });
+		                });*/
 
 		                buttonGroup.appendChild(addToCartButton);
 
@@ -402,15 +406,33 @@ searchForm.addEventListener("submit", (event) => {
 		
 	});
 	
-	itemCard.addEventListener("click", ()=>{
-	alert("clicked")	
-		})
-		
-		const orderListBtn = document.getElementById("orderListBtn");
-		if(orderListBtn){
-			console.log("orderListBtn found");
-			}else{
-			console.log("orderListBtn not found");
-			}
+	function addToCart(itemId, button) {
+	    fetch(`${FixedUrl}items/cart/add/${itemId}`)
+	        .then((response) => {
+	            if (response.status === 401) {
+	                window.location.href = `${FixedUrl}login`;
+	                return null; // redirect hune bela json() parse nagarne
+	            }
+	            return response.json();
+	        })
+	        .then((data) => {
+	            if (data) console.log("Added to cart:", data);
+	        })
+	        .catch((error) => {
+	            console.error("Error adding to cart:", error);
+	        });
+
+	    // Visual feedback
+	    if (button) {
+	        const originalText = button.textContent;
+	        button.textContent = "✓ Added!";
+	        button.classList.add("active");
+	        setTimeout(() => {
+	            button.textContent = originalText;
+	            button.classList.remove("active");
+	        }, 5000);
+	    }
+	}
+			
 		
 		
