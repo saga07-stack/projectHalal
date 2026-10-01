@@ -16,7 +16,11 @@ import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.DTOService.ItemService;
 import jp.co.sss.shop.RestControllerDTO.ItemDto;
 import jp.co.sss.shop.bean.BasketBean;
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.CartItems;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.repository.CartRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
@@ -30,6 +34,7 @@ public class ItemsRestController {
 	@Autowired ItemService itemService;
 	
 	@Autowired UserRepository userRepository;
+	@Autowired CartRepository cartRepo;
 	
 	@Autowired
 	HttpSession session;
@@ -65,8 +70,18 @@ public class ItemsRestController {
 					basketBeans.add(basketBeanNew);
 				}
 				
-				System.out.println("basketBeans:" + basketBeans.size());
-				orderRepository.save(basketBeans);
+			 CartItems cartItem = new CartItems();
+			 Integer userId = ((UserBean) session.getAttribute("user")).getId();
+				cartItem.setUserId(userId);
+			// cartItem.setUserId(((UserBean) session.getAttribute("userBean")).getId());
+			 
+			// cartItem.setUserId(((Integer) session.getAttribute("userBean")).getId());
+			 cartItem.setItemId(item.getId());
+			 cartItem.setQuantity(1);
+			 cartRepo.save(cartItem);
+			
+			 
+			// System.out.println("user id " + session.getAttribute("userBean"));
 				
 			
 			// カートに商品を追加する処理をここに実装する

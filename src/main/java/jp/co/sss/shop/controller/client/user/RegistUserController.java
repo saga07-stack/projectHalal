@@ -1,13 +1,19 @@
 package jp.co.sss.shop.controller.client.user;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.mail.Session;
 import jakarta.servlet.http.HttpSession;
@@ -171,6 +177,18 @@ public class RegistUserController {
      userRepo.save(userObj);
      session.removeAttribute("registUser");
 		return "client/user/regist_complete";
+	}
+	
+	
+	@GetMapping("/debug/session")
+	@ResponseBody
+	public Map<String, Object> debugSession(HttpSession session) {
+	    Map<String, Object> map = new LinkedHashMap<>();
+	    for (String key : Collections.list(session.getAttributeNames())) {
+	        Object v = session.getAttribute(key);
+	        map.put(key, v == null ? null : v.getClass().getSimpleName() + " : " + v);
+	    }
+	    return map;
 	}
 
 }
