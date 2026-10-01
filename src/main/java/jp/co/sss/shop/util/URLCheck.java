@@ -356,7 +356,7 @@ public class URLCheck {
 				&& requestURL.indexOf("/items/search") == -1
 
 			//	&& requestURL.indexOf("/items/search/") == -1
-
+                && requestURL.endsWith("/debug/session")    
 				&& !requestURL.endsWith("/items/all")
 				&& requestURL.indexOf("/items/search/") != -1
 				&& requestURL.indexOf("/items/favourites/list") != -1
