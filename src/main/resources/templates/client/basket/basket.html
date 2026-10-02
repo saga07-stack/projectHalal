@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{basket}+' | '+ #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+</head>
+<body>
+<h1 th:text="${message}" > </h1>
+
+<p> hello class </p>
+</body>
+</html>
