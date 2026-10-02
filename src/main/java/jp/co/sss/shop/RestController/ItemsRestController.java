@@ -59,28 +59,22 @@ public class ItemsRestController {
 		}
 			System.out.println("ユーザーがログインしています");
 		ItemDto item = itemService.getItemById(id);
-			if (item == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
-			}else {
-			//	List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
-				if (basketBeans == null) {
-					// 買い物かごが空の場合
-					basketBeans = new ArrayList<>();
-					BasketBean basketBeanNew = new BasketBean(item.getId(),item.getName(),item.getStock());
-					basketBeans.add(basketBeanNew);
-				}
-				
-			 CartItems cartItem = new CartItems();
-			 Integer userId = ((UserBean) session.getAttribute("user")).getId();
-				cartItem.setUserId(userId);
-			// cartItem.setUserId(((UserBean) session.getAttribute("userBean")).getId());
-			 
-			// cartItem.setUserId(((Integer) session.getAttribute("userBean")).getId());
-			 cartItem.setItemId(item.getId());
-			 cartItem.setQuantity(1);
-			 cartRepo.save(cartItem);
-			
-			 
+		UserBean userBean = (UserBean) session.getAttribute("user");   // tapai ko asli key
+		if (userBean == null) {
+		    return ResponseEntity.status(401).build();
+		}
+
+		CartItems cart = cartRepo.findByUserIdAndItemId(userBean.getId(), id);
+
+		if (cart == null) {
+		    cart = new CartItems();
+		    cart.setUserId(userBean.getId());
+		    cart.setItemId(id);
+		    cart.setQuantity(1);
+		} else {
+		    cart.setQuantity(cart.getQuantity() + 1);   // naya row haina, update
+		}
+		cartRepo.save(cart);
 			// System.out.println("user id " + session.getAttribute("userBean"));
 				
 			
@@ -90,7 +84,7 @@ public class ItemsRestController {
 			return ResponseEntity.ok(itemService.getItemById(id));
 		}
 		
-	}
+	
 	
 
 	
