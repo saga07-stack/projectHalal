@@ -21,7 +21,8 @@
 					<div class="error-container">
 						<ul class="error-list">
 							<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
-						</ul>
+							<li th:text ="${errorMessage}" > </li>
+							</ul>
 					</div>
 				</th:block>
 				<div class="input-list">

@@ -109,21 +109,6 @@ public class RegistUserController {
 		return "redirect:/client/user/regist/input";
 	}
 
-//	@RequestMapping(path ="/client/user/regist/input", method = RequestMethod.GET)
-//	public String registInputInit(
-//			@Valid @ModelAttribute ("userForm")  UserForm userForm, BindingResult result ,
-//			 	Model model  , HttpSession session
-//			) {
-//		UserBean userBeans = (UserBean) session.getAttribute("userBean");
-//		if (userBeans != null) {
-//			userBeans = new UserBean();
-//			
-//		}
-//		model.addAttribute("userForm", userBeans);
-//		
-//		
-//		return "client/user/regist_input";
-//	}
 	@RequestMapping("/client/user/regist/input")
 	public String registInput(Model model, HttpSession session) {
 
@@ -180,15 +165,6 @@ public class RegistUserController {
 	}
 	
 	
-	@GetMapping("/debug/session")
-	@ResponseBody
-	public Map<String, Object> debugSession(HttpSession session) {
-	    Map<String, Object> map = new LinkedHashMap<>();
-	    for (String key : Collections.list(session.getAttributeNames())) {
-	        Object v = session.getAttribute(key);
-	        map.put(key, v == null ? null : v.getClass().getSimpleName() + " : " + v);
-	    }
-	    return map;
-	}
+
 
 }

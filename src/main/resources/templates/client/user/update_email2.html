@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{user}+#{title.input.new}+' - Email Verification | '+ #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
+</head>
+
+<body class="user user_regist_email">
+	<div class="form-container verification-form">
+		<!-- Main Content Card -->
+		<div class="form-card">
+			<!-- Header Section -->
+			<div class="form-header with-border">
+				<h2 class="form-title" th:text="#{title.email.verification}">Email Verification</h2>
+				<p class="form-subtitle">Please enter your email address to continue</p>
+			</div>
+
+			<!-- Simple Email Input Form (single-step) -->
+			<form th:action="@{/client/user/regist/email/send}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
+
+				<th:block th:if="${error}">
+					<p style="color:red;">The email address you provided is already registered. Please use a different email address or <a th:href="@{/login}">login</a> if you already have an account.</p>
+				</th:block>
+
+				<!-- Error Messages -->
+				<th:block th:if="${#fields.hasErrors()}">
+					<div class="error-container">
+						<ul class="error-list">
+							<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+						</ul>
+					</div>
+				</th:block>
+
+				<div class="form-group">
+					<label class="form-label" for="email">Email Address</label>
+					<div class="email-input-wrapper">
+						<input
+							type="email"
+							id="email"
+							name="email"
+							th:field="*{email}"
+							class="form-input email-input"
+							placeholder="Enter your email address"
+							required
+							autocomplete="email" />
+						<span class="input-icon">
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+								<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741z"/>
+							</svg>
+						</span>
+					</div>
+					<small class="form-help-text">We'll send a verification code to this email</small>
+				</div>
+
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary btn-full-width btn-send-code">Send Verification Code</button>
+				</div>
+
+				<div class="form-footer">
+					<p class="form-footer-text">Already have an account? <a th:href="@{/login}" class="form-footer-link">Login here</a></p>
+				</div>
+			</form>
+
+			<!-- Additional Info Section (moved inside main card, below form footer) -->
+			<div class="info-section">
+				<div class="info-box">
+					<h3 class="info-titles">Why email verification?</h3>
+					<ul class="info-lists">
+						<li>Secure your account with a verified email</li>
+						<li>Receive important notifications and updates</li>
+						<li>Easy password recovery if needed</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>
