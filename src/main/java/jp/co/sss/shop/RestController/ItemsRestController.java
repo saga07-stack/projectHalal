@@ -1,6 +1,13 @@
 package jp.co.sss.shop.RestController;
 
 import java.util.ArrayList;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import jp.co.sss.shop.entity.FavoriteItem;
+import jp.co.sss.shop.repository.FavoriteRepository;
+import java.util.stream.Collectors;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +42,7 @@ public class ItemsRestController {
 	
 	@Autowired UserRepository userRepository;
 	@Autowired CartRepository cartRepo;
+	@Autowired FavoriteRepository favoriteRepo;
 	
 	@Autowired
 	HttpSession session;
@@ -100,24 +108,76 @@ public class ItemsRestController {
 	    return ResponseEntity.ok(basketBeans);
 	}
 	
+	@GetMapping("/favorite/toggle/{id}")
+	public ResponseEntity<?> toggleFavorite(@PathVariable Integer id, HttpSession session) {
+
+	    // ১. কে লগইন করে আছে? (session থেকে নাও)
+	    UserBean user = (UserBean) session.getAttribute("user");
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+	    }
+
+	    // ২. এই item আসলে আছে কি না
+	    if (itemService.getItemById(id) == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("item not found");
+	    }
+
+	    // ৩. এই user আগে এটা favourite করেছে কি না
+	    FavoriteItem existing = favoriteRepo.findByUserIdAndItemId(user.getId(), id);
+	    boolean favourite;
+	    if (existing == null) {
+	        FavoriteItem fav = new FavoriteItem();
+	        fav.setUserId(user.getId());
+	        fav.setItemId(id);
+	        favoriteRepo.save(fav);        // নেই, তাই যোগ করো
+	        favourite = true;
+	    } else {
+	        favoriteRepo.delete(existing); // আছে, তাই মুছে দাও
+	        favourite = false;
+	    }
+
+	    // ৪. উত্তর JSON-এ পাঠাও
+	    Map<String, Object> body = new LinkedHashMap<>();
+	    body.put("userId", user.getId());
+	    body.put("userName", user.getName());
+	    body.put("itemId", id);
+	    body.put("favourite", favourite);
+
+	    System.out.println("[FAV] " + body);   // Eclipse-এর console-এ দেখা যাবে
+	    return ResponseEntity.ok(body);
+	}
+	
+	// এই user-এর favourite item-এর id গুলো (যেমন [1, 5, 12])
+	@GetMapping("/favorite/ids")
+	public ResponseEntity<?> getFavoriteIds(HttpSession session) {
+	    UserBean user = (UserBean) session.getAttribute("user");
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+	    }
+
+	    List<Integer> ids = favoriteRepo.findByUserId(user.getId()).stream()
+	            .map(FavoriteItem::getItemId)
+	            .collect(Collectors.toList());
+
+	    System.out.println("[FAV] ids of user " + user.getId() + " = " + ids);
+	    return ResponseEntity.ok(ids);
+	}
+
+	// favourite item-গুলোর পুরো তথ্য (নাম, দাম, ছবি...)
 	@GetMapping("/favorite/list")
 	public ResponseEntity<?> getFavoriteList(HttpSession session) {
-		
-		if(session.getAttribute("user") == null) {
-			System.out.println("ユーザーがログインしていません");
-			
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
-		}else {
-			System.out.println("ユーザーがログインしています");
-		//ItemDto item = itemService.getItemById(id);
-			
-			// カートに商品を追加する処理をここに実装する
-			
-			  
-			return ResponseEntity.ok("お気に入りリストを取得しました");
-		}
-	
-	
+	    UserBean user = (UserBean) session.getAttribute("user");
+	    if (user == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+	    }
+
+	    List<ItemDto> items = favoriteRepo.findByUserId(user.getId()).stream()
+	            .map(f -> itemService.getItemById(f.getItemId()))
+	            .filter(i -> i != null)
+	            .collect(Collectors.toList());
+
+	    System.out.println("[FAV] userId=" + user.getId() + " favourites=" + items.size());
+	    return ResponseEntity.ok(items);
 	}
 	
 	@GetMapping("/search")
