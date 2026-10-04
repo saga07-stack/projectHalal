@@ -1,5 +1,8 @@
 package jp.co.sss.shop.bean;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * 会員情報クラス
  *
@@ -13,6 +16,8 @@ public class UserBean {
 	/**
 	 * 会員メールアドレス
 	 */
+	@Email
+	@NotBlank
 	private String email;
 	/**
 	 * パスワード
@@ -21,6 +26,7 @@ public class UserBean {
 	/**
 	 * 会員名
 	 */
+	@NotBlank
 	private String name;
 	/**
 	 * 郵便番号

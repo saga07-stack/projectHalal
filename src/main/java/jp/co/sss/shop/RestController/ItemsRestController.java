@@ -1,5 +1,6 @@
 package jp.co.sss.shop.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,13 @@ import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.DTOService.ItemService;
 import jp.co.sss.shop.RestControllerDTO.ItemDto;
 import jp.co.sss.shop.bean.BasketBean;
+import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.CartItems;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.repository.CartRepository;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
 
 @RestController
@@ -28,9 +34,13 @@ public class ItemsRestController {
 	@Autowired ItemService itemService;
 	
 	@Autowired UserRepository userRepository;
+	@Autowired CartRepository cartRepo;
 	
 	@Autowired
 	HttpSession session;
+	
+	@Autowired 
+	OrderRepository orderRepository;
 	@GetMapping("/all")
 	public List<ItemDto> getItems() {
 		
@@ -42,22 +52,39 @@ public class ItemsRestController {
 	
 	@GetMapping("/cart/add/{id}")
 	public ResponseEntity<?> addToCart(@PathVariable int id, HttpSession session) {
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 		
 		if(session.getAttribute("user") == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
-		}else {
+		}
 			System.out.println("ユーザーがログインしています");
 		ItemDto item = itemService.getItemById(id);
-			if (item == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商品が見つかりません");
-			}
-			// カートに商品を追加する処理をここに実装する
+		UserBean userBean = (UserBean) session.getAttribute("user");   // tapai ko asli key
+		if (userBean == null) {
+		    return ResponseEntity.status(401).build();
+		}
+
+		CartItems cart = cartRepo.findByUserIdAndItemId(userBean.getId(), id);
+
+		if (cart == null) {
+		    cart = new CartItems();
+		    cart.setUserId(userBean.getId());
+		    cart.setItemId(id);
+		    cart.setQuantity(1);
+		} else {
+		    cart.setQuantity(cart.getQuantity() + 1);   // naya row haina, update
+		}
+		cartRepo.save(cart);
+			// System.out.println("user id " + session.getAttribute("userBean"));
+				
 			
+			// カートに商品を追加する処理をここに実装する
+			session.setAttribute("basketBeans", basketBeans);
 			  
 			return ResponseEntity.ok(itemService.getItemById(id));
 		}
 		
-	}
+	
 	
 
 	
@@ -111,4 +138,13 @@ public class ItemsRestController {
 		
 	}
 	
+	
+	
+	
+//	@GetMapping("/detail/{id}")
+//	public ItemDto getItemsDetail(@PathVariable int id) {
+//		System.out.println("triggred");
+//		return itemService.itemsDetails(id);
+//	}
+//	
 }

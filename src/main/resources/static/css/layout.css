@@ -1,26 +1,75 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
 
-/* ---- 共通 ---- */
-/* スキルアップテクニック1-1
- * html要素に対しmin-heightプロパティを付けることで、
- * 最小でも表示領域が画面の高さを持つことになります。
- * これにより画面の一番下まで表示領域を拡大し、
- * footerを画面下に配置することができます。
- * positionプロパティは絶対位置表示を可能にし、
- * 値relativeを設定することで子要素(今回はfooter要素)の配置基準になります。
- */
-html {
-	min-height: 100%;
-	position: relative;
+/* ============================================================================
+ * LAYOUT.CSS — FULLY RESPONSIVE, PARENT-SCOPED PAGE SHELL
+ * ============================================================================
+ * This file drives the shared page shell used by:
+ *   common/layout_3block.html  (header + content + footer, no sidebar)
+ *   common/layout_4block.html  (header + sidebar-ready main + footer, admin)
+ *   common/layout_5block.html  (header + sidebar-ready main + footer, user)
+ *
+ * IMPORTANT — Parent scoping strategy:
+ * Every layout file wraps its header/main/footer regions with a stable,
+ * unique ID:
+ *   <header id="headerParent"> ... </header>
+ *   <div/article id="mainParent" class="container ..."> ... </article>
+ *   <footer id="footerParent"> ... </footer>
+ *
+ * These 3 IDs are reused across the three layout files on purpose — only ONE
+ * layout file is ever rendered per page, so there is never a collision within
+ * a single document. Scoping structural rules under these IDs (instead of the
+ * bare classes ".container" / ".main") means:
+ *   1. Other, unrelated templates that reuse ".container" / ".main" for their
+ *      own component layouts (item grids, admin menus, search sidebars, etc.)
+ *      are NOT affected by page-shell rules.
+ *   2. The page-shell rules always win for the shell itself because ID
+ *      selectors have higher specificity than the plain class selectors.
+ * ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+ * DESIGN TOKENS (layout-specific — prefixed to avoid clashing with forms.css)
+ * -------------------------------------------------------------------------- */
+:root {
+	--layout-header-bg: linear-gradient(to right, #87ceeb 0%, #add8e6 100%);
+	--layout-header-bg-admin: linear-gradient(to right, #ff8669 0%, #ffab8a 100%);
+	--layout-footer-bg: #87ceeb;
+	--layout-footer-bg-admin: #ff8669;
+	--layout-max-width: 960px;
+	--layout-gutter: clamp(12px, 4vw, 40px);
+	--layout-content-padding-y: clamp(16px, 3vw, 30px);
 }
 
-/* スキルアップテクニック1-2
- * 下方向にmarginの余白を設定することでfooterの表示領域を確保します。
- * paddingプロパティの値0は、body要素が持つ枠の領域を取り消します。
- */
+/* ----------------------------------------------------------------------------
+ * BASE / RESET — Sticky-footer foundation (fully responsive, no fixed heights)
+ * -------------------------------------------------------------------------- */
+* {
+	box-sizing: border-box;
+}
+
+html {
+	min-height: 100%;
+	/* Safety net: prevents ANY accidental horizontal overflow (e.g. from
+	   full-bleed/breakout techniques used elsewhere) from ever creating a
+	   horizontal scrollbar or a shifted/clipped layout, on any device
+	   width. This is the key fix for narrow phones (360–412px) and
+	   tablets (768px) where such overflow was most noticeable. */
+	overflow-x: hidden;
+	width: 100%;
+}
+
+/* Flexbox sticky footer: body stretches to at least the viewport height and
+ * lays out header / main / footer in a column, so the footer always sits at
+ * the bottom of the page (or bottom of viewport on short pages) WITHOUT the
+ * old position:absolute hack — this removes overlap bugs on mobile/short
+ * screens and adapts automatically to any content height. */
 body {
-	margin: 0 0 30px;
+	margin: 0;
 	padding: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	overflow-x: hidden;
+	width: 100%;
 }
 
 h2,
@@ -31,17 +80,12 @@ h3 {
 	padding: 0;
 }
 
-/* スキルアップテクニック2
- * displayプロパティでは表示方式を変更することができます。
- * block表示だったform要素をinline表示に変更することで、
- * ボタンを横並びにすることができます。
- */
 form {
 	display: inline;
 }
 
 table {
-	width:100%;
+	width: 100%;
 	background-color: #fff;
 	border-collapse: collapse;
 	margin: 0px auto 20px;
@@ -52,49 +96,118 @@ li {
 	margin: 0;
 	padding: 0;
 }
+
 li {
 	list-style-type: none;
-	
 }
 
+img {
+	max-width: 100%;
+	height: auto;
+}
 
-
+/* ----------------------------------------------------------------------------
+ * LEGACY SHARED CONTAINER (still used by unrelated component templates such
+ * as item grids / admin menus outside the common/ layout shell). Kept for
+ * backward compatibility, now responsive via max-width instead of a fixed
+ * width, so it no longer breaks on small screens.
+ * -------------------------------------------------------------------------- */
 .container {
-	width: 960px;
+	width: 100%;
+	max-width: var(--layout-max-width);
 	margin: 0 auto;
-	justify-content: space-between;
+	padding-left: var(--layout-gutter);
+	padding-right: var(--layout-gutter);
 }
+
 body > .container {
 	margin-top: 15px;
 }
+
 .content {
-	padding:30px 0 60px;
+	padding: var(--layout-content-padding-y) 0 60px;
 }
 
-/* ---- ヘッダー ---- */
-header .container {
+/* ============================================================================
+ * #headerParent — RESPONSIVE HEADER LANDMARK
+ * ============================================================================
+ * The detailed internal header layout (logo / search / nav / auth links) is
+ * handled by the more specific #header rules in stylesheet.css. This block
+ * only controls the outer landmark region so it always spans the full
+ * viewport width and adapts its vertical spacing responsively — regardless
+ * of which layout (3/4/5-block) is active.
+ * ============================================================================ */
+#headerParent {
+	width: 100%;
+	background: var(--layout-header-bg);
+	flex-shrink: 0;
+}
+
+.admin #headerParent {
+	background: var(--layout-header-bg-admin);
+}
+
+/* ============================================================================
+ * #mainParent — RESPONSIVE MAIN CONTENT SHELL
+ * ============================================================================
+ * Replaces the old fixed 960px ".container" centering for the page shell
+ * specifically. Uses a fluid max-width with responsive side gutters so the
+ * main content area is never too wide on large screens nor cramped on
+ * mobile. flex-grow ensures it fills remaining vertical space so the footer
+ * is pushed to the bottom on short pages (sticky-footer behaviour).
+ * ============================================================================ */
+#mainParent {
+	width: 100%;
+	max-width: var(--layout-max-width);
+	margin: 15px auto 0;
+	padding-left: var(--layout-gutter);
+	padding-right: var(--layout-gutter);
+	padding-bottom: 40px;
+	flex: 1 0 auto;
 	display: flex;
-	justify-content: space-between;
-}
-header {
-	background: #87ceeb;
-	padding: 10px 0;
-}
-.admin header {
-	background: #ff8669;
+	flex-wrap: wrap;
+	gap: var(--layout-gutter);
 }
 
-/* スキルアップテクニック3
- * font-sizeの単位emは親要素に設定されたfont-sizeの相対指定となります。
- * 親要素のfont-sizeが16px設定だとしたら、1.8emでは1.8倍、即ち28.8pxの大きさとなります。
- * デザインにはジャンプ率の考え方があり、基本の大きさからの倍率で文字サイズを決めることが多々あります。
- * その様な場合、em指定をしておくと便利です。
- * 基本サイズが変更になったとしても、比例して大きさが変化します。
- */
+#mainParent > .main {
+	flex: 1 1 auto;
+	min-width: 0; /* allow flex children to shrink below content size */
+}
+
+/* ============================================================================
+ * #footerParent — RESPONSIVE STICKY FOOTER
+ * ============================================================================
+ * No longer position:absolute — sits naturally at the end of the flex
+ * column body, always below the content, on every screen size.
+ * ============================================================================ */
+#footerParent {
+	width: 100%;
+	flex-shrink: 0;
+	background-color: var(--layout-footer-bg);
+	text-align: center;
+	margin-top: auto;
+}
+
+.admin #footerParent {
+	background: var(--layout-footer-bg-admin);
+}
+
+#footerParent .copyright {
+	display: block;
+	padding: 8px var(--layout-gutter);
+	line-height: 1.6;
+	text-shadow: 1px 1px 1px #fff;
+	font-size: 8pt;
+	box-sizing: border-box;
+}
+
+/* ----------------------------------------------------------------------------
+ * SITE TITLE
+ * -------------------------------------------------------------------------- */
 .site_title {
 	font-size: 1.8em;
 	font-weight: normal;
-	margin:0;
+	margin: 0;
 }
 
 /* スキルアップテクニック4
@@ -126,8 +239,7 @@ header {
 
 /* ---- タイトル共通 ---- */
 .search_area .title,
-.main .title
- {
+.main .title {
 	background-color: #3d98bf;
 	margin: 0;
 	padding: 5px 8px;
@@ -135,20 +247,29 @@ header {
 	text-shadow: 1px 1px 1px #12526d;
 }
 
-
-/* ---- ナビゲーションバー ---- */
+/* ----------------------------------------------------------------------------
+ * NAVIGATION BAR (legacy — used when the commented-out <nav> is enabled)
+ * -------------------------------------------------------------------------- */
 .navi_area {
 	background: #edf9fe;
+	width: 100%;
 }
+
 .navi_menu {
-	width: 960px;
-	padding:12px 0;
+	width: 100%;
+	max-width: var(--layout-max-width);
+	padding: 12px var(--layout-gutter);
 	margin: 0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	box-sizing: border-box;
 }
+
 .navi_menu li {
 	display: inline-block;
 	width: 24%;
 }
+
 .navi_menu a {
 	display: inline-block;
 	width: 100%;
@@ -160,26 +281,35 @@ header {
 	background: #fff;
 	transition: 0.18s;
 }
+
 .navi_menu a:hover {
 	background: #3d98bf;
 	color: #fff;
 	text-shadow: 1px 1px 1px #12526d;
-	border-color : #3d98bf;
+	border-color: #3d98bf;
 }
-.navi_menu li:first-of-type a{
+
+.navi_menu li:first-of-type a {
 	border-radius: 6px 0px 0px 6px;
 }
-.navi_menu li:last-of-type a{
+
+.navi_menu li:last-of-type a {
 	border-radius: 0px 6px 6px 0px;
 }
 
-/* ---- サイドバー ---- */
-.search .search_area{
-	flex:1;
+/* ----------------------------------------------------------------------------
+ * SIDEBAR / SEARCH / ADMIN MENU (legacy — used by pages outside common/
+ * folder). Converted from fixed percentage widths to flex-based sizing so
+ * these sidebars adapt on tablet/mobile instead of overflowing.
+ * -------------------------------------------------------------------------- */
+.search .search_area {
+	flex: 1;
 }
+
 .search,
 aside.admin_menu {
-	width: 20%;
+	flex: 1 1 220px;
+	max-width: 260px;
 }
 
 .search .title,
@@ -188,7 +318,8 @@ aside.admin_menu {
 	text-align: center;
 	font-size: 1.1em;
 }
-.search_area .title{
+
+.search_area .title {
 	border-radius: 6px 6px 6px 6px;
 	text-align: center;
 	font-size: 1.1em;
@@ -198,12 +329,15 @@ aside.admin_menu {
 	background: #ff6c49;
 	padding: 5px;
 }
+
 .admin_menu_list .title {
 	background: #ff6c49;
 }
+
 .search .form {
 	padding: 15px 0 50px 5px;
 }
+
 .admin_menu .display_list {
 	display: block;
 	padding: 10px;
@@ -225,27 +359,41 @@ aside.admin_menu {
 .admin_menu .display_list:hover {
 	background: #ffc6b9;
 }
+
 .admin_menu li:last-of-type .display_list {
 	border-radius: 0 0 6px 6px;
 }
 
-/* ---- メイン ---- */
+/* ----------------------------------------------------------------------------
+ * MAIN COMPONENT AREA (legacy — used by pages with a sidebar layout).
+ * width:76% replaced with flex sizing so it shares space responsively with
+ * the sidebar instead of causing horizontal overflow on narrow screens.
+ * -------------------------------------------------------------------------- */
 .main {
-	width: 76%;
+	flex: 1 1 480px;
+	min-width: 0;
 	padding-bottom: 80px;
-
 }
 
-.container content{
+/* Fix: was ".container content" (missing dot) — an invalid/dead selector
+ * that never matched real markup. Corrected to ".container.content" so it
+ * properly targets elements carrying BOTH classes, and made responsive:
+ * side-by-side on larger screens, stacked on mobile (see breakpoints below). */
+.container.content {
 	display: flex;
+	flex-wrap: wrap;
+	gap: var(--layout-gutter);
 }
 
-.admin > .container.content{
+.admin > .container.content {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
+	gap: var(--layout-gutter);
 }
 
 .admin_menu .main {
+	flex: 1 1 100%;
 	width: 100%;
 }
 
@@ -254,7 +402,8 @@ aside.admin_menu {
 	padding: 8px 15px;
 	position: relative;
 	font-size: 1.5rem;
-	}
+}
+
 .main .title::before,
 .admin .main .title::before {
 	position: absolute;
@@ -265,23 +414,28 @@ aside.admin_menu {
 	border-bottom: solid 10px transparent;
 	border-right: solid 20px rgb(149, 158, 155);
 }
+
 .admin .main .title.no_shadow::before {
 	display: none;
 }
+
 .admin .main .title {
 	background: #ff6c49;
 }
 
-.container.content > .admin_menu{
+.container.content > .admin_menu {
 	display: flex;
-	width: 50%;
+	flex: 1 1 100%;
+	max-width: 100%;
 }
-.admin_menu .admin_menu_list{
+
+.admin_menu .admin_menu_list {
 	padding: 5px 10px;
 	font-size: 1.5em;
-	margin: 80px auto 0;
+	margin: 40px auto 0;
 	flex: 1;
-	
+	width: 100%;
+	max-width: 600px;
 }
 
 .admin_menu_list .title_area {
@@ -294,6 +448,7 @@ aside.admin_menu {
 	text-shadow: 1px 1px 1px #333;
 	padding: 5px 0;
 }
+
 .admin_menu_list .title_area_no_shadow {
 	background: #ff6c49;
 	text-align: center;
@@ -306,21 +461,23 @@ aside.admin_menu {
 .admin_menu_list .link_area {
 	margin: 0;
 }
-.admin_menu_list .link_area a{
-    display: block;
-    padding: 10px;
-    border-right: 1px solid #aaa;
-    border-bottom: 1px solid #aaa;
-    border-left: 1px solid #aaa;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.18s;
+
+.admin_menu_list .link_area a {
+	display: block;
+	padding: 10px;
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	border-left: 1px solid #aaa;
+	text-align: center;
+	text-decoration: none;
+	transition: background-color 0.18s;
 }
 
-.admin_menu_list .link_area a:hover{
+.admin_menu_list .link_area a:hover {
 	background: #ffc6b9;
 }
-.admin_menu_list .link_area:last-of-type a{
+
+.admin_menu_list .link_area:last-of-type a {
 	border-radius: 0 0 6px 6px;
 }
 
@@ -331,49 +488,111 @@ aside.admin_menu {
 	padding-top: 20px;
 	font-size: 1.2em;
 }
+
 .check_error_message {
 	padding-top: 20px;
 	font-size: 1.2em;
-	color:#C00;
+	color: #C00;
 }
+
 .complete_message,
 .complete_link {
 	font-size: 1.2em;
 	margin-top: 30px;
 	padding-left: 30px;
 }
+
 .complete_link a:hover {
 	color: #d34320;
 }
 
-/* ---- フッター ---- */
+/* ============================================================================
+ * RESPONSIVE BREAKPOINTS
+ * ============================================================================ */
 
-/* スキルアップテクニック1-3
- * footer要素の表示位置は画面下、もしくはページ下に設定すると見やすいでしょう。
- * その為に1-1ではhtml要素の表示位置を広げ、配置基準としました。
- * 1-2では他の表示とfooter要素が被らないよう余白を設定しました。
- * ここではfooter要素にpositionプロパティの値をabsoluteにすることで絶対位置表示を行います。
- * 絶対位置表示の基準はpositionプロパティの値を持つ親要素となり、
- * 今回は画面いっぱいのhtml要素がそれになります。
- * bottomプロパティは基準からの配置位置を決定し、今回は0px。
- * つまりhtml要素の一番下から0pxの位置に表示されることとなり、
- * footer要素は画面、もしくはページの最下部に表示されるようになります。
- */
-footer {
-	background-color: #87ceeb;
-	text-align: center;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
+/* ---- Tablet & below (≤1024px): sidebar layouts start to compress ---- */
+@media (max-width: 1024px) {
+	.search,
+	aside.admin_menu {
+		flex: 1 1 200px;
+		max-width: 220px;
+	}
+
+	.main {
+		flex: 1 1 380px;
+	}
 }
 
-.admin footer {
-	background: #ff8669;
+/* ---- Small tablet & below (≤768px): stack sidebar under/over main ---- */
+@media (max-width: 768px) {
+	#mainParent {
+		margin-top: 10px;
+		padding-bottom: 20px;
+	}
+
+	.container.content,
+	.admin > .container.content {
+		flex-direction: column;
+	}
+
+	.search,
+	aside.admin_menu,
+	.main {
+		flex: 1 1 100%;
+		max-width: 100%;
+		width: 100%;
+	}
+
+	.navi_menu {
+		padding: 10px var(--layout-gutter);
+	}
+
+	.navi_menu li {
+		width: 50%;
+	}
+
+	.navi_menu li:first-of-type a,
+	.navi_menu li:last-of-type a {
+		border-radius: 0;
+	}
+
+	.admin_menu_list {
+		margin-top: 20px !important;
+	}
 }
 
-small {
-	height: 30px;
-	line-height:30px;
-	text-shadow: 1px 1px 1px #fff;
-	font-size: 8pt;
+/* ---- Mobile (≤480px): tighter gutters, full-width nav items ---- */
+@media (max-width: 480px) {
+	:root {
+		--layout-gutter: 12px;
+	}
+
+	.navi_menu li {
+		width: 100%;
+	}
+
+	.navi_menu li a {
+		border-radius: 0 !important;
+	}
+
+	.complete_message,
+	.complete_link {
+		padding-left: 0;
+	}
+
+	#footerParent .copyright {
+		font-size: 7.5pt;
+		line-height: 1.5;
+	}
 }
+
+/* ---- Large desktop (≥1440px): allow a little extra breathing room ---- */
+@media (min-width: 1440px) {
+	:root {
+		--layout-max-width: 1100px;
+	}
+}
+
+/* ============================================================================
+ * END OF LAYOUT.CSS
+ * ============================================================================ */

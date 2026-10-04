@@ -8,60 +8,174 @@
 </head>
 
 <body class="user shopping_basket">
-	<h2 th:class="title" th:text="#{basket}"></h2>
-<!-- 
-	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
-		<br />
-				/* 在庫不足商品 */
-		<ul class="error_list_no_mark" th:if="${itemNameListLessThan != null}">
-			<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.basket.stock.short(${err})}"></li>
+<div id="basketList">
 
-		</ul>
-				/* 在庫なし商品 */
-		<ul class="error_list_no_mark" th:if="${itemNameListZero != null}">
-			<li th:each="err : ${itemNameListZero}" th:text="#{msg.basket.stock.none(${err})}"></li>
-		</ul>
-		<br />
+	<div class="basket-hero">
+		<h2 class="title basket-hero-title">🛒 <span th:text="#{basket}"></span></h2>
+		<p class="basket-hero-subtitle" th:if="${session.basketBeans != null}">Review your items before checking out</p>
+	</div>
+
+	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
+
+		<div class="basket-alert-box">
+			<ul class="error_list_no_mark" th:if="${itemNameListLessThan != null}">
+				<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.basket.stock.short(${err})}"></li>
+			</ul>
+
+			<ul class="error_list_no_mark" th:if="${itemNameListZero != null}">
+				<li th:each="err : ${itemNameListZero}" th:text="#{msg.basket.stock.none(${err})}"></li>
+			</ul>
+		</div>
 	</th:block>
 
-	<div th:if="${session.basketBeans == null}">
-		/* 買い物かごが空のとき */
+	<div class="basket-empty" th:if="${session.basketBeans == null}">
+		<div class="basket-empty-icon">🛍️</div>
 		<p th:text="#{msg.basket.list.none}"></p>
 	</div>
 
 	<th:block th:if="${session.basketBeans != null}">
-		<table class="list_table basket">
-			<tr>
-				<th>[[#{data.basket.item.name}]]</th>
-				<th>[[#{data.basket.count}]]</th>
-				<th>[[#{data.basket.operate}]]</th>
-				<th>[[#{data.basket.stock.status}]]</th>
-			</tr>
-			<tr th:each="item, status: ${session.basketBeans}">
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
-				<td th:text="${item.orderNum}"></td>
-				<td>
-					<form th:action="@{/client/basket/delete}" method="post">
-						<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="削除"
-							class="delete" />
-					</form>
-				</td>
-				<td th:if="${item.stock == 0}" th:text="#{data.out.of.stock}"></td>
-				<td th:if="${item.stock > 5}" th:text="#{data.in.stock}"></td>
-				<td th:if="${item.stock >= 1 and 5 >= item.stock }" th:text="${item.stock}"></td>
-			</tr>
-		</table>
-		<div class="user_info_form_area shopping_button">
-			/* 注文手続きフォーム */
+		<div class="basket-table-wrap">
+			<table class="list_table basket basket-fancy-table">
+				<thead>
+					<tr>
+						<th>[[#{data.basket.item.name}]]</th>
+						<th>[[#{data.basket.count}]]</th>
+						<th>[[#{data.basket.operate}]]</th>
+						<th>[[#{data.basket.stock.status}]]</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item, status : ${basketBeans}">
+						<td th:attr="data-label=#{data.basket.item.name}">
+							<a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a>
+						</td>
+						<td th:attr="data-label=#{data.basket.count}" th:text="${item.orderNum}"></td>
+						<td th:attr="data-label=#{data.basket.operate}">
+							<form th:action="@{/client/basket/delete}" method="post">
+								<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="Delete"
+									class="delete" />
+							</form>
+						</td>
+						<td th:attr="data-label=#{data.basket.stock.status}" th:if="${item.stock == 0}" th:text="#{data.out.of.stock}"></td>
+						<td th:attr="data-label=#{data.basket.stock.status}" th:if="${item.stock > 5}" th:text="#{data.in.stock}"></td>
+						<td th:attr="data-label=#{data.basket.stock.status}" th:if="${item.stock >= 1 and 5 >= item.stock }" th:text="${item.stock}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="user_info_form_area shopping_button basket-actions">
+
 			<form th:action="@{/client/order/address/input}" method="post">
-				<input type="submit" value="ご注文のお手続き" />
+				<input type="submit" value="Proceed with Order" />
 			</form>
-			/* 買い物かごを空にするフォーム */
+
 			<form th:action="@{/client/basket/allDelete}" method="post">
-				<input type="submit" value="買い物かごを空にする" class="delete" />
+				<input type="submit" value="Clear Shopping Cart" class="delete" />
 			</form>
 		</div>
-	</th:block> -->
+	</th:block>
+
+	<!-- ===== You May Also Like ===== -->
+	<div class="basket-recommend-section">
+		<h3 class="basket-recommend-title">✨ You May Also Like</h3>
+		<p class="basket-recommend-subtitle">Popular picks our customers love</p>
+		<div id="basketRecommendedItems" class="basket-recommend-grid">
+			<p class="basket-recommend-loading">Loading recommendations...</p>
+		</div>
+	</div>
+
+</div>
+
+<script th:inline="javascript">
+(function () {
+	var container = document.getElementById('basketRecommendedItems');
+	if (!container) return;
+
+	/*<![CDATA[*/
+	var cartIds = /*[[${basketBeans != null ? basketBeans.![id] : {}}]]*/ [];
+	/*]]>*/
+
+	var base = (typeof FixedUrl !== 'undefined') ? FixedUrl : '/';
+
+	fetch(base + 'items/all')
+		.then(function (res) { return res.json(); })
+		.then(function (data) {
+			container.innerHTML = '';
+
+			var filtered = (data || []).filter(function (item) {
+				return cartIds.indexOf(item.id) === -1;
+			});
+
+			// Shuffle
+			for (var i = filtered.length - 1; i > 0; i--) {
+				var j = Math.floor(Math.random() * (i + 1));
+				var tmp = filtered[i];
+				filtered[i] = filtered[j];
+				filtered[j] = tmp;
+			}
+
+			var picks = filtered.slice(0, 4);
+
+			if (picks.length === 0) {
+				var section = container.closest('.basket-recommend-section');
+				if (section) section.style.display = 'none';
+				return;
+			}
+
+			picks.forEach(function (item) {
+				var card = document.createElement('div');
+				card.className = 'basket-recommend-card';
+
+				var imgSrc = base + 'images/' + item.imagePath;
+				var noImgSrc = base + 'images/common/no_image.jpg';
+
+				card.innerHTML =
+					'<div class="basket-recommend-image">' +
+					'<img src="' + imgSrc + '" alt="' + item.name + '" loading="lazy" />' +
+					'</div>' +
+					'<div class="basket-recommend-info">' +
+					'<h4 class="basket-recommend-name">' + item.name + '</h4>' +
+					'<div class="basket-recommend-price">Rs ' + item.price + '</div>' +
+					'<button type="button" class="basket-recommend-btn" data-id="' + item.id + '">Add to Cart</button>' +
+					'</div>';
+
+				var img = card.querySelector('img');
+				img.onerror = function () {
+					this.onerror = null;
+					this.src = noImgSrc;
+				};
+
+				container.appendChild(card);
+			});
+
+			container.querySelectorAll('.basket-recommend-btn').forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					var id = btn.getAttribute('data-id');
+					fetch(base + 'items/cart/add/' + id)
+						.then(function (res) {
+							if (res.status === 401) {
+								window.location.href = base + 'login';
+								return null;
+							}
+							return res.json();
+						})
+						.then(function (d) {
+							if (d) {
+								btn.textContent = '✓ Added!';
+								btn.classList.add('added');
+								setTimeout(function () { window.location.reload(); }, 700);
+							}
+						})
+						.catch(function (err) { console.error('Error adding to cart:', err); });
+				});
+			});
+		})
+		.catch(function (err) {
+			console.error('Failed to load recommended items', err);
+			container.innerHTML = '';
+		});
+})();
+</script>
 </body>
 
 </html>

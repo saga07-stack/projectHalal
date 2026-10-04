@@ -25,7 +25,7 @@ function loadAllItems() {
                 // Create main item card
                 const itemCard = document.createElement("div");
                 itemCard.className = "item-card";
-
+                 itemCard.setAttribute("data-item-id", item.id);
                 // Image container
                 const imageContainer = document.createElement("div");
                 imageContainer.className = "item-image-container";
@@ -34,6 +34,24 @@ function loadAllItems() {
                 image.className = "item-image";
                 image.src = `/shared_shop/images/${item.imagePath}`;
                 image.alt = item.name || "Product Image";
+				
+				
+				image.addEventListener("click", ()=>{
+					//console.log("image clicked", item.id);
+					
+				//	alert("image clicked "+ `${FixedUrl}items/detail/${item.id}`);
+					window.location.href = `${FixedUrl}items/details/${item.id}`
+					
+					/*fetch(`${FixedUrl}items/detail/${item.id}`)
+					.then((response) => response.json())
+					.then((data)=>{
+						console.log("Item detail data:", data);
+					})
+					.catch((error)=>{
+						console.log("Error fetching item detail:", error);
+					})*/
+					
+				})
 
                 // Case 2: file exist gardaina bhane (404), automatically fallback ma switch garne
                 image.onerror = function() {
@@ -99,7 +117,7 @@ function loadAllItems() {
                 addToCartButton.textContent = "Add to Cart";
                 addToCartButton.setAttribute("data-item-id", item.id);
 
-                addToCartButton.addEventListener("click", () => {
+              addToCartButton.addEventListener("click", () => {
                     addToCartButton.value = item.id;
                     console.log("addToCartButton clicked", addToCartButton.value);
                     fetch(`${FixedUrl}items/cart/add/${addToCartButton.value}`)
@@ -213,11 +231,10 @@ if (CartButtonList) {
 //------------------favourite list button----------------------
 
 
-const favouriteBtn = document.getElementById("favouriteListBtn");
+/*const addFavouriteBtn = document.getElementById("favouriteListBtn");
 
-favouriteBtn.addEventListener("click", () => {
+addFavouriteBtn.addEventListener("click", () => {
 
-    alert("buttongot clicked");
     fetch(`${FixedUrl}items/favorite/list`)
         .then((response) => {
             if (response.status === 401) {
@@ -232,7 +249,7 @@ favouriteBtn.addEventListener("click", () => {
             console.error("Error fetching favourite items:", error);
 
         })
-});
+});*/
 
 //------------------favourite list button-----------comes to end here -----------
 
@@ -338,8 +355,12 @@ searchForm.addEventListener("submit", (event) => {
 		                addToCartButton.className = "btn btn-cart";
 		                addToCartButton.textContent = "Add to Cart";
 		                addToCartButton.setAttribute("data-item-id", item.id);
+						
+						addToCartButton.addEventListener("click", ()=>{
+							addToCart(item.id, addToCartButton);
+						})
 
-		                addToCartButton.addEventListener("click", () => {
+		                /*addToCartButton.addEventListener("click", () => {
 		                    addToCartButton.value = item.id;
 		                    console.log("addToCartButton clicked", addToCartButton.value);
 		                    fetch(`${FixedUrl}items/cart/add/${addToCartButton.value}`)
@@ -364,7 +385,7 @@ searchForm.addEventListener("submit", (event) => {
 		                        addToCartButton.textContent = originalText;
 		                        addToCartButton.classList.remove("active");
 		                    }, 2000);
-		                });
+		                });*/
 
 		                buttonGroup.appendChild(addToCartButton);
 
@@ -384,7 +405,34 @@ searchForm.addEventListener("submit", (event) => {
 
 		
 	});
+	
+	function addToCart(itemId, button) {
+	    fetch(`${FixedUrl}items/cart/add/${itemId}`)
+	        .then((response) => {
+	            if (response.status === 401) {
+	                window.location.href = `${FixedUrl}login`;
+	                return null; // redirect hune bela json() parse nagarne
+	            }
+	            return response.json();
+	        })
+	        .then((data) => {
+	            if (data) console.log("Added to cart:", data);
+	        })
+	        .catch((error) => {
+	            console.error("Error adding to cart:", error);
+	        });
 
-
-
-
+	    // Visual feedback
+	    if (button) {
+	        const originalText = button.textContent;
+	        button.textContent = "✓ Added!";
+	        button.classList.add("active");
+	        setTimeout(() => {
+	            button.textContent = originalText;
+	            button.classList.remove("active");
+	        }, 5000);
+	    }
+	}
+			
+		
+		
