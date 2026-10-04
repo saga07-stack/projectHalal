@@ -96,18 +96,7 @@ function loadAllItems() {
                 favouriteButton.innerHTML = "♡ Favourite";
                 favouriteButton.setAttribute("data-item-id", item.id);
 
-                favouriteButton.addEventListener("click", () => {
-                    favouriteButton.value = item.id;
-                    console.log("favouriteButton clicked", favouriteButton.value);
-                    // Toggle favorite styling
-                    if (favouriteButton.classList.contains("active")) {
-                        favouriteButton.classList.remove("active");
-                        favouriteButton.innerHTML = "♡ Favourite";
-                    } else {
-                        favouriteButton.classList.add("active");
-                        favouriteButton.innerHTML = "♥ Favourite";
-                    }
-                });
+				 favouriteButton.addEventListener("click", () => toggleFavourite(item.id, favouriteButton));
 
                 buttonGroup.appendChild(favouriteButton);
 
@@ -151,6 +140,7 @@ function loadAllItems() {
             });
 
             itemsContainer.appendChild(gridWrapper);
+			markFavourites();
             console.log("Items loaded successfully", data);
 
             // Store loaded data to sessionStorage for restoring state
@@ -160,7 +150,126 @@ function loadAllItems() {
             console.error("Error fetching data:", error);
         });
 }
+// হার্ট ভরা (♥) বা ফাঁকা (♡) করা
+function setFavouriteStyle(button, isFav) {
+    button.classList.toggle("active", isFav);
+    button.innerHTML = isFav ? "♥ Favourite" : "♡ Favourite";
+}
 
+// বাটন চাপলে যা হয়
+function toggleFavourite(itemId, button) {
+    console.log("[FAV] 1. button clicked, itemId =", itemId);
+
+    fetch(`${FixedUrl}items/favorite/toggle/${itemId}`)
+        .then((response) => {
+            console.log("[FAV] 2. response status =", response.status);
+            if (response.status === 401) {          // login নেই
+                window.location.href = `${FixedUrl}login`;
+                return null;
+            }
+            return response.json();
+        })
+        .then((data) => {
+            if (!data) return;
+            console.log("[FAV] 3. server JSON =", data);
+            setFavouriteStyle(button, data.favourite);
+        })
+        .catch((error) => console.error("[FAV] error:", error));
+}
+
+// পেজ লোড হলে আগের favourite গুলোর হার্ট ভরে দেয়
+function markFavourites() {
+    fetch(`${FixedUrl}items/favorite/ids`)
+        .then((response) => (response.status === 401 ? [] : response.json()))
+        .then((ids) => {
+            console.log("[FAV] favourite ids from server =", ids);
+            ids.forEach((id) => {
+                const btn = document.querySelector(`.btn-favourite[data-item-id="${id}"]`);
+                if (btn) setFavouriteStyle(btn, true);
+            });
+        })
+        .catch((error) => console.error("[FAV] markFavourites error:", error));
+}
+
+// Favourites পেজের তালিকা ভরা
+function loadFavouritePage() {
+    const box = document.getElementById("favouriteContainer");
+    if (!box) return;   // অন্য পেজে কিছু করবে না
+
+    fetch(`${FixedUrl}items/favorite/list`)
+        .then((response) => {
+            if (response.status === 401) {
+                window.location.href = `${FixedUrl}login`;
+                return null;
+            }
+            return response.json();
+        })
+        .then((items) => {
+            if (!items) return;
+            console.log("[FAV] favourites to display =", items);   // আগে console
+
+            if (items.length === 0) {
+                box.textContent = "No favourite items yet.";
+                return;
+            }
+
+            const grid = document.createElement("div");
+            grid.className = "items-grid";
+
+            items.forEach((item) => {                              // তারপর পেজে দেখানো
+                const card = document.createElement("div");
+                card.className = "item-card";
+
+                const imageBox = document.createElement("div");
+                imageBox.className = "item-image-container";
+                const img = document.createElement("img");
+                img.className = "item-image";
+                img.src = item.imagePath
+                    ? `/shared_shop/images/${item.imagePath}`
+                    : "/shared_shop/images/common/no_image.jpg";
+                img.onerror = function () {
+                    this.onerror = null;
+                    this.src = "/shared_shop/images/common/no_image.jpg";
+                };
+                imageBox.appendChild(img);
+
+                const content = document.createElement("div");
+                content.className = "item-content";
+                const name = document.createElement("h3");
+                name.className = "item-name";
+                name.textContent = item.name;
+                const price = document.createElement("div");
+                price.className = "item-price";
+                price.textContent = "Rs " + item.price;
+                content.appendChild(name);
+                content.appendChild(price);
+
+                const buttons = document.createElement("div");
+                buttons.className = "item-buttons";
+                const removeBtn = document.createElement("button");
+                removeBtn.className = "btn btn-favourite active";
+                removeBtn.textContent = "♥ Remove";
+                removeBtn.addEventListener("click", () => {
+                    fetch(`${FixedUrl}items/favorite/toggle/${item.id}`)
+                        .then((r) => r.json())
+                        .then((d) => {
+                            console.log("[FAV] removed:", d);
+                            card.remove();                         // কার্ডটা পেজ থেকে সরাও
+                        });
+                });
+                buttons.appendChild(removeBtn);
+
+                card.appendChild(imageBox);
+                card.appendChild(content);
+                card.appendChild(buttons);
+                grid.appendChild(card);
+            });
+
+            box.appendChild(grid);
+        })
+        .catch((error) => console.error("[FAV] load page error:", error));
+}
+document.addEventListener("DOMContentLoaded", loadFavouritePage);
 // Check if we're on login page
 function isLoginPage() {
     return window.location.pathname.includes('/login');
@@ -263,7 +372,7 @@ if (searchForm) {
     console.log("Search form not found");
 }
 
-searchForm.addEventListener("submit", (event) => {
+if (searchForm) searchForm.addEventListener("submit", (event) => {
 	event.preventDefault(); // Prevent default form submission
     const searchInput = document.querySelector(".search-input");
 
@@ -335,18 +444,7 @@ searchForm.addEventListener("submit", (event) => {
 		                favouriteButton.innerHTML = "♡ Favourite";
 		                favouriteButton.setAttribute("data-item-id", item.id);
 
-		                favouriteButton.addEventListener("click", () => {
-		                    favouriteButton.value = item.id;
-		                    console.log("favouriteButton clicked", favouriteButton.value);
-		                    // Toggle favorite styling
-		                    if (favouriteButton.classList.contains("active")) {
-		                        favouriteButton.classList.remove("active");
-		                        favouriteButton.innerHTML = "♡ Favourite";
-		                    } else {
-		                        favouriteButton.classList.add("active");
-		                        favouriteButton.innerHTML = "♥ Favourite";
-		                    }
-		                });
+						favouriteButton.addEventListener("click", () => toggleFavourite(item.id, favouriteButton));
 
 		                buttonGroup.appendChild(favouriteButton);
 
@@ -394,6 +492,7 @@ searchForm.addEventListener("submit", (event) => {
 		            });
 
 		            itemsContainer.appendChild(gridWrapper);
+					markFavourites();
 		            console.log("Items loaded successfully", data);
 
 		            // Store loaded data to sessionStorage for restoring state

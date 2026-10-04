@@ -3,65 +3,13 @@
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 
 <head>
-	<title th:text="#{basket}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{favourite}+' | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
 </head>
 
 <body class="user shopping_basket">
 	<h2 th:class="title" th:text="#{favourite}"></h2>
-<!-- 
-	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
-		<br />
-				/* Insufficient Stock Items */
-		<ul class="error_list_no_mark" th:if="${itemNameListLessThan != null}">
-			<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.basket.stock.short(${err})}"></li>
-
-		</ul>
-				/* Out of Stock Items */
-		<ul class="error_list_no_mark" th:if="${itemNameListZero != null}">
-			<li th:each="err : ${itemNameListZero}" th:text="#{msg.basket.stock.none(${err})}"></li>
-		</ul>
-		<br />
-	</th:block>
-
-	<div th:if="${session.basketBeans == null}">
-		/* Shopping Cart is Empty */
-		<p th:text="#{msg.basket.list.none}"></p>
-	</div>
-
-	<th:block th:if="${session.basketBeans != null}">
-		<table class="list_table basket">
-			<tr>
-				<th>[[#{data.basket.item.name}]]</th>
-				<th>[[#{data.basket.count}]]</th>
-				<th>[[#{data.basket.operate}]]</th>
-				<th>[[#{data.basket.stock.status}]]</th>
-			</tr>
-			<tr th:each="item, status: ${session.basketBeans}">
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
-				<td th:text="${item.orderNum}"></td>
-				<td>
-					<form th:action="@{/client/basket/delete}" method="post">
-						<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="Delete"
-							class="delete" />
-					</form>
-				</td>
-				<td th:if="${item.stock == 0}" th:text="#{data.out.of.stock}"></td>
-				<td th:if="${item.stock > 5}" th:text="#{data.in.stock}"></td>
-				<td th:if="${item.stock >= 1 and 5 >= item.stock }" th:text="${item.stock}"></td>
-			</tr>
-		</table>
-		<div class="user_info_form_area shopping_button">
-			/* Order Processing Form */
-			<form th:action="@{/client/order/address/input}" method="post">
-				<input type="submit" value="Proceed with Order" />
-			</form>
-			/* Clear Shopping Cart Form */
-			<form th:action="@{/client/basket/allDelete}" method="post">
-				<input type="submit" value="Clear Shopping Cart" class="delete" />
-			</form>
-		</div>
-	</th:block> -->
+	<div id="favouriteContainer"></div>
 </body>
 
 </html>
