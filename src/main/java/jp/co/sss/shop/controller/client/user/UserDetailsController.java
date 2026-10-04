@@ -145,7 +145,10 @@ public class UserDetailsController {
 	@GetMapping("client/user/update/email")
 	public String userUpdateEmail() {
 		
-		return "client/user/update_email2";
+		return "redirect:/client/user/email/update/input";
 	}
+	
+	
+	
 	
 }

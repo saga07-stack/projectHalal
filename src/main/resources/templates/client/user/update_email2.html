@@ -3,27 +3,27 @@
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
 
 <head>
-	<title th:text="#{user}+#{title.input.new}+' - Email Verification | '+ #{shop.title}"> </title>
+	<title th:text="#{user}+' - Email Update | '+ #{shop.title}"> </title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
 </head>
 
-<body class="user user_regist_email">
+<body class="user user_update_email">
 	<div class="form-container verification-form">
 		<!-- Main Content Card -->
 		<div class="form-card">
 			<!-- Header Section -->
 			<div class="form-header with-border">
-				<h2 class="form-title" th:text="#{title.email.verification}">Email Verification</h2>
-				<p class="form-subtitle">Please enter your email address to continue</p>
+				<h2 class="form-title" th:text="#{title.email.verification}">Email Update</h2>
+				<p class="form-subtitle">Please enter your new email address to update your account</p>
 			</div>
 
 			<!-- Simple Email Input Form (single-step) -->
-			<form th:action="@{/client/user/regist/email/send}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
+			<form th:action="@{/client/user/update/email}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
 
 				<th:block th:if="${error}">
-					<p style="color:red;">The email address you provided is already registered. Please use a different email address or <a th:href="@{/login}">login</a> if you already have an account.</p>
+					<p style="color:red;">This email address is already in use. Please provide a different email address.</p>
 				</th:block>
 
 				<!-- Error Messages -->
@@ -59,23 +59,7 @@
 				<div class="form-actions">
 					<button type="submit" class="btn btn-primary btn-full-width btn-send-code">Send Verification Code</button>
 				</div>
-
-				<div class="form-footer">
-					<p class="form-footer-text">Already have an account? <a th:href="@{/login}" class="form-footer-link">Login here</a></p>
-				</div>
 			</form>
-
-			<!-- Additional Info Section (moved inside main card, below form footer) -->
-			<div class="info-section">
-				<div class="info-box">
-					<h3 class="info-titles">Why email verification?</h3>
-					<ul class="info-lists">
-						<li>Secure your account with a verified email</li>
-						<li>Receive important notifications and updates</li>
-						<li>Easy password recovery if needed</li>
-					</ul>
-				</div>
-			</div>
 		</div>
 	</div>
 
