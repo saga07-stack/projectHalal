@@ -148,6 +148,13 @@ public class UserDetailsController {
 		return "redirect:/client/user/email/update/input";
 	}
 	
+	@GetMapping("client/user/email/update/input")
+	public String userUpdateEmailInput(
+			Model model) {
+		
+    model.addAttribute("emailVerificarionForm", new UserForm());		
+		return "client/user/update_email2";
+	}
 	
 	
 	

@@ -532,6 +532,57 @@ if (searchForm) searchForm.addEventListener("submit", (event) => {
 	        }, 5000);
 	    }
 	}
+	
+// ================== Notification Popup ==================
+function notification() {
+	console.log("notification() called");
+	const popup = document.getElementById("notificationPopup");
+	if (popup) {
+		popup.classList.toggle("show");
+		console.log("Notification popup toggled. Current state:", popup.classList.contains("show"));
+	}
+}
+
+function closeNotification() {
+	console.log("closeNotification() called");
+	const popup = document.getElementById("notificationPopup");
+	if (popup) {
+		popup.classList.remove("show");
+		console.log("Notification popup closed");
+	}
+}
+
+// Close notification popup when clicking outside of it
+document.addEventListener("click", function(event) {
+	const popup = document.getElementById("notificationPopup");
+	const container = document.querySelector(".notification-button-container");
+	
+	if (popup && container) {
+		// Only close if click is NOT on the button or popup
+		if (!container.contains(event.target) && popup.classList.contains("show")) {
+			popup.classList.remove("show");
+			console.log("Notification popup closed (clicked outside)");
+		}
+	}
+});
+
+function notificationtry(){
+	alert("notification button clicked");
+	fetch(`${FixedUrl}admin/notification/list`)
+	.then((response)=>{
+		if(response.status === 401){
+			window.location.href = `${FixedUrl}login`;
+		     return null;	
+				}
+				return response.json();
+	}).then ((data)=>{
+		console.log("notification data:", data);
+	}).catch((error)=>{
+		console.error("Error fetching notification data:", error);
+	})
+}
+
+	
 			
 		
 		

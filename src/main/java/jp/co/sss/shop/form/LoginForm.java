@@ -29,7 +29,8 @@ public class LoginForm implements Serializable {
 	 */
 	@NotBlank
 	@Size(min = 8, max = 16)
-	@Pattern(regexp = "^[a-zA-Z0-9]+$")
+	@Pattern(regexp = "^[\\x21-\\x7E]+$")
+	
 	private String password;
 
 	/**

@@ -79,6 +79,18 @@ public class ItemDto {
 	
 	
 	}
+	public ItemDto(Integer stock,String name2, String description2, Integer price2, String imagePath, Integer id2, String name3) {
+		// TODO Auto-generated constructor stub
+	this.name = name2;
+	this.description = description2;
+	this.price = price2;
+	this.imagePath = imagePath;
+	this.id = id2;
+	this.categoryName = name3;
+	this.stock = stock;
+	
+	
+	}
 	
 
 }

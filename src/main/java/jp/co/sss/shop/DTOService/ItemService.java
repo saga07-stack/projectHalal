@@ -109,5 +109,21 @@ public class ItemService {
 		return itemRepository.findByNameContainingAndDeleteFlag(keyword, 0);
 	}
 	
+	public List<ItemDto> getItemsStock(){
+		
+		List <Item> items = itemRepository.findByStockLessThenFiveAndDeleteFlagOrderByInsertDateDesc();
+				
+		
+		return items.stream()
+				.map(item -> new ItemDto(
+						item.getName(),
+						item.getDescription(),
+						item.getPrice(),
+						item.getImage(),
+						item.getCategory().getName(),
+						item.getId()))
+				.collect(Collectors.toList());
+	}
+	
 
 }
