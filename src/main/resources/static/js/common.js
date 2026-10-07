@@ -458,32 +458,7 @@ if (searchForm) searchForm.addEventListener("submit", (event) => {
 							addToCart(item.id, addToCartButton);
 						})
 
-		                /*addToCartButton.addEventListener("click", () => {
-		                    addToCartButton.value = item.id;
-		                    console.log("addToCartButton clicked", addToCartButton.value);
-		                    fetch(`${FixedUrl}items/cart/add/${addToCartButton.value}`)
-		                        .then((response) => {
-		                            if (response.status === 401) {
-		                                window.location.href = `${FixedUrl}login`
-		                            }
-		                            return response.json()
-		                        })
-		                        .then((data) => {
-		                            console.log("Added to cart:", data);
-		                        })
-		                        .catch((error) => {
-		                            console.error("Error adding to cart:", error);
-		                        });
-
-		                    // Visual feedback
-		                    const originalText = addToCartButton.textContent;
-		                    addToCartButton.textContent = "✓ Added!";
-		                    addToCartButton.classList.add("active");
-		                    setTimeout(() => {
-		                        addToCartButton.textContent = originalText;
-		                        addToCartButton.classList.remove("active");
-		                    }, 2000);
-		                });*/
+		                
 
 		                buttonGroup.appendChild(addToCartButton);
 
@@ -534,12 +509,109 @@ if (searchForm) searchForm.addEventListener("submit", (event) => {
 	}
 	
 // ================== Notification Popup ==================
+
+// Facebook-style red count bubble on the bell icon.
+// Shows the given count, hides itself when count is 0.
+function updateNotificationBadge(count) {
+	const badge = document.getElementById("notificationBadge");
+	if (!badge) return;
+	const safeCount = Number(count) || 0;
+	if (safeCount > 0) {
+		badge.textContent = safeCount > 99 ? "99+" : safeCount;
+		badge.style.display = "flex";
+	} else {
+		badge.textContent = "0";
+		badge.style.display = "none";
+	}
+}
+
+// "Read" the notifications -> badge disappears, just like Facebook does on open.
+function clearNotificationBadge() {
+	updateNotificationBadge(0);
+}
+
+// Build the <li><a>...</a></li> list of low-stock notifications, each linking to the item's detail page.
+function renderNotificationList(data) {
+	const notificationList = document.getElementById("notificationList");
+	const notificationEmpty = document.querySelector(".notification-empty");
+
+	if (!notificationList) {
+		console.log("notificationList not found");
+		return;
+	}
+
+	notificationList.innerHTML = "";
+
+	if (!data || data.length === 0) {
+		if (notificationEmpty) notificationEmpty.textContent = "No notifications yet.";
+		return;
+	}
+
+	if (notificationEmpty) notificationEmpty.textContent = "";
+
+	data.forEach((item) => {
+		const li = document.createElement("li");
+		li.className = "notification-item";
+
+		const link = document.createElement("a");
+		link.className = "notification-item-link";
+		link.href = `${FixedUrl}admin/item/detail/${item.id}`;
+
+		const title = document.createElement("p");
+		title.className = "notification-item-title";
+		title.textContent = `Item "${item.name}" has only ${item.stock} left in stock. Restock soon.`;
+		link.appendChild(title);
+
+		li.appendChild(link);
+		notificationList.appendChild(li);
+	});
+}
+
+// Fetches the current low-stock notifications and renders them in the popup list.
+function fetchAndRenderNotifications() {
+	fetch(`${FixedUrl}admin/notification/list`)
+		.then((response) => {
+			if (response.status === 401) {
+				window.location.href = `${FixedUrl}login`;
+				return null;
+			}
+			return response.json();
+		})
+		.then((data) => {
+			if (!data) return;
+//			console.log("notification data:", data);
+			renderNotificationList(data);
+		})
+		.catch((error) => {
+			console.error("Error fetching notification data:", error);
+		});
+}
+
+// Lightweight check used on page load / polling to keep the red badge count up to date
+// without opening the popup.
+function checkNotificationBadgeCount() {
+	const badge = document.getElementById("notificationBadge");
+	if (!badge) return; // user has no notification bell (not admin/staff)
+
+	fetch(`${FixedUrl}admin/notification/list`)
+		.then((response) => (response.status === 401 ? [] : response.json()))
+		.then((data) => updateNotificationBadge(data ? data.length : 0))
+		.catch((error) => console.error("Error checking notification badge:", error));
+}
+
 function notification() {
-	console.log("notification() called");
+	//console.log("notification() called");
 	const popup = document.getElementById("notificationPopup");
-	if (popup) {
-		popup.classList.toggle("show");
-		console.log("Notification popup toggled. Current state:", popup.classList.contains("show"));
+	if (!popup) return;
+
+	popup.classList.toggle("show");
+	const isOpen = popup.classList.contains("show");
+	console.log("Notification popup toggled. Current state:", isOpen);
+
+	if (isOpen) {
+		fetchAndRenderNotifications();
+		// Like Facebook: opening the popup marks the notifications as seen -> badge clears.
+		clearNotificationBadge();
 	}
 }
 
@@ -548,9 +620,15 @@ function closeNotification() {
 	const popup = document.getElementById("notificationPopup");
 	if (popup) {
 		popup.classList.remove("show");
-		console.log("Notification popup closed");
+		//console.log("Notification popup closed");
 	}
 }
+
+// Show the badge as soon as the page loads, and keep it fresh with periodic polling.
+document.addEventListener("DOMContentLoaded", () => {
+	checkNotificationBadgeCount();
+	setInterval(checkNotificationBadgeCount, 60000); // re-check every 60s
+});
 
 // Close notification popup when clicking outside of it
 document.addEventListener("click", function(event) {
@@ -561,26 +639,11 @@ document.addEventListener("click", function(event) {
 		// Only close if click is NOT on the button or popup
 		if (!container.contains(event.target) && popup.classList.contains("show")) {
 			popup.classList.remove("show");
-			console.log("Notification popup closed (clicked outside)");
+		//	console.log("Notification popup closed (clicked outside)");
 		}
 	}
 });
 
-function notificationtry(){
-	alert("notification button clicked");
-	fetch(`${FixedUrl}admin/notification/list`)
-	.then((response)=>{
-		if(response.status === 401){
-			window.location.href = `${FixedUrl}login`;
-		     return null;	
-				}
-				return response.json();
-	}).then ((data)=>{
-		console.log("notification data:", data);
-	}).catch((error)=>{
-		console.error("Error fetching notification data:", error);
-	})
-}
 
 	
 			
