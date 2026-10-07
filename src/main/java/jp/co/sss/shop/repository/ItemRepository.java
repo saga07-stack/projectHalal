@@ -50,6 +50,8 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	
 	List<ItemDto> findByNameContainingAndDeleteFlag(String name, int notDeleted);
 
+	@Query("SELECT i FROM Item i WHERE i.stock <= 5 AND i.deleteFlag = 0 ORDER BY i.insertDate DESC ")
+	List <Item> findByStockLessThenFiveAndDeleteFlagOrderByInsertDateDesc();
 	
 	
 	

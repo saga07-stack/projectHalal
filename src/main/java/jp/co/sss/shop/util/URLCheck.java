@@ -162,6 +162,7 @@ public class URLCheck {
 				|| isURLForSystemAdmin(requestURL)
 				|| requestURL.indexOf("admin/category") != -1
 				|| requestURL.indexOf("admin/item") != -1
+				|| requestURL.endsWith("admin/notification/list")
 				|| requestURL.indexOf("admin/order") != -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;
@@ -233,6 +234,8 @@ public class URLCheck {
 		if (URLCheck.isURLForStaticFile(requestURL)
 				|| requestURL.endsWith(contextPath + "/")
 				|| requestURL.endsWith("/login")
+				|| requestURL.endsWith("/client/user/email/update/input")
+				
 				|| requestURL.indexOf("/client/item/list/") != -1
 				|| requestURL.indexOf("/items/favorite/list/") != -1
 				|| requestURL.indexOf("/items/search/") != -1
