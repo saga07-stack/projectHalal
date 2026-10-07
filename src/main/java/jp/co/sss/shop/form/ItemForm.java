@@ -1,12 +1,14 @@
 package jp.co.sss.shop.form;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.sss.shop.annotation.ItemCheck;
@@ -73,6 +75,19 @@ public class ItemForm implements Serializable {
 	 * カテゴリ名
 	 */
 	private String categoryName;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dateExpired;
+	
+	
+	
+	public LocalDate getDateExpired() {
+		return dateExpired;
+	}
+
+	public void setDateExpired(LocalDate dateExpired) {
+		this.dateExpired = dateExpired;
+	}
 
 	/**
 	 * 商品ID取得

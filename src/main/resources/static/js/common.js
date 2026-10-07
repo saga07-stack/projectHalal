@@ -42,14 +42,7 @@ function loadAllItems() {
 				//	alert("image clicked "+ `${FixedUrl}items/detail/${item.id}`);
 					window.location.href = `${FixedUrl}items/details/${item.id}`
 					
-					/*fetch(`${FixedUrl}items/detail/${item.id}`)
-					.then((response) => response.json())
-					.then((data)=>{
-						console.log("Item detail data:", data);
-					})
-					.catch((error)=>{
-						console.log("Error fetching item detail:", error);
-					})*/
+				
 					
 				})
 

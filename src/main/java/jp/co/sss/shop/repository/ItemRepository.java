@@ -1,5 +1,6 @@
 package jp.co.sss.shop.repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -48,10 +49,12 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	public Item findByNameAndDeleteFlag(String name, int notDeleted);
 	
 	
-	List<ItemDto> findByNameContainingAndDeleteFlag(String name, int notDeleted);
+	List<Item> findByNameContainingAndDeleteFlag(String name, int notDeleted);
 
 	@Query("SELECT i FROM Item i WHERE i.stock <= 5 AND i.deleteFlag = 0 ORDER BY i.insertDate DESC ")
 	List <Item> findByStockLessThenFiveAndDeleteFlagOrderByInsertDateDesc();
+
+	List<Item> findByDeleteFlagNot(int i);
 	
 	
 	

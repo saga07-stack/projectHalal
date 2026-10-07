@@ -58,6 +58,23 @@ public class ItemsRestController {
 		
 	}
 	
+	@GetMapping("/debug/all-items")
+	public ResponseEntity<?> debugAllItems() {
+		List<Item> allItems = itemRepository.findAll();
+		Map<String, Object> response = new LinkedHashMap<>();
+		response.put("total_count", allItems.size());
+		response.put("items", allItems.stream().map(item -> {
+			Map<String, Object> map = new LinkedHashMap<>();
+			map.put("id", item.getId());
+			map.put("name", item.getName());
+			map.put("deleteFlag", item.getDeleteFlag());
+			map.put("price", item.getPrice());
+			map.put("category", item.getCategory() != null ? item.getCategory().getName() : "NULL");
+			return map;
+		}).collect(Collectors.toList()));
+		return ResponseEntity.ok(response);
+	}
+	
 	@GetMapping("/cart/add/{id}")
 	public ResponseEntity<?> addToCart(@PathVariable int id, HttpSession session) {
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");

@@ -1,6 +1,7 @@
 package jp.co.sss.shop.entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -66,6 +67,18 @@ public class Item {
 	@Column(insertable = false)
 	private Integer deleteFlag;
 
+	@Column(name = "date_expire")
+	private LocalDate dateExpired;
+	
+	
+	public LocalDate getDateExpired() {
+		return dateExpired;
+	}
+
+	public void setDateExpired(LocalDate dateExpired) {
+		this.dateExpired = dateExpired;
+	}
+
 	/**
 	 * 登録日付
 	 */
@@ -90,6 +103,7 @@ public class Item {
 	 */
 	public Item() {
 	}
+
 
 	/**
 	 * コンストラクタ

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.RestControllerDTO.ItemDto;
@@ -19,6 +21,8 @@ import jp.co.sss.shop.repository.OrderItemRepository;
 
 @Service
 public class ItemService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
 
 	@Autowired
   private	ItemRepository itemRepository;
@@ -31,15 +35,17 @@ public class ItemService {
 	
 	
 	public List<ItemDto> getAllItems() {
-		return itemRepository.findAll().stream()
+		List<ItemDto> items = itemRepository.findByDeleteFlagNot(1).stream()
 				.map(item -> new ItemDto(
 						item.getName(),
 						item.getDescription(),
 						item.getPrice(),
 						item.getImage(),
 						item.getId(),
-						item.getCategory().getName()))
+						item.getCategory() != null ? item.getCategory().getName() : "Unknown"))
 				.collect(Collectors.toList());
+		logger.info("getAllItems() returned {} items", items.size());
+		return items;
 	}
 	
 	
@@ -51,7 +57,7 @@ public class ItemService {
 	                    itemEntity.getPrice(),
 	                    itemEntity.getImage(),
 	                    itemEntity.getId(),
-	                    itemEntity.getCategory().getName()))
+	                    itemEntity.getCategory() != null ? itemEntity.getCategory().getName() : "Unknown"))
 	            .orElse(null);
 	}
 		
@@ -98,7 +104,7 @@ public class ItemService {
 						itemEntity.getPrice(),
 						itemEntity.getImage(),
 						itemEntity.getId(),
-						itemEntity.getCategory().getName()))
+						itemEntity.getCategory() != null ? itemEntity.getCategory().getName() : "Unknown"))
 				.orElse(null);
 		return item;
 				
@@ -106,7 +112,16 @@ public class ItemService {
 
 	public List<ItemDto> searchItems(String keyword){
 		
-		return itemRepository.findByNameContainingAndDeleteFlag(keyword, 0);
+		return itemRepository.findByNameContainingAndDeleteFlag(keyword, 0).stream()
+				.map(item -> new ItemDto(
+						item.getName(),
+						item.getDescription(),
+						item.getPrice(),
+						item.getImage(),
+						item.getId(),
+						item.getCategory() != null ? item.getCategory().getName() : "Unknown"))
+				.collect(Collectors.toList());
+						
 	}
 	
 	public List<ItemDto> getItemsStock(){
@@ -120,10 +135,13 @@ public class ItemService {
 						item.getDescription(),
 						item.getPrice(),
 						item.getImage(),
-						item.getCategory().getName(),
-						item.getId()))
+						item.getId(),
+						item.getCategory() != null ? item.getCategory().getName() : "Unknown"))
 				.collect(Collectors.toList());
 	}
+
+
+	
 	
 
 }

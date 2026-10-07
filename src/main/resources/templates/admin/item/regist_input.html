@@ -36,6 +36,10 @@
 					<input type="text" th:field="*{stock}" />
 				</li>
 				<li>
+					<label><span class="input_title">[[#{itemForm.ExpireDate}]]</span></label>
+					<input type="date" th:field="*{dateExpired}" />
+				</li>
+				<li>
 					<label><span class="input_title">[[#{data.category}]]</span></label>
 					<select name="categoryId">
 						<option th:each="category: ${categories}" th:value="${category.id}"
