@@ -3349,3 +3349,12 @@ p.link_center {
 	}
 }
 
+.search-box { position: relative; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.adv-options {
+    flex-basis: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+.adv-options label { margin-right: 16px; cursor: pointer; }

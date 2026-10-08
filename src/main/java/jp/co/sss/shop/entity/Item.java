@@ -40,7 +40,7 @@ public class Item {
 	/**
 	 * 価格
 	 */
-	@Column
+	@Column 
 	private Integer price;
 
 	/**

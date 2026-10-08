@@ -114,6 +114,7 @@ public class URLCheck {
 				|| requestURL.indexOf("admin/menu") != -1
 				|| requestURL.indexOf("/admin/admin_menu") != -1
 				|| requestURL.indexOf("admin/user") != -1
+				|| requestURL.indexOf("admin/notification") != -1
 				|| requestURL.endsWith("/logout")) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;
@@ -162,7 +163,7 @@ public class URLCheck {
 				|| isURLForSystemAdmin(requestURL)
 				|| requestURL.indexOf("admin/category") != -1
 				|| requestURL.indexOf("admin/item") != -1
-				|| requestURL.endsWith("admin/notification/list")
+				|| requestURL.indexOf("admin/notification") != -1
 				|| requestURL.indexOf("admin/order") != -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;

@@ -523,8 +523,9 @@ function clearNotificationBadge() {
 	updateNotificationBadge(0);
 }
 
-// Build the <li><a>...</a></li> list of low-stock notifications, each linking to the item's detail page.
-function renderNotificationList(data) {
+// Build the <li><a>...</a></li> list of notifications (low-stock + expiring soon),
+// each linking to the item's detail page.
+function renderNotificationList(stockData, expiredData) {
 	const notificationList = document.getElementById("notificationList");
 	const notificationEmpty = document.querySelector(".notification-empty");
 
@@ -535,14 +536,18 @@ function renderNotificationList(data) {
 
 	notificationList.innerHTML = "";
 
-	if (!data || data.length === 0) {
+	const stockItems = stockData || [];
+	const expiredItems = expiredData || [];
+
+	if (stockItems.length === 0 && expiredItems.length === 0) {
 		if (notificationEmpty) notificationEmpty.textContent = "No notifications yet.";
 		return;
 	}
 
 	if (notificationEmpty) notificationEmpty.textContent = "";
 
-	data.forEach((item) => {
+	// Low stock notifications
+	stockItems.forEach((item) => {
 		const li = document.createElement("li");
 		li.className = "notification-item";
 
@@ -558,39 +563,71 @@ function renderNotificationList(data) {
 		li.appendChild(link);
 		notificationList.appendChild(li);
 	});
+
+	// Expiring soon notifications
+	expiredItems.forEach((item) => {
+		const li = document.createElement("li");
+		li.className = "notification-item notification-item-expired";
+
+		const link = document.createElement("a");
+		link.className = "notification-item-link";
+		link.href = `${FixedUrl}admin/item/detail/${item.id}`;
+
+		const title = document.createElement("p");
+		title.className = "notification-item-title";
+		const expiryText = item.dateExpired ? ` on ${item.dateExpired}` : "";
+		title.textContent = `Item "${item.name}" is expiring soon${expiryText}.`;
+		link.appendChild(title);
+
+		li.appendChild(link);
+		notificationList.appendChild(li);
+	});
 }
 
-// Fetches the current low-stock notifications and renders them in the popup list.
+// Fetches the current low-stock AND expiring-soon notifications, merges them,
+// and renders the combined list in the popup.
 function fetchAndRenderNotifications() {
-	fetch(`${FixedUrl}admin/notification/list`)
-		.then((response) => {
-			if (response.status === 401) {
-				window.location.href = `${FixedUrl}login`;
-				return null;
-			}
-			return response.json();
-		})
-		.then((data) => {
-			if (!data) return;
-//			console.log("notification data:", data);
-			renderNotificationList(data);
-		})
+	const stockPromise = fetch(`${FixedUrl}admin/notification/list`)
+		.then((response) => (response.status === 401 ? [] : response.json()))
 		.catch((error) => {
-			console.error("Error fetching notification data:", error);
+			console.error("Error fetching stock notification data:", error);
+			return [];
 		});
+
+	const expiredPromise = fetch(`${FixedUrl}admin/notification/expired`)
+		.then((response) => (response.status === 401 ? [] : response.json()))
+		.catch((error) => {
+			console.error("Error fetching expired notification data:", error);
+			return [];
+		});
+
+	Promise.all([stockPromise, expiredPromise]).then(([stockData, expiredData]) => {
+		renderNotificationList(stockData, expiredData);
+	});
 }
 
 // Lightweight check used on page load / polling to keep the red badge count up to date
-// without opening the popup.
+// without opening the popup. Counts both low-stock and expiring-soon items.
 function checkNotificationBadgeCount() {
 	const badge = document.getElementById("notificationBadge");
 	if (!badge) return; // user has no notification bell (not admin/staff)
 
-	fetch(`${FixedUrl}admin/notification/list`)
+	const stockPromise = fetch(`${FixedUrl}admin/notification/list`)
 		.then((response) => (response.status === 401 ? [] : response.json()))
-		.then((data) => updateNotificationBadge(data ? data.length : 0))
+		.catch(() => []);
+
+	const expiredPromise = fetch(`${FixedUrl}admin/notification/expired`)
+		.then((response) => (response.status === 401 ? [] : response.json()))
+		.catch(() => []);
+
+	Promise.all([stockPromise, expiredPromise])
+		.then(([stockData, expiredData]) => {
+			const total = (stockData ? stockData.length : 0) + (expiredData ? expiredData.length : 0);
+			updateNotificationBadge(total);
+		})
 		.catch((error) => console.error("Error checking notification badge:", error));
 }
+
 
 function notification() {
 	//console.log("notification() called");
@@ -637,7 +674,57 @@ document.addEventListener("click", function(event) {
 	}
 });
 
+function expiredList(){
+	fetch(`${FixedUrl}admin/notification/expired`)
+	.then((response) =>{
+	 	if(response.status === 401){
+			window.location.href = `${FixedUrl}login`;
+			}
+			return response.json();
+		
+	}).then((data)=>{
+		
+		console.log("expired data", data);
+	}).catch((error)=>{
+		
+		console.log("Error fetching expired data:", error);
+	})
+	
+	
+	
+}
 
+const searchInput = document.getElementById('searchInput');
+const advBtn      = document.getElementById('advBtn');
+const advOptions  = document.getElementById('advOptions');
+const searchBtn   = document.getElementById('searchBtn');
+
+
+if(advBtn){
+	console.log("advBtn found");
+}else{
+	console.log("advBtn not found");
+}
+
+// 1. Advance Search button: dekhaune / lukaune
+advBtn.addEventListener('click', () => {
+    const isHidden = advOptions.style.display === 'none';
+    advOptions.style.display = isHidden ? 'block' : 'none';
+});
+
+// 2. Radio badlepachi input ko placeholder / type badlaune
+document.querySelectorAll('input[name="searchType"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        searchInput.value = '';
+        if (radio.value === 'id') {
+            searchInput.type = 'number';
+            searchInput.placeholder = 'Enter item ID';
+        } else {
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Enter item name';
+        }
+    });
+});
 	
 			
 		
