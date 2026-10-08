@@ -1,5 +1,6 @@
 package jp.co.sss.shop.repository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,6 +57,10 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	List<Item> findByDeleteFlagNot(int i);
 	
+	@Query("SELECT i FROM Item i WHERE i.deleteFlag <> 1 " +
+		       "AND i.dateExpired IS NOT NULL " +
+		       "AND i.dateExpired <= :limitDate")
+		List<Item> findExpiringItems(@Param("limitDate") LocalDate limitDate);
 	
 	
 }

@@ -1,6 +1,8 @@
 package jp.co.sss.shop.controller.admin.Notification;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +44,23 @@ public class NotificationRestController {
 		
 	}
 	
+	@GetMapping("/expired")
+	ResponseEntity<?> getExpiredNotificationList(){
+		
+		// 7日以内に賞味期限/消費期限が切れる商品を対象とする
+		LocalDate limitDate = LocalDate.now().plusDays(7);
+		List<Item> items = itemRepo.findExpiringItems(limitDate);
+		
+		List<ItemDto> itemDto = items.stream()
+				.map(item -> new ItemDto(
+								item.getName(),
+								item.getId(),
+							 	item.getDateExpired()))
+				.toList();
+		
+		return ResponseEntity.ok(itemDto);
+	}
+	
 	
 }
+

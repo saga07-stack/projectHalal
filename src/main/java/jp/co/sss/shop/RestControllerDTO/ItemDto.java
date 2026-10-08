@@ -1,5 +1,7 @@
 package jp.co.sss.shop.RestControllerDTO;
 
+import java.time.LocalDate;
+
 import org.springframework.http.HttpStatus;
 
 public class ItemDto {
@@ -11,6 +13,14 @@ public class ItemDto {
 	private String categoryName;
 	private Integer id;
 	private Integer stock;
+	private LocalDate dateExpired;
+	
+	public LocalDate getDateExpired() {
+		return dateExpired;
+	}
+	public void setDateExpired(LocalDate dateExpired) {
+		this.dateExpired = dateExpired;
+	}
 	
 	public String getName() {
 		return name;
@@ -91,6 +101,15 @@ public class ItemDto {
 	
 	
 	}
-	
+	public ItemDto(String name, Integer id) {
+		this.name = name;
+		this.id = id;
+	}
+
+	public ItemDto(String name, Integer id, LocalDate dateExpired) {
+		this.name = name;
+		this.id = id;
+		this.dateExpired = dateExpired;
+	}
 
 }
