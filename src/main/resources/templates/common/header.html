@@ -103,7 +103,7 @@
 				<a th:href="@{/admin/user/detail/{id}(id=${session.user.id})}" th:text="${session.user.name}" class="user-name"></a>
 				<span class="divider">|</span>
 				<a th:href="@{/logout}" th:text="#{logout}" class="auth-link"></a>
-				<a id="check" onclick="expiredList()" >checkexpired </a>
+				
 			</div>
 		</div>
 	</div>

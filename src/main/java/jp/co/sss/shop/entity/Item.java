@@ -212,7 +212,7 @@ public class Item {
 	public Integer getStock() {
 		return stock;
 	}
-
+ 
 	/**
 	 * 在庫数のセット
 	 * @param stock 在庫数

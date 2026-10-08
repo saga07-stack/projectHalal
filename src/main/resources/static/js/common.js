@@ -695,22 +695,16 @@ function expiredList(){
 }
 
 const searchInput = document.getElementById('searchInput');
-const advBtn      = document.getElementById('advBtn');
-const advOptions  = document.getElementById('advOptions');
+
 const searchBtn   = document.getElementById('searchBtn');
 
 
-if(advBtn){
-	console.log("advBtn found");
-}else{
-	console.log("advBtn not found");
-}
+//console.log("hello form list.html");
+
+
 
 // 1. Advance Search button: dekhaune / lukaune
-advBtn.addEventListener('click', () => {
-    const isHidden = advOptions.style.display === 'none';
-    advOptions.style.display = isHidden ? 'block' : 'none';
-});
+
 
 // 2. Radio badlepachi input ko placeholder / type badlaune
 document.querySelectorAll('input[name="searchType"]').forEach(radio => {

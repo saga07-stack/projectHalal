@@ -3,6 +3,7 @@ package jp.co.sss.shop.repository;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,5 +63,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 		       "AND i.dateExpired <= :limitDate")
 		List<Item> findExpiringItems(@Param("limitDate") LocalDate limitDate);
 	
-	
+//	@Query ("select i from Item i where i.deleteFlag = 0 and i.name like %:keyword%")
+//	List<Item> findByNameContainingAndDeleteFlags(String keyword, int notD);
+//	
 }
