@@ -21,6 +21,19 @@
 	<div th:if="${#lists.isEmpty(items)}">
 		<p th:text="#{msg.admin.list.none(#{item})}"></p>
 	</div>
+	<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search item...">
+    <button type="button" id="searchBtn">Search</button>
+    <button type="button" id="advBtn">Advance Search ▾</button>
+
+    <!-- Default ma lukeko -->
+    <div id="advOptions" class="adv-options" style="display:none;">
+        <label><input type="radio" name="searchType" value="name" checked> Name</label>
+        <label><input type="radio" name="searchType" value="id"> ID</label>
+    </div>
+</div>
+
+<div id="searchResult"></div>
 	<form th:action="@{/admin/item/regist/input}" method="post" class="sign_up_form">
 		<input type="submit" value="商品新規登録" class="menu_button" th:if="${registrable}" />
 	</form>
@@ -31,6 +44,7 @@
 		<tbody>
 		<tr>
 			<th>[[#{data.id}]]</th>
+			<th>[[#{itemForm.image}]]</th>
 			<th>[[#{itemForm.name}]]</th>
 			<th>[[#{itemForm.price}]]</th>
 			<th>[[#{data.category}]]</th>
@@ -39,6 +53,10 @@
 		<!--/* 商品情報 */-->
 		<tr th:each="item: ${items}">
 			<td th:text="${item.id}"></td>
+			<td>
+			<img th:if="${item.image != null}" th:src="@{/images/{image}(image=${item.image})}" style="max-width: 20%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);" />
+						<img th:if="${item.image == null}" th:src="@{/images/common/no_image.jpg}" style="max-width: 20%; height: auto; border-radius: var(--radius-lg); box-shadow: var(--shadow-md);" />						
+			  </td>
 			<td><a th:href="@{/admin/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
 			<td th:text="${item.price}"></td>
 			<td th:text="${item.category.name}"></td>
@@ -87,6 +105,7 @@
 	<form th:action ="@{/admin/menu}"             > 
 	<input type="submit" value="Back" class="menu_button" />
 	</form>
+<script th:src="@{/js/common.js}" defer></script>
 </body>
 
 </html>

@@ -75,13 +75,12 @@ public class AdminItemShowController {
 
 		//商品登録・変更・削除用のセッションスコープを初期化
 		session.removeAttribute("itemForm");
-
 		return "admin/item/list";
 	}
 
-	/**
+	/** 
 	 * 商品情報詳細表示処理
-	 *
+	 * 
 	 * @param id  商品ID
 	 * @param model  Viewとの値受渡し
 	 * @return "admin/item/detail" 詳細画面 表示
