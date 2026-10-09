@@ -121,13 +121,22 @@
 	<input type="submit" value="Back" class="menu_button" />
 	</form>
 <script >
-const advOptions  = document.getElementById('advOptions');
+ const advOptions  = document.getElementById('advOptions');
 const advBtn = document.getElementById('advBtn');
 
+let visible = true;
 advBtn.addEventListener('click', () => {
 
+if(visible){
+
 advOptions.style.display ="";
-});
+visible = false;
+	 
+}else{
+	advOptions.style.display ="none";
+	visible = true;
+}
+}); 
 </script>
 </body>
 </html>
