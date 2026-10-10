@@ -138,7 +138,7 @@ public class ResetUserController {
 			// Validate password
 			if (newPassword == null || newPassword.length() < 8) {
 				return new PasswordResetResponse(false, "パスワードは8文字以上である必要があります");
-			}
+			  }
                    
 	 		// TODO: Update user password in database
 			// userService.updatePassword(email, newPassword);

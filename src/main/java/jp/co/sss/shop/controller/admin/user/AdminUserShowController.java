@@ -94,7 +94,7 @@ public class AdminUserShowController {
 		if (user == null) {
 			// 対象が無い場合、エラー
 			return "redirect:/syserror";
-		}
+		}  
 
 		// Userエンティティの各フィールドの値をUserBeanにコピー
 		UserBean userBean = new UserBean();
