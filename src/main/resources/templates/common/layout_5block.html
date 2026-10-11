@@ -13,7 +13,7 @@
 <body class="user">
 	<!--/* ヘッダー */-->
 	<header id="headerParent">
-		<div th:replace="~{common/header :: layout-header}"></div>
+			<div th:replace="~{common/header :: layout-header('/client/item/list/1', 'Items khojnus')}"></div>
 	</header>
 	<!--/* ナビゲーションバー */-->
 	<!-- <nav th:if="${session.user == null or session.user.authority == 2}" class="navi_area">

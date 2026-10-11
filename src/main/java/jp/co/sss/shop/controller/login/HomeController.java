@@ -16,8 +16,8 @@ public class HomeController {
 	 */
 	@GetMapping("/Restaurant/home")
 	public String showHome() {
-		return "Restaurant/index";
-	}
+		return "Restaurant/index";   
+	 }
 
 	/*
 	 * The rest of the "Himal Kitchen" mini-site (menu / dish detail / about /
@@ -39,14 +39,14 @@ public class HomeController {
 		return "Restaurant/index";
 	}
 
-	@GetMapping("/Restaurant/menu.html")
+	@GetMapping("/Restaurant/menu.html")   
 	public String showMenu() {
 		return "Restaurant/menu";
 	}
-
+ 
 	@GetMapping("/Restaurant/item.html")
-	public String showItem() {
-		return "Restaurant/item";
+	public String showItem() { 
+		return "Restaurant/item"; 
 	}
 
 	@GetMapping("/Restaurant/contact.html")
