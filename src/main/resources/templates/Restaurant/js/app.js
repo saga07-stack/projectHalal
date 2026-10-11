@@ -7,9 +7,17 @@ const hoursText = () => SITE.hours.map(h => `${esc(h[0])}: ${esc(h[1])}`).join("
 function layout() {
   const page = document.body.dataset.page;
   const link = (h, t, k) => `<a href="${h}"${page === k ? ' aria-current="page"' : ""}>${t}</a>`;
-  $("#site-header").innerHTML = `<div class="wrap bar"><a class="brand" href="index.html">${esc(SITE.name)}</a>
+  // The home page now uses the shared shop header (common/header.html via
+  // Thymeleaf), so #site-header no longer exists there — guard against it.
+  const siteHeader = $("#site-header");
+  if (siteHeader) {
+    siteHeader.innerHTML = `<div class="wrap bar"><a class="brand" href="index.html">${esc(SITE.name)}</a>
     <nav aria-label="Main">${link("menu.html", "Menu", "menu")}${link("contact.html", "About &amp; contact", "contact")}${link("reserve.html", "Book a table", "reserve")}</nav></div>`;
-  $("#site-footer").innerHTML = `<div class="wrap foot"><div><strong>${esc(SITE.name)}</strong><br>${esc(SITE.address)}<br>${esc(SITE.phone)}</div><div>${hoursText()}</div></div>`;
+  }
+  const siteFooter = $("#site-footer");
+  if (siteFooter) {
+    siteFooter.innerHTML = `<div class="wrap foot"><div><strong>${esc(SITE.name)}</strong><br>${esc(SITE.address)}<br>${esc(SITE.phone)}</div><div>${hoursText()}</div></div>`;
+  }
 }
 function photo(it) {
   return `<div class="ph"><span>${esc(it.name[0])}</span><img src="images/${it.id}.jpg" alt="${esc(it.name)}" loading="lazy" onerror="this.remove()"></div>`;
