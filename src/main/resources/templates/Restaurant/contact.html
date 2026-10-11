@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Find us, opening hours and contact details.">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
+    <title>About &amp; contact – Himal Kitchen</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-page="contact"><a class="skip" href="#main">Skip to content</a>
+    <header>
+         <div th:replace="~{common/header :: layout-header('/restaurant/menu/search', 'Menu khojnus')}"></div>
+    </header>
+    <main id="main" class="wrap">
+        <h1>About &amp; contact</h1>
+        <p class="lead">A family kitchen serving the dishes we grew up with. Edit this paragraph with your own story.
+        </p>
+        <dl>
+            <dt>Address</dt>
+            <dd id="c-addr"></dd>
+            <dt>Phone</dt>
+            <dd id="c-phone"></dd>
+            <dt>Hours</dt>
+            <dd id="c-hours"></dd>
+        </dl>
+        <div id="map" class="map"></div>
+    </main>
+    <footer>
+        <div th:replace="~{common/footer :: layout-footer}"></div>
+    </footer>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

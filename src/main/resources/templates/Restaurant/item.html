@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Dish details">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
+    <title>Dish details – Himal Kitchen</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-page="item"><a class="skip" href="#main">Skip to content</a>
+    <header>
+         <div th:replace="~{common/header :: layout-header('/restaurant/menu/search', 'Menu khojnus')}"></div>
+    </header>
+    <main id="main" class="wrap">
+        <article id="item-detail" class="detail"></article>
+        <section>
+            <h2>More like this</h2>
+            <div class="grid" id="related"></div>
+        </section>
+    </main>
+    <footer>
+        <div th:replace="~{common/footer :: layout-footer}"></div>
+    </footer>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
