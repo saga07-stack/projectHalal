@@ -138,6 +138,9 @@ body > .container {
  * of which layout (3/4/5-block) is active.
  * ============================================================================ */
 #headerParent {
+	position: sticky;
+	top: 0;
+	z-index: 500;
 	width: 100%;
 	background: var(--layout-header-bg);
 	flex-shrink: 0;

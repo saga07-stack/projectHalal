@@ -7,36 +7,33 @@
 <body>
 <div th:fragment="layout-header" >
 <div id="header">
-	<!-- Left: Logo/Shop Title -->
-	
-	<div  id="showAll" class="header-logo">
-	<section th:if="${session.user == null or session.user.authority == 2}" > 
-	
-<a  th:href= "@{/}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
-	</section>
 
-<section  th:if="${session.user != null  and session.user.authority == 1}"  > 
-<a    th:href= "@{/admin/menu}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+	<!-- Left: Logo -->
+	<div id="showAll" class="header-logo">
+		<section th:if="${session.user == null or session.user.authority == 2}">
+			<a th:href="@{/}" class="logo-link"><img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+		</section>
+		<section th:if="${session.user != null and session.user.authority == 1}">
+			<a th:href="@{/admin/menu}" class="logo-link"><img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+		</section>
+		<!-- <section th:if="${session.user == null or session.user.authority == 0}">
+			<a th:href="@{/admin/menu}" class="logo-link"><img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
+		</section> -->
+	</div>
 
-
-
-<section  th:if="${ session.user == null or  session.user.authority == 0}"  > 
-<a    th:href= "@{/admin/menu}"  >	<img th:src="@{/images/logo/nepali_pasal_website_logo.svg}" alt="Nepali Pasal Logo" class="logo" /></a>
-
-</section></section>
-
-
-		 <div th:if="${session.user == null or session.user.authority == 2}" >
-		
-		 <Button id = "categoryBtn" >  category ▾  </Button>
-		  <a th:href="@{/}" > Restaurants   </a>
-          <a   > Stores   </a>	
-          <a> About Us</a>	
-		
-		
-		</div>	
-	
-		</div>
+	<!-- Category dropdown trigger + quick links -->
+	<div th:if="${session.user == null or session.user.authority == 2}" class="header-categories">
+		<button type="button" id="categoryBtn" class="category-btn">
+			
+			<span >Categories▾</span>
+			<span class="category-btn-caret"></span>
+		</button>
+		<nav class="header-quicklinks">
+			<a th:href="@{/Restaurant/home}" class="quicklink">Restaurants</a>
+			<a class="quicklink">Stores</a>
+			<a class="quicklink">About Us</a>
+		</nav>
+	</div>
 
 	<!-- Center: Search Bar -->
 	<div th:if="${session.user == null  or session.user.authority == 2}" class="header-search">
@@ -44,7 +41,12 @@
 		<form class="search-form" th:action="@{/items/search}"  method="get">
 
 			<input type="text" class="search-input" placeholder="Search items..." name="keyword" />
-			<button type="submit" class="search-btn">Search</button>
+			<button type="submit" class="search-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+					<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+				</svg>
+				<span class="search-btn-text">Search</span>
+			</button>
 			
 		</form>
 	</div>
