@@ -85,8 +85,10 @@ function loadAllItems() {
 
                 // Favourite button
                 const favouriteButton = document.createElement("button");
-                favouriteButton.className = "btn btn-favourite";
-                favouriteButton.innerHTML = "♡ Favourite";
+                favouriteButton.className = "btn btn-favourite";
+                favouriteButton.innerHTML = favouriteButtonHtml(false);
+                favouriteButton.setAttribute("aria-label", "Add to favourites");
+                favouriteButton.title = "Add to favourites";
                 favouriteButton.setAttribute("data-item-id", item.id);
 
 				 favouriteButton.addEventListener("click", () => toggleFavourite(item.id, favouriteButton));
@@ -143,10 +145,18 @@ function loadAllItems() {
             console.error("Error fetching data:", error);
         });
 }
+// Favourite button content: icon + text (text is hidden on phones via CSS, icon stays)
+function favouriteButtonHtml(isFav) {
+    const icon = isFav ? "♥" : "♡";
+    return `<span class="fav-icon">${icon}</span><span class="fav-text"> Favourite</span>`;
+}
+
 // হার্ট ভরা (♥) বা ফাঁকা (♡) করা
 function setFavouriteStyle(button, isFav) {
     button.classList.toggle("active", isFav);
-    button.innerHTML = isFav ? "♥ Favourite" : "♡ Favourite";
+    button.innerHTML = favouriteButtonHtml(isFav);
+    button.setAttribute("aria-label", isFav ? "Remove from favourites" : "Add to favourites");
+    button.title = button.getAttribute("aria-label");
 }
 
 // বাটন চাপলে যা হয়
@@ -241,7 +251,9 @@ function loadFavouritePage() {
                 buttons.className = "item-buttons";
                 const removeBtn = document.createElement("button");
                 removeBtn.className = "btn btn-favourite active";
-                removeBtn.textContent = "♥ Remove";
+                removeBtn.innerHTML = `<span class="fav-icon">♥</span><span class="fav-text"> Remove</span>`;
+                removeBtn.setAttribute("aria-label", "Remove from favourites");
+                removeBtn.title = "Remove from favourites";
                 removeBtn.addEventListener("click", () => {
                     fetch(`${FixedUrl}items/favorite/toggle/${item.id}`)
                         .then((r) => r.json())
@@ -420,7 +432,9 @@ if (searchForm) searchForm.addEventListener("submit", (event) => {
 		                // Favourite button
 		                const favouriteButton = document.createElement("button");
 		                favouriteButton.className = "btn btn-favourite";
-		                favouriteButton.innerHTML = "♡ Favourite";
+		                favouriteButton.innerHTML = favouriteButtonHtml(false);
+		                favouriteButton.setAttribute("aria-label", "Add to favourites");
+		                favouriteButton.title = "Add to favourites";
 		                favouriteButton.setAttribute("data-item-id", item.id);
 
 						favouriteButton.addEventListener("click", () => toggleFavourite(item.id, favouriteButton));

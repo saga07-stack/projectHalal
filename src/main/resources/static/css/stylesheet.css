@@ -3853,4 +3853,160 @@ p.link_center {
     .hero-slide p { font-size: 0.95rem; }
     .hero-arrow { width: 36px; height: 36px; font-size: 1.3rem; }
 }
+
+/* =========================================================================
+   MOBILE COMPACT LAYOUT (max-width: 767px only)
+   Desktop / tablet rules above are NOT changed by anything below.
+   Selectors on the hero slider use a `body` prefix because hero-slider.css
+   is loaded after this file and would otherwise win at equal specificity.
+   ========================================================================= */
+@media (max-width: 767px) {
+
+	/* ---- Top banner (hero slider): shorter, smaller title ---- */
+	body .hero-slider {
+		height: 100px;
+		margin: 6px 0 8px calc(50% - 50vw);
+	}
+
+	body .hero-slider .hero-slide {
+		padding: 0 14px;
+	}
+
+	body .hero-slider .hero-slide h3 {
+		margin: 0 0 2px;
+		font-size: 1.05rem;
+	}
+
+	body .hero-slider .hero-slide p {
+		font-size: 0.72rem;
+		line-height: 1.3;
+	}
+
+	body .hero-slider .hero-dots {
+		bottom: 6px;
+	}
+
+	/* ---- "New Items" heading: smaller, no extra space below ---- */
+	.main .title {
+		margin: 0;
+		padding: 4px 8px;
+		font-size: 14px;
+		line-height: 1.3;
+	}
+
+	/* ---- Static New Items list: products start higher ---- */
+	.main > .item_list {
+		margin-top: 0;
+	}
+
+	.item {
+		margin-top: 8px;
+	}
+
+	/* ---- Product grid: 2 cards side by side ---- */
+	.items-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 8px;
+		padding: 8px;
+	}
+
+	/* ---- Card ---- */
+	.item-card {
+		border-radius: 10px;
+	}
+
+	/* Hover lift/scale is meaningless on touch screens; keep it only for real hover devices */
+	.item-card:hover {
+		transform: none;
+	}
+
+	.item-card:hover .item-image {
+		transform: none;
+	}
+
+	@media (hover: hover) {
+		.item-card:hover {
+			transform: translateY(-2px);
+		}
+
+		.item-card:hover .item-image {
+			transform: scale(1.04);
+		}
+	}
+
+	/* ---- Image: fixed small height, whole image visible ---- */
+	.item-image-container {
+		height: 110px;
+	}
+
+	.item-image {
+		object-fit: contain;
+	}
+
+	/* ---- Text ---- */
+	.item-content {
+		padding: 8px;
+		gap: 4px;
+	}
+
+	.item-name {
+		font-size: 13px;
+		font-weight: 700;
+		line-height: 1.3;
+		min-height: 2.6em;
+		-webkit-line-clamp: 2;
+	}
+
+	.item-price {
+		font-size: 14px;
+		font-weight: 700;
+		margin: 0;
+	}
+
+	.item-description {
+		display: none;
+	}
+
+	/* ---- Buttons: one compact row (heart on the left, cart takes the rest) ---- */
+	.item-buttons {
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+		gap: 6px;
+		padding: 6px 8px;
+	}
+
+	.btn {
+		width: auto;
+		min-height: 32px;
+		padding: 6px 8px;
+		font-size: 12px;
+	}
+
+	.btn-favourite {
+		flex: 0 0 32px;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		font-size: 15px;
+		line-height: 1;
+	}
+
+	.btn-favourite .fav-text {
+		display: none;
+	}
+
+	.btn-cart {
+		flex: 1 1 auto;
+		width: auto;
+		height: 32px;
+	}
+}
+
+/* Very small phones (< 340px): single column so cards never get cramped */
+@media (max-width: 339px) {
+	.items-grid {
+		grid-template-columns: 1fr;
+	}
+}
  
