@@ -719,7 +719,35 @@ document.querySelectorAll('input[name="searchType"]').forEach(radio => {
         }
     });
 });
+
+const quicklinks = document.querySelector('.resLink');
+const storeLinks = document.querySelector('.storeLink');
+const aboutLinks = document.querySelector('.aboutLink');	
+const quickTry = document.querySelectorAll('.quicklink');
+
+// Restaurants link navigates to a different page (full reload), so a plain
+// class-toggle gets lost. Save the clicked link's class in localStorage and
+// re-apply it on every page load so the underline stays put.
+(function restoreActiveQuicklink() {
+	const savedKey = localStorage.getItem('activeQuicklink');
+	if (!savedKey) return;
+	quickTry.forEach(el => {
+		el.classList.toggle('active', el.classList.contains(savedKey));
+	});
+})();
+
+quickTry.forEach(item => {
+	item.addEventListener('click', () => {
+		quickTry.forEach(el => el.classList.remove('active'));
+		item.classList.add('active');   // ← clicked 'item' ma add garnu parcha, 'quickTry' ma hoina
+
+		const key = ['resLink', 'storeLink', 'aboutLink'].find(c => item.classList.contains(c));
+		if (key) localStorage.setItem('activeQuicklink', key);
+	});
+});
+
 	
-			
-		
+
+
+	
 		

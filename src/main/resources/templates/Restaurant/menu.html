@@ -1,26 +1,53 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Menu – Himal Kitchen</title>
     <meta name="description" content="Our full menu with prices, ingredients and allergens.">
-    <link rel="stylesheet" href="css/style.css">
+     <link rel="stylesheet" href="css/style.css">
+    <link rel ="stylesheet" th:href="@{/css/forms.css}">
+    <link rel ="stylesheet" th:href="@{/css/layout.css}">
+    <link rel ="stylesheet" th:href="@{/css/stylesheet.css}">
+     <link rel ="stylesheet" th:href="@{/css/hero-slider.css}">
 </head>
 
 <body data-page="menu"><a class="skip" href="#main">Skip to content</a>
-    <header id="site-header"></header>
+   <div th:replace="~{common/header :: layout-header('/client/dishitem/list/1', 'search dish ')}"></div>
     <main id="main" class="wrap">
+       		 <!--/* Hero slider: auto-advancing banner under "New Items" (slides are plain HTML, edit the text freely) */-->
+<section class="hero-slider" aria-label="Promotions">
+    <div class="hero-slide hero-slide-1">
+        <h3 
+        >Welcome to Nepali Pasal</h3>
+        <p>Shop your everyday essentials in one place.</p>
+    </div>
+    <div class="hero-slide hero-slide-2">
+        <h3>New arrivals</h3>
+        <p>Check out the latest items we have just added to the shop.</p>
+    </div>
+    <div class="hero-slide hero-slide-3">
+        <h3>Save your favourites</h3>
+        <p>Tap the heart to keep what you love, and the cart to start your order.</p>
+    </div>
+    <button type="button" class="hero-arrow hero-prev" aria-label="Previous slide">&#8249;</button>
+    <button type="button" class="hero-arrow hero-next" aria-label="Next slide">&#8250;</button>
+    <div class="hero-dots"></div>
+</section>
         <h1>Menu</h1>
         <p>Prices in Nepali rupees. Tap a dish for ingredients and allergens. Booking a table doesn't pre-order food.
         </p>
         <div id="filters" class="filters"></div>
         <div class="grid" id="menu-list"></div>
     </main>
-    <footer id="site-footer"></footer>
+   <footer id="footerParent">
+		<div th:replace="~{common/footer :: layout-footer}"></div>
+	</footer>
+	<script th:src="@{/js/common.js}" defer></script>
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
+    <script th:src="@{/js/Restauranthero-slider.js}"></script>
 </body>
 
 </html>

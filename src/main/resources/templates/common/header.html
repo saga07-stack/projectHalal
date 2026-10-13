@@ -29,9 +29,9 @@
 			<span class="category-btn-caret"></span>
 		</button>
 		<nav class="header-quicklinks">
-			<a th:href="@{/Restaurant/home}" class="quicklink">Restaurants</a>
-			<a class="quicklink">Stores</a>
-			<a class="quicklink">About Us</a>
+			<a onclick="underLine()" th:href="@{/Restaurant/home}" class="quicklink resLink">Restaurants</a>
+			<a  onclick="underLine()" class="quicklink storeLink " >Stores</a>
+			<a onclick="underLine()" class="quicklink aboutLink ">About Us</a>
 		</nav>
 	</div>
 
