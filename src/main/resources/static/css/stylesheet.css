@@ -901,7 +901,7 @@ p.link_center {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
-	max-width: 560px;
+	max-width: clamp(260px, 30vw, 500px);
 	background-color: #fff;
 	border: 1px solid var(--hdr-border);
 	border-radius: 999px;
@@ -1089,6 +1089,53 @@ p.link_center {
 }
 
 /* ---- Responsive adjustments ---- */
+/* Large desktop (≥1440px): allow search bar to grow more */
+@media (min-width: 1440px) {
+	#header .header-search {
+		flex: 1 1 400px;
+		min-width: 350px;
+	}
+
+	#header .search-form {
+		max-width: 700px;
+	}
+
+	#header .search-input {
+		padding: 12px 20px;
+		font-size: 1rem;
+	}
+
+	#header .search-btn {
+		padding: 0 24px;
+	}
+
+	#header .search-btn-text {
+		display: inline;
+	}
+}
+
+/* Extra large desktop (≥1920px): search bar keeps a capped width */
+@media (min-width: 1920px) {
+	#header .header-search {
+		flex: 1 1 260px;
+		min-width: 0;
+	}
+
+	#header .search-form {
+		max-width: clamp(260px, 30vw, 500px);
+	}
+
+	#header .search-input {
+		padding: 14px 24px;
+		font-size: 1.05rem;
+	}
+
+	#header .search-btn {
+		padding: 0 28px;
+		font-size: 1rem;
+	}
+}
+
 @media (max-width: 1200px) {
 	#header .header-quicklinks {
 		gap: 12px;
@@ -1181,8 +1228,153 @@ p.link_center {
 		display: none;
 	}
 
+	#header .search-form {
+		max-width: 100%;
+	}
+
 	#header .search-btn {
 		padding: 0 16px;
+	}
+}
+
+/* ---- Single-row header, compact desktop (900px – 1300px) ----
+ * Keeps logo, categories, search and right-side icons/auth on ONE line.
+ * Below 900px the existing tablet/mobile rules are untouched. */
+@media (min-width: 900px) and (max-width: 1300px) {
+	#header {
+		flex-wrap: nowrap;
+		column-gap: 10px;
+		row-gap: 0;
+		padding: 8px 14px;
+	}
+
+	/* Logo */
+	#header .header-logo {
+		order: 0;
+		flex: 0 0 auto;
+		white-space: nowrap;
+	}
+
+	#header .logo {
+		height: 34px;
+		max-width: 130px;
+	}
+
+	/* Categories + quick links */
+	#header .header-categories {
+		order: 1;
+		width: auto;
+		flex: 0 0 auto;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		gap: 10px;
+		margin: 0 4px;
+		white-space: nowrap;
+	}
+
+	#header .category-btn {
+		padding: 7px 12px;
+		font-size: 0.8rem;
+	}
+
+	#header .header-quicklinks {
+		gap: 10px;
+	}
+
+	#header .quicklink {
+		flex-shrink: 0;
+		font-size: 0.8rem;
+		white-space: nowrap;
+	}
+
+	/* Search: the only element that shrinks */
+	#header .header-search {
+		order: 2;
+		flex: 1 1 auto;
+		width: auto;
+		min-width: 120px;
+		max-width: 300px;
+	}
+
+	#header .search-form {
+		width: 100%;
+		max-width: 100%;
+		margin: 0;
+	}
+
+	#header .search-input {
+		min-width: 0;
+		padding: 7px 12px;
+		font-size: 0.85rem;
+	}
+
+	#header .search-btn {
+		padding: 0 12px;
+		font-size: 0.85rem;
+	}
+
+	#header .search-btn-text {
+		display: none;
+	}
+
+	/* Right side: icons + auth on one line */
+	#header .header-right {
+		order: 3;
+		flex: 0 0 auto;
+		flex-wrap: nowrap;
+		gap: 8px;
+		margin-left: auto;
+		white-space: nowrap;
+	}
+
+	#header .header-nav {
+		flex-shrink: 0;
+	}
+
+	#header .header-menu {
+		flex-wrap: nowrap;
+		gap: 6px;
+	}
+
+	#header .menu-link,
+	#header #notificationBtn {
+		width: 36px;
+		height: 36px;
+		flex-shrink: 0;
+	}
+
+	#header #orderListBtn .menu-link {
+		padding: 7px 12px;
+		font-size: 0.8rem;
+	}
+
+	#header .header-auth-section {
+		flex: 0 0 auto;
+		flex-wrap: nowrap;
+		gap: 2px;
+		font-size: 14px;
+		padding-left: 8px;
+	}
+
+	#header .header-auth,
+	#header .header-user {
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		gap: 4px;
+	}
+
+	#header .auth-link,
+	#header .user-name {
+		padding: 6px 8px;
+		font-size: 14px;
+	}
+
+	#header .user-name {
+		display: inline-block;
+		max-width: 100px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
 
@@ -1526,9 +1718,11 @@ p.link_center {
 
 /* Add to Cart Button */
 .btn-cart {
-	background-color: #3d98bf;
+	background-color: #18bfb2;
 	color: #fff;
 	border: 2px solid #3d98bf;
+	height: fit-content;
+	width: fit-content;
 }
 
 .btn-cart:hover {
@@ -2495,7 +2689,7 @@ p.link_center {
 
 /* ---- Page title ---- */
 #itemDetailPage .item-detail-page-title {
-	background-color: #3d98bf;
+	background-color: #18bfb2;
 	margin: 0 0 20px;
 	padding: 10px 16px;
 	color: #fff;
@@ -2655,7 +2849,7 @@ p.link_center {
 	margin: 0 0 8px;
 	font-size: 1rem;
 	font-weight: 700;
-	color: #12526d;
+	color: #18bfb2;
 }
 
 #itemDetailPage .item-detail-description-text {
@@ -2741,6 +2935,8 @@ p.link_center {
 	background: #edf2f7;
 	color: #2d3748;
 	border: 2px solid #e2e8f0;
+	height: fit-content;
+	width: fit-content;
 }
 
 #itemDetailPage .item-detail-btn-secondary:hover {
