@@ -1,21 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Page not found – Himal Kitchen</title>
     <meta name="description" content="Page not found">
-    <link rel="stylesheet" href="css/style.css">
+     <link rel="stylesheet" href="css/style.css">
+    <link rel ="stylesheet" th:href="@{/css/forms.css}">
+    <link rel ="stylesheet" th:href="@{/css/layout.css}">
+    <link rel ="stylesheet" th:href="@{/css/stylesheet.css}">
+    
 </head>
 
 <body data-page="x"><a class="skip" href="#main">Skip to content</a>
-    <header id="site-header"></header>
+    <div th:replace="~{common/header :: layout-header('/client/dishitem/list/1', 'search dish ')}"></div>
     <main id="main" class="wrap">
         <h1>Page not found</h1>
         <p><a href="index.html">Go to the home page</a> or <a href="menu.html">see the menu</a>.</p>
     </main>
-    <footer id="site-footer"></footer>
+ <footer id="footerParent">
+		<div th:replace="~{common/footer :: layout-footer}"></div>
+	</footer>
+	<script th:src="@{/js/common.js}" defer></script>
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
 </body>
