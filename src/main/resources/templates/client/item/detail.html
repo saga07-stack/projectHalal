@@ -77,13 +77,13 @@
 
 				<div class="item-detail-actions">
 					<button th:if="*{stock > 0}" type="button" class="btn btn-cart" id="detailAddToCart"
-						th:attr="data-item-id=${item.id}">Add to Cart</button>
-					<form th:action="@{/client/basket/add}" method="post"
+						th:attr="data-item-id=${item.id}">Add</button>
+					<!-- <form th:action="@{/client/basket/add}" method="post"
 						class="item-detail-form" >
 						<input type="hidden" th:field="*{id}" /> <input type="submit"
 							value="Add to Cart"
 							class="item-detail-btn item-detail-btn-primary" />
-					</form>
+					</form> -->
 					<form th:action="@{/}" method="post" class="item-detail-form">
 						<input type="submit" value="Back"
 							class="item-detail-btn item-detail-btn-secondary" />
