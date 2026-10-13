@@ -27,7 +27,7 @@ public class ResetUserController {
 	@Autowired
 	private UserRepository userRepo;
 	
-	
+	 
 	/**
 	 * Display password reset page
 	 */

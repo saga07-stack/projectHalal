@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+/* ============================================================================
+ * HERO SLIDER — responsive auto-advancing banner (top page)
+ * ============================================================================ */
+
+/* Full-width banner: breaks out of the centred page container so it spans
+ * the whole viewport on any screen size (body/html have overflow-x hidden,
+ * so the 100vw box never creates a horizontal scrollbar). */
+.hero-slider {
+	position: relative;
+	box-sizing: border-box;
+	width: 100vw;
+	max-width: 100vw;
+	margin: 10px 0 16px calc(50% - 50vw);
+	height: clamp(180px, 28vw, 420px);
+	border-radius: 0;
+	overflow: hidden;
+	box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+	background: #12526d;
+}
+
+/* ---- Slides (stacked; only .is-active is visible) ---- */
+.hero-slider .hero-slide {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 0 clamp(20px, 6vw, 64px);
+	color: #fff;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+
+.hero-slider .hero-slide.is-active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.hero-slider .hero-slide h3 {
+	margin: 0 0 8px;
+	font-size: clamp(1.2rem, 3.6vw, 2.4rem);
+	font-weight: 700;
+	line-height: 1.2;
+	text-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-slider .hero-slide p {
+	margin: 0;
+	max-width: 60ch;
+	font-size: clamp(0.85rem, 1.9vw, 1.15rem);
+	line-height: 1.5;
+	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Slide backgrounds ---- */
+.hero-slider .hero-slide-1 {
+	background: linear-gradient(135deg, #0f766e 0%, #18bfb2 60%, #3d98bf 100%);
+}
+
+.hero-slider .hero-slide-2 {
+	background: linear-gradient(135deg, #3d98bf 0%, #12526d 100%);
+}
+
+.hero-slider .hero-slide-3 {
+	background: linear-gradient(135deg, #d34320 0%, #ff8669 100%);
+}
+
+/* ---- Arrows (explicit values override the generic [type=button] rule) ---- */
+.hero-slider .hero-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: clamp(32px, 4vw, 44px);
+	height: clamp(32px, 4vw, 44px);
+	min-width: 0;
+	margin: 0;
+	padding: 0 0 4px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.75);
+	color: #12526d;
+	font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+	line-height: 1;
+	cursor: pointer;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-slider .hero-arrow:hover {
+	background: #fff;
+	transform: translateY(-50%) scale(1.08);
+}
+
+.hero-slider .hero-prev {
+	left: 12px;
+}
+
+.hero-slider .hero-next {
+	right: 12px;
+}
+
+/* ---- Dots ---- */
+.hero-slider .hero-dots {
+	position: absolute;
+	left: 50%;
+	bottom: 12px;
+	transform: translateX(-50%);
+	z-index: 3;
+	display: flex;
+	gap: 8px;
+}
+
+.hero-slider .hero-dot {
+	width: 10px;
+	height: 10px;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-slider .hero-dot.is-active {
+	background: #fff;
+	transform: scale(1.3);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+	.hero-slider .hero-prev {
+		left: 6px;
+	}
+
+	.hero-slider .hero-next {
+		right: 6px;
+	}
+}
+
+@media (max-width: 480px) {
+	.hero-slider {
+		height: 190px;
+	}
+
+	.hero-slider .hero-arrow {
+		display: none; /* swipe / dots are enough on phones */
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-slider .hero-slide,
+	.hero-slider .hero-arrow,
+	.hero-slider .hero-dot {
+		transition: none;
+	}
+}

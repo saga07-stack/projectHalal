@@ -313,22 +313,8 @@ if (logoElement) {
     });
 }
 
-// Handle cart button
-const CartButtonList = document.getElementById("CartButtonList");
-if (CartButtonList) {
-    CartButtonList.addEventListener("click", () => {
-        fetch(`${FixedUrl}items/cart/list`)
-            .then((response) => {
-                if (response.status === 401) {
-                    console.log("cart is empty");
-                }
-            })
-            .then((data) => {
-                window.location.href = `${FixedUrl}client/basket/list`;
-                console.log("Cart data:", data.name);
-            });
-    });
-}
+// Cart button is now a plain link (th:href="@{/client/basket/list}") in common/header.html,
+// so no JavaScript click handler is needed.
 
 //------------------favourite list button----------------------
 
