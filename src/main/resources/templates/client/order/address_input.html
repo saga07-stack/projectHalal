@@ -23,7 +23,7 @@
 			<ul class="input_list">
 				<li>
 					<label><span class="input_title">[[#{orderForm.postalCode}]]</span></label>
-					<input type="text" th:field="*{postalCode}" />
+					<input type="text" th:field="*{postalCode}" readonly />
 				</li>
 				<li>
 					<label><span class="input_title">[[#{orderForm.address}]]</span></label>
@@ -39,12 +39,13 @@
 				</li>
 			</ul>
 			<input type="hidden" th:field="*{id}" />
-			<input type="hidden" th:field="*{payMethod}" />
+			<!-- <input type="hidden" th:field="*{payMethod}" /> -->
 			<input type="submit" value="Next" class="send_button" />
 		</form>
 		<form th:action="@{/client/basket/list}" method="post">
 			<input type="submit" value="Back" class="back_button" />
 		</form>
+		<button type="button" class="edit" onclick="editable()">Edit</button>
 	</div>
 </body>
 

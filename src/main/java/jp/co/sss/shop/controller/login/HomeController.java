@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.login;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller  
@@ -15,7 +16,9 @@ public class HomeController {
 	 * still correctly resolve to the files under static/Restaurant/.
 	 */
 	@GetMapping("/Restaurant/home")
-	public String showHome() {
+	public String showHome(Model model) {
+		
+		model.addAttribute("activePage", "home");
 		return "Restaurant/index";   
 	 }
 
@@ -35,27 +38,33 @@ public class HomeController {
 	 * "shadow" the old static duplicates and are used instead.
 	 */
 	@GetMapping("/Restaurant/index.html")
-	public String showIndexHtml() {
+	public String showIndexHtml(Model model) {
+		
+		model.addAttribute("activePage", "home");
 		return "Restaurant/index";
 	}
 
 	@GetMapping("/Restaurant/menu.html")   
-	public String showMenu() {
+	public String showMenu(Model model) {
+		model.addAttribute("activePage", "home");
 		return "Restaurant/menu";
 	}
  
 	@GetMapping("/Restaurant/item.html")
-	public String showItem() { 
+	public String showItem(Model model) { 
+		model.addAttribute("activePage", "home");
 		return "Restaurant/item"; 
 	}
 
 	@GetMapping("/Restaurant/contact.html")
-	public String showContact() {
+	public String showContact(Model model) {
+		model.addAttribute("activePage", "home");
 		return "Restaurant/contact";
 	}
 
 	@GetMapping("/Restaurant/reserve.html")
-	public String showReserve() {
+	public String showReserve(Model model) {
+		model.addAttribute("activePage", "home");
 		return "Restaurant/reserve";
 	}
 	

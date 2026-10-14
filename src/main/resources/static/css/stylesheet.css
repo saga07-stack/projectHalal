@@ -809,7 +809,7 @@ p.link_center {
 	border-radius: 6px;
 	font-family: inherit;
 	font-weight: 600;
-	font-size: 0.9rem;
+	font-size: 0.6rem;
 	line-height: 1;
 	cursor: pointer;
 	white-space: nowrap;
@@ -3711,7 +3711,7 @@ p.link_center {
 
 	#header .category-btn {
 		min-height: 40px;
-		font-size: 14px;
+		font-size: 10px;
 	}
 
 	#header .quicklink {
@@ -3750,4 +3750,9 @@ p.link_center {
 		font-size: 1.2rem;
 		padding: 6px 10px;
 	}
+}
+
+.input_list , input{
+  color:pink;
+  readonly: true;
 }
