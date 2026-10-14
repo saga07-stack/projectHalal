@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jp.co.sss.shop.repository.ItemRepository;
 
 @Controller
-public class ItemDetails {
+public class ItemDetailsController {
 
 	
 	@Autowired ItemRepository itemRepository;

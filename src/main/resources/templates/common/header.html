@@ -24,15 +24,14 @@
 	<!-- Category dropdown trigger + quick links -->
 	<div th:if="${session.user == null or session.user.authority == 2}" class="header-categories">
 		<button type="button" id="categoryBtn" class="category-btn">
-			
-			<span >Categories▾</span>
-			<span class="category-btn-caret"></span>
+			Categories▾
 		</button>
 		<nav class="header-quicklinks">
-			<a onclick="underLine()" th:href="@{/Restaurant/home}" class="quicklink resLink">Restaurants</a>
-			<a  onclick="underLine()" class="quicklink storeLink " >Stores</a>
-			<a onclick="underLine()" class="quicklink aboutLink ">About Us</a>
-		</nav>
+		<a class="quicklink resLink"   th:href="@{/Restaurant/home}" th:classappend="${activePage == 'home'} ? 'active'">Restaurants</a>
+<a class="quicklink storeLink" th:href="@{/Restaurant/store}"       th:classappend="${activePage == 'store'} ? 'active'">Stores</a>
+<a class="quicklink aboutLink" th:href="@{/Restaurant/about}"       th:classappend="${activePage == 'about'} ? 'active'">About</a>
+		
+				</nav>
 	</div>
 
 	<!-- Center: Search Bar -->
@@ -69,7 +68,7 @@
      </svg>
 				</a></li>
 				<th:block th:if="${session.user != null}">
-					<li id="orderListBtn" class="menu-item"><a   th:href="@{/client/order/list}" th:text="#{order}+#{title.list}" class="menu-link"></a></li>
+					<li id="orderListBtn" class="menu-item"><a   th:href="@{/client/order/list}" class="menu-link"> OrderedList</a></li>
 				</th:block>
 			</ul>
 		</nav>

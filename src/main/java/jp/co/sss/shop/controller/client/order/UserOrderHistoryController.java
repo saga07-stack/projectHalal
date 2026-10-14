@@ -31,7 +31,7 @@ public class UserOrderHistoryController {
 	public String basketList(HttpSession session, Model model) {
 		
 		int userId = ((UserBean) session.getAttribute("user")).getId();
-		System.out.println("userId: " + userId);
+
 		
 		Optional<Order> orders = orderRepository.findById(userId);
 		
@@ -41,8 +41,8 @@ public class UserOrderHistoryController {
 		// requestスコープにbasketBeansの値を代入
 		model.addAttribute("basketBeans", basketBeans);
 		System.out.println("basketBeans: ");
-System.out.println("basketlist triggered");
-		return "client/basket/list";
+
+		return "client/basket/basket";
 	}
 	
 	

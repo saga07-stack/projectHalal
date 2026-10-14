@@ -19,7 +19,7 @@
 	-->
 	<div id="itemDetailPage" th:object="${item}">
 
-		<h2 class="item-detail-page-title" th:text="#{item}+#{title.detail}"></h2>
+		<h2 class="item-detail-page-title" th:text="#{item}+' '+#{title.detail}"></h2>
 
 		<div class="item-detail-card">
 
@@ -42,7 +42,7 @@
 				<h1 class="item-detail-name" th:text="*{name}"></h1>
 
 				<p class="item-detail-price">
-					<span class="item-detail-currency">$</span><span th:text="*{price}"></span>
+					<span class="item-detail-currency">Rs</span> <span th:text="*{price}"></span>
 				</p>
 
 				<div class="item-detail-stock">
@@ -68,16 +68,9 @@
 					is already provided (parent-scoped) in stylesheet.css so no
 					extra CSS work is needed when new fields are added.
 				-->
-				<div class="item-detail-extra">
-					<!-- <div class="item-detail-extra-row">
-						<span class="item-detail-extra-label">Label</span>
-						<span class="item-detail-extra-value">Value</span>
-					</div> -->
-				</div>
-
 				<div class="item-detail-actions">
 					<button th:if="*{stock > 0}" type="button" class="btn btn-cart" id="detailAddToCart"
-						th:attr="data-item-id=${item.id}">Add</button>
+						th:attr="data-item-id=${item.id}">Add to Cart</button>
 					<!-- <form th:action="@{/client/basket/add}" method="post"
 						class="item-detail-form" >
 						<input type="hidden" th:field="*{id}" /> <input type="submit"
