@@ -11,7 +11,10 @@
 <body class="user order_payment_input">
 	<h2 th:class="title" th:text="#{title.order.payment.input}"></h2>
 	<p th:class="input_message" th:text="#{msg.order.payment.input}"></p>
-
+	<div th:if="${isNull}" > 
+  <h1 style="color:red;"  > please select one of  the payment method to procedure  </h1>
+	
+	</div>
 	<div class="user_info_form_area">
 		<form th:action="@{/client/order/check}" method="post">
 			<ul class="payment_method_select">

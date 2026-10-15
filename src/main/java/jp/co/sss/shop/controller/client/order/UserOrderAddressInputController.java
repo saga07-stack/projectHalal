@@ -97,13 +97,20 @@ public class UserOrderAddressInputController {
 	}
 	 
 	
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(path = "client/order/check", method = {RequestMethod.GET,RequestMethod.POST})
 	public String OrderCheck(
 			Model model, 
-			@RequestParam("payMethod") Integer payMethod,
+			@RequestParam(name = "payMethod",  required = false )   Integer payMethod,
 			HttpSession session
 			) {
+		Boolean isNull = false;
+		if(payMethod == null) {
+			isNull = true;
+			model.addAttribute("isNull",isNull);
+			return "/client/order/payment_input";
+		}
 		
 		if(session.getAttribute("user") == null) {
 			return "redirect:/login";
