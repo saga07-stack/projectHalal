@@ -26,6 +26,10 @@
 		<button type="button" id="categoryBtn" class="category-btn">
 			Categories▾
 		</button>
+		<div id="categoryPopup" class="category-popup">
+			<ul id="categoryList">
+			</ul>
+		</div>
 		<nav class="header-quicklinks">
 		<a class="quicklink resLink"   th:href="@{/Restaurant/home}" th:classappend="${activePage == 'home'} ? 'active'">Restaurants</a>
 <a class="quicklink storeLink" th:href="@{/Restaurant/store}"       th:classappend="${activePage == 'store'} ? 'active'">Stores</a>

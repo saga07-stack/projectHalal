@@ -730,5 +730,45 @@ function goBack(){
 	}
 }
 
-	
-		
+const categoryBtn = document.getElementById("categoryBtn");
+const categoryList = document.getElementById("categoryList");
+
+	categoryBtn.addEventListener("click",()=>{
+		const popup = document.getElementById("categoryPopup");
+		if(!popup) return;
+		popup.classList.toggle("show");
+		// data fetch is handled separately by you when the popup opens
+		fetch(`${FixedUrl}api/categories/list`)
+		.then((response)=>{
+			
+			return response.json();
+		}).then((data)=>{
+				categoryList.innerHTML = ""; // Clear previous categories
+			for(const category of data ){
+				const li = document.createElement("li");
+				const link = document.createElement("a");
+				link.href = `${FixedUrl}items/category/list/all/${category.id}`;
+				link.textContent = category.name;
+				li.appendChild(link);
+				categoryList.appendChild(li);
+				
+			}
+			console.log("category data", data);
+		}).catch((error)=>{
+			console.log("Error fetching category data:", error);
+		})
+	})
+
+// Close category popup when clicking outside of it
+document.addEventListener("click", function(event) {
+	const popup = document.getElementById("categoryPopup");
+	const btn = document.getElementById("categoryBtn");
+
+	if (popup && btn) {
+		if (!btn.contains(event.target) && !popup.contains(event.target) && popup.classList.contains("show")) {
+			popup.classList.remove("show");
+		}
+	}
+});
+
+
