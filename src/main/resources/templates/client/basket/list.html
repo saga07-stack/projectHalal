@@ -47,9 +47,12 @@
 				<tbody>
 					<tr th:each="item, status : ${basketBeans}">
 						<td th:attr="data-label=#{data.basket.item.name}">
-							<a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a>
+							<a th:href="@{/items/details/{id}(id=${item.id})}" th:text="${item.name}"></a>
 						</td>
-						<td th:attr="data-label=#{data.basket.count}" th:text="${item.orderNum}"></td>
+						
+						<td th:attr="data-label=#{data.basket.count}" th:text="${item.orderNum}">
+						
+						</td>
 						<td th:attr="data-label=#{data.basket.operate}">
 							<form th:action="@{/client/basket/delete}" method="post">
 								<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="Delete"

@@ -88,7 +88,7 @@
 		<form th:action="@{/client/order/payment/check}" method="post">
 			<input class="send_button" type="submit" value="Confirm Order" th:if="${orderItemBeans != null}"/>
 		</form>
-		<form th:action="@{/client/order/payment/back}" method="post" class="update">
+		<form th:action="@{/client/order/payment/input}" method="post" class="update">
 			<input type="submit" value="Back" class="back_button" />
 		</form>
 	</div>
