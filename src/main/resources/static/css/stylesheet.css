@@ -3752,7 +3752,7 @@ p.link_center {
 	}
 }
 
-.input_list , input{
+.input_list > input{
   color:pink;
-  readonly: true;
+  
 }

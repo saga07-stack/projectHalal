@@ -51,7 +51,7 @@ public class BasketController {
 //	}
 //	
 	
-	@GetMapping("/client/basket/list")
+	@RequestMapping(path = "/client/basket/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String list(HttpSession session, Model model) {
 
 	    UserBean userBean = (UserBean) session.getAttribute("user");   // tapai ko asli key
