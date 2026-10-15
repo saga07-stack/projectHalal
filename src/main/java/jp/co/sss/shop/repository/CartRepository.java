@@ -11,14 +11,13 @@ import jp.co.sss.shop.entity.CartItems;
 
 @Repository
 public interface CartRepository  extends JpaRepository<CartItems, Integer> {
-
+ 
 	List<CartItems> findByUserId(int userId);
 
 	CartItems findByUserIdAndItemId(Integer userBean, int id2);
 
 	//CartItems findByUserIdAndItemId(Integer userBean, int id);
+	List<CartItems> findAllByUserId(Integer id);
 	
 	
-	
-
 }

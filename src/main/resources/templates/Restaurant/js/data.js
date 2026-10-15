@@ -1,14 +1,14 @@
 // === EDIT THIS FILE: restaurant details + menu items ===
 const SITE = {
-  name: "Himal Kitchen",
+  name: "Hamro Kitchen",
   tagline: "Nepali home cooking, made fresh every day.",
-  address: "Your street address, City",
+  address: "大阪市",
   phone: "+977-000-000000",
   hours: [["Sunday – Friday", "10:00 – 21:00"], ["Saturday", "11:00 – 22:00"]],
   mapEmbed: "", // paste the src URL from Google Maps > Share > Embed a map
   accessKey: "YOUR_WEB3FORMS_ACCESS_KEY" // free key from web3forms.com, using the restaurant Gmail
 };
-const CATEGORIES = ["Mains", "Momo", "Snacks", "Drinks"];
+const CATEGORIES = ["Mains", "Momo", "Snacks", "Drinks","Alcohol"];
 // id is also the photo name: images/<id>.jpg (optional)
 const ITEMS = [
   {

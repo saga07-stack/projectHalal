@@ -62,8 +62,16 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 		       "AND i.dateExpired IS NOT NULL " +
 		       "AND i.dateExpired <= :limitDate")
 		List<Item> findExpiringItems(@Param("limitDate") LocalDate limitDate);
+
+	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdDesc(int categoryId,
+			int i);
 	
 //	@Query ("select i from Item i where i.deleteFlag = 0 and i.name like %:keyword%")
 //	List<Item> findByNameContainingAndDeleteFlags(String keyword, int notD);
+	
+	List<Item> findAllByCategoryId(int categoryId);
+	
+	@Query("select i from Item i where i.deleteFlag = 0 and i.category.id = :categoryId")
+	List<Item> findItemsByCategoryId(@Param("categoryId") Integer categoryId);
 //	
 }

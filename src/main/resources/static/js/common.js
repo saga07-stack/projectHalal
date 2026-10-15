@@ -720,36 +720,55 @@ document.querySelectorAll('input[name="searchType"]').forEach(radio => {
     });
 });
 
-const quicklinks = document.querySelector('.resLink');
-const storeLinks = document.querySelector('.storeLink');
-const aboutLinks = document.querySelector('.aboutLink');	
-const quickTry = document.querySelectorAll('.quicklink');
+function goBack(){
+	if(window.history.length > 1 && document.referrer){
+		window.history.back();
+	alert("go back called");
+	}else{
+		window.location.href=/*[[@{/}]]*/ '/shared_shop/';
+		console.log("go back called, but no history, redirecting to home");
+	}
+}
 
-// Restaurants link navigates to a different page (full reload), so a plain
-// class-toggle gets lost. Save the clicked link's class in localStorage and
-// re-apply it on every page load so the underline stays put.
-/*(function restoreActiveQuicklink() {
-	const savedKey = localStorage.getItem('activeQuicklink');
-	if (!savedKey) return;
-	quickTry.forEach(el => {
-		el.classList.toggle('active', el.classList.contains(savedKey));
-	});
-})();
-*/
+const categoryBtn = document.getElementById("categoryBtn");
+const categoryList = document.getElementById("categoryList");
 
-//header ma quicklink click garda underline active garnu parcha,
-/*quickTry.forEach(item => {
-	item.addEventListener('click', () => {
-		quickTry.forEach(el => el.classList.remove('active'));
-		item.classList.add('active');   // ← clicked 'item' ma add garnu parcha, 'quickTry' ma hoina
+	categoryBtn.addEventListener("click",()=>{
+		const popup = document.getElementById("categoryPopup");
+		if(!popup) return;
+		popup.classList.toggle("show");
+		// data fetch is handled separately by you when the popup opens
+		fetch(`${FixedUrl}api/categories/list`)
+		.then((response)=>{
+			
+			return response.json();
+		}).then((data)=>{
+				categoryList.innerHTML = ""; // Clear previous categories
+			for(const category of data ){
+				const li = document.createElement("li");
+				const link = document.createElement("a");
+				link.href = `${FixedUrl}items/category/list/all/${category.id}`;
+				link.textContent = category.name;
+				li.appendChild(link);
+				categoryList.appendChild(li);
+				
+			}
+			console.log("category data", data);
+		}).catch((error)=>{
+			console.log("Error fetching category data:", error);
+		})
+	})
 
-		const key = ['resLink', 'storeLink', 'aboutLink'].find(c => item.classList.contains(c));
-		if (key) item.classList.add(key); // re-add the specific class for styling
-	});
+// Close category popup when clicking outside of it
+document.addEventListener("click", function(event) {
+	const popup = document.getElementById("categoryPopup");
+	const btn = document.getElementById("categoryBtn");
+
+	if (popup && btn) {
+		if (!btn.contains(event.target) && !popup.contains(event.target) && popup.classList.contains("show")) {
+			popup.classList.remove("show");
+		}
+	}
 });
-*/
-	
 
 
-	
-		

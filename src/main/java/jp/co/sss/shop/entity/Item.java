@@ -52,7 +52,7 @@ public class Item {
 	/**
 	 * 在庫数
 	 */
-	@Column
+	@Column 
 	private Integer stock;
 
 	/**
