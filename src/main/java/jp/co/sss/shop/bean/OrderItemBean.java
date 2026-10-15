@@ -11,6 +11,8 @@ public class OrderItemBean {
 	 */
 	private Integer id;
 	/**
+	 * 
+	 * 
 	 * 注文商品名
 	 */
 	private String name;
@@ -30,7 +32,17 @@ public class OrderItemBean {
 	 * 小計
 	 */
 	private Integer subtotal;
+	
+	public Integer getQuantity() {
+		return quantity;
+	}
 
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	private Integer quantity;
+	
 	/**
 	 * 注文商品IDの取得
 	 * @return 注文商品ID

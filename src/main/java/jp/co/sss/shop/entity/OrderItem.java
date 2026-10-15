@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 public class OrderItem {
 
 	/**
-	 * 注文商品ID
+	 * 注文商品ID 
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_order_items_gen")
