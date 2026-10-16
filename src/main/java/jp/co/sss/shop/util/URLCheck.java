@@ -114,6 +114,7 @@ public class URLCheck {
 				|| requestURL.indexOf("admin/menu") != -1
 				|| requestURL.indexOf("/admin/admin_menu") != -1
 				|| requestURL.indexOf("admin/user") != -1
+				|| requestURL.indexOf("admin/expired/list/all") != -1
 				|| requestURL.indexOf("admin/notification") != -1
 				|| requestURL.endsWith("/logout")) {
 			// URLのリクエスト先がフィルタ実行対象である場合

@@ -576,7 +576,14 @@ function renderNotificationList(stockData, expiredData) {
 		const title = document.createElement("p");
 		title.className = "notification-item-title";
 		const expiryText = item.dateExpired ? ` on ${item.dateExpired}` : "";
-		title.textContent = `Item "${item.name}" is expiring soon${expiryText}.`;
+		if(item.dateExpired && new Date(item.dateExpired) < new Date()){
+			console.log("Item is already expired:", item.name);
+		title.textContent = `Item "${item.name}" is already expired ${expiryText}.
+		check the expired items list for more details.`;
+		title.style.color = "red"; // Optional: make expired items stand out
+		}else{
+			title.textContent = `Item "${item.name}" is  expiring soon ${expiryText}.`;
+		}
 		link.appendChild(title);
 
 		li.appendChild(link);
@@ -720,15 +727,16 @@ document.querySelectorAll('input[name="searchType"]').forEach(radio => {
     });
 });
 
-function goBack(){
-	if(window.history.length > 1 && document.referrer){
-		window.history.back();
-	alert("go back called");
-	}else{
-		window.location.href=/*[[@{/}]]*/ '/shared_shop/';
-		console.log("go back called, but no history, redirecting to home");
-	}
+
+function goBack() {
+  
+   if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+    } else {
+              window.location.href = '/shared_shop/';
+    }
 }
+
 
 const categoryBtn = document.getElementById("categoryBtn");
 const categoryList = document.getElementById("categoryList");

@@ -94,8 +94,13 @@ public class LoginController {
 	@RequestMapping(path = "/admin/menu", method = RequestMethod.GET)
 	public String showAdminMenu() {
 
+		if(session.getAttribute("user") == null) {
+			// セッション情報がない場合、ログイン画面表示処理にリダイレクト
+			return "redirect:/login";
+		}
 		// 管理者用メニュー画面表示
 		return "admin/admin_menu";
 	}
+	
 
 }

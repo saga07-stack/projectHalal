@@ -17,57 +17,30 @@
 	<!--/* Navigation Bar */-->
 	
 	<div class="container">
-		<!--/* Sidebar */-->
-		<!-- <aside th:class="${session.user == null or session.user.authority == 2} ? ${'search'} : ${'admin_menu'}" >
-			/* Search Menu (for non-members and general members) */
-			<div class="search_area" th:if="${session.user == null or session.user.authority == 2}">
-				<h2 th:class="title" th:text="#{category.select.title}"></h2>
-				<div class="form">
-					Simple keyword search (replaces category dropdown)
-					<form th:action="@{/client/item/list/1}" method="get">
-						<input type="text" name="keyword" placeholder="Search items..." />
-						<input type="submit" th:value="#{select}" />
-					</form>
-				</div>
-			</div>
-
-			/* Menu (for operational and system administrators) */
-			<div th:if="${session.user != null and session.user.authority != 2}">
-				<h2 th:class="title" th:text="#{admin.menu}"></h2>
-				<ul class="menu">
-					<li>
-						<a th:href="@{/admin/user/list}" th:class="display_list" th:text="#{admin.menu.user.list}"></a>
-					</li>
-					<li th:if="${session.user.authority == 1}">
-						<a th:href="@{/admin/order/list}" th:class="display_list" th:text="#{admin.menu.order.list}"></a>
-					</li>
-					<li th:if="${session.user.authority == 1}">
-						<a th:href="@{/admin/item/list}" th:class="display_list" th:text="#{admin.menu.item.list}"></a>
-					</li>
-					<li th:if="${session.user.authority == 1}">
-						<a th:href="@{/admin/category/list}" th:class="display_list" th:text="#{admin.menu.category.list}"></a>
-					</li>
-				</ul>
-			</div>
-		</aside> -->
-		<!--/* Main */-->
+		
 		<article class="main">
 			<div>
 			 <!--/* Hero slider: auto-advancing banner under "New Items" (slides are plain HTML, edit the text freely) */-->
 <section class="hero-slider" aria-label="Promotions">
     <div class="hero-slide hero-slide-1">
+     
+        
         <h3 
         >Welcome to Nepali Pasal</h3>
-        <p>Shop your everyday essentials in one place.</p>
+        <p>Shop your everyday essentials in one place.</p> 
+      <!--   <img th:src="@{/images/dashain_banner_v2.svg}" > --> 
     </div>
     <div class="hero-slide hero-slide-2">
         <h3>New arrivals</h3>
         <p>Check out the latest items we have just added to the shop.</p>
+    <!-- <img th:src="@{/images/dashain_banner_v2.svg}" > --> 
     </div>
     <div class="hero-slide hero-slide-3">
-        <h3>Save your favourites</h3>
+         <h3>Save your favourites</h3>
         <p>Tap the heart to keep what you love, and the cart to start your order.</p>
-    </div>
+    
+    <!--   <img th:src="@{/images/dashain_banner_v2.svg}" > --> 
+     </div>
     <div class="hero-slide hero-slide-4">
         <h3>Happy Dashain</h3>
     </div>
