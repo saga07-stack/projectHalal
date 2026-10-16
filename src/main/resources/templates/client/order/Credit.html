@@ -13,6 +13,15 @@
 
 
 <h1> Credit payment </h1>
+
+
+    <h2>Stripe Test</h2>
+    <form th:action="@{/client/order/payment/checkout}" method="post">
+        <button type="submit" th:text= "|Pay¥ ${totalPrice}|"  ></button>
+    </form>
+
+
+
    <footer id="footerParent">
 		<div th:replace="~{common/footer :: layout-footer}"></div>
 	</footer>
