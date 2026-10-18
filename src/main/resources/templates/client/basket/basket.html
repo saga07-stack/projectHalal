@@ -9,6 +9,26 @@
 <body>
 <h1 th:text="${message}" > </h1>
 
+<div th:text="${message}" >
+
+<p> go buy something first  </p> 
+
+
+
+</div>
+
+<table>
+  <tr>
+    <th>Order No.</th><th>Date</th><th>Status</th><th>Total</th><th></th>
+  </tr>
+  <tr th:each="order : ${orders}">
+    <td th:text="${order.id}"></td>
+    <td th:text="${#dates.format(order.insertDate, 'yyyy-MM-dd')}"></td>
+    <td th:text="${order.status}"></td>
+   <!-- <td th:text="${total[order.id]}"></td>-->
+    <td><a th:href="@{/client/order/detail/{id}(id=${order.id})}">Detail</a></td>
+  </tr>
+</table>
 
 </body>
 </html>

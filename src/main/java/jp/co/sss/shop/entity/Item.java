@@ -53,6 +53,7 @@ public class Item {
 	 * 在庫数
 	 */
 	@Column 
+	
 	private Integer stock;
 
 	/**

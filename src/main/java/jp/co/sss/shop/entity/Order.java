@@ -54,6 +54,10 @@ public class Order {
 	@Column
 	private String phoneNumber;
 
+	private String status;
+	
+	
+
 	/**
 	 * 支払方法
 	 */
@@ -205,6 +209,14 @@ public class Order {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	/**
