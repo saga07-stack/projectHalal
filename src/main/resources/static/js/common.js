@@ -125,15 +125,29 @@ function loadAllItems() {
                     setTimeout(() => {
                         addToCartButton.textContent = originalText;
                         addToCartButton.classList.remove("active");
-                    }, 2000);
+                    }, 5000);
                 });
+				
+				              if(item.stock !=0){ 
 
                 buttonGroup.appendChild(addToCartButton);
-
+                     
                 itemCard.appendChild(buttonGroup);
+				}else{
+					addToCartButton.className = "OutOfStock";
+					addToCartButton.textContent = "Out of Stock";
+					          addToCartButton.disabled = true;
+							  
+					buttonGroup.appendChild(addToCartButton);
+					                 
+					            itemCard.appendChild(buttonGroup);
+									
+					
+				}
+				
                 gridWrapper.appendChild(itemCard);
             });
-
+          
             itemsContainer.appendChild(gridWrapper);
 			markFavourites();
             console.log("Items loaded successfully", data);
@@ -145,6 +159,7 @@ function loadAllItems() {
             console.error("Error fetching data:", error);
         });
 }
+
 // Favourite button content: icon + text (text is hidden on phones via CSS, icon stays)
 function favouriteButtonHtml(isFav) {
     const icon = isFav ? "♥" : "♡";
@@ -557,6 +572,11 @@ function renderNotificationList(stockData, expiredData) {
 
 		const title = document.createElement("p");
 		title.className = "notification-item-title";
+		if(item.stock <= 0){
+			title.textContent = `Item "${item.name}" is out of stock. Restock as  soon as possible .`;
+			title.style.color = "red"; // Optional: make out-of-stock items stand out
+		
+		}
 		title.textContent = `Item "${item.name}" has only ${item.stock} left in stock. Restock soon.`;
 		link.appendChild(title);
 

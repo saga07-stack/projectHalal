@@ -40,6 +40,7 @@ public class ItemService {
 						item.getName(),
 						item.getDescription(),
 						item.getPrice(),
+						item.getStock(),
 						item.getImage(),
 						item.getId(),
 						item.getCategory() != null ? item.getCategory().getName() : "Unknown"))
