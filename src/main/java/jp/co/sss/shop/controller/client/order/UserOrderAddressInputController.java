@@ -126,7 +126,7 @@ public class UserOrderAddressInputController {
 		newOrderForm.setPayMethod(payMethod);
 		int totalPrice=0;
 	//	session.getAttribute("cartItems");
-		System.out.println("inside cart items" + session.getAttribute("cartItems"));
+	//	System.out.println("inside cart items" + session.getAttribute("cartItems"));
 		List<OrderItemBean> orderItemBeans = new ArrayList<>();
 		List<CartItems> cartItems = (List<CartItems>) session.getAttribute("cartItems");
 		for(CartItems cartItem : cartItems) {
@@ -156,7 +156,7 @@ public class UserOrderAddressInputController {
 		session.setAttribute("orderItemBeans", orderItemBeans);
 		session.setAttribute("orderForm", newOrderForm);
 		session.setAttribute("totalPrice", totalPrice);
-		
+		 
 		return "redirect:/client/order/confirm";
 	}
 	

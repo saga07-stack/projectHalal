@@ -1,5 +1,7 @@
 package jp.co.sss.shop.bean;
 
+import jp.co.sss.shop.entity.Item;
+
 /**
  * 注文商品情報クラス
  *
@@ -137,5 +139,10 @@ public class OrderItemBean {
 	 */
 	public void setOrderNum(Integer orderNum) {
 		this.orderNum = orderNum;
+	}
+
+	public Item getItemId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
