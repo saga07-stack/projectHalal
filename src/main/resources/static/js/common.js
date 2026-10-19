@@ -572,12 +572,16 @@ function renderNotificationList(stockData, expiredData) {
 
 		const title = document.createElement("p");
 		title.className = "notification-item-title";
-		if(item.stock <= 0){
+		if(item.stock == 0){
 			title.textContent = `Item "${item.name}" is out of stock. Restock as  soon as possible .`;
 			title.style.color = "red"; // Optional: make out-of-stock items stand out
 		
+		}else if (item.stock <= 5 && item.stock > 0){
+			title.textContent = `Item "${item.name}" is out of stock soon .`;
+					title.style.color = "red"; // Optional: make out-of-stock items stand out
+					
 		}
-		title.textContent = `Item "${item.name}" has only ${item.stock} left in stock. Restock soon.`;
+	//	title.textContent = `Item "${item.name}" has only ${item.stock} left in stock. Restock soon.`;
 		link.appendChild(title);
 
 		li.appendChild(link);
