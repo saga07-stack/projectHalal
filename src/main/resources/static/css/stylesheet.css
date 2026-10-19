@@ -4014,3 +4014,30 @@ p.link_center {
     text-align: center;
     box-shadow: 0 1px 2px rgba(220, 38, 38, 0.08);
 }
+
+
+#counts{
+	
+	position: relative;
+}
+
+#counts #count_badge {
+	position: absolute;
+	right: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 6px;
+	background-color: #e41e3f;
+	color: #fff;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+}

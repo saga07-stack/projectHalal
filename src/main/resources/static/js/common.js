@@ -802,5 +802,9 @@ document.addEventListener("click", function(event) {
 		}
 	}
 });
-
-
+const count_badge = document.getElementById("count_badge");
+if(count_badge){
+	console.log("count_badge found");
+}else{
+	console.log("count_badge not found");
+	}

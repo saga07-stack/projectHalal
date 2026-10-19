@@ -40,6 +40,32 @@ public class EmailService {
             // production ma proper logging + exception handling gara
         }
     }
+    
+    
+    public void resetVerificationCode(String toEmail, int code) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Email address same, but display name = "Nepali Pasal"
+            helper.setFrom(new InternetAddress(fromEmail, "Nepali Pasal"));
+            helper.setTo(toEmail);
+            helper.setSubject("Your Verification Code - Nepali Pasal");
+
+            String htmlContent = buildHtmlTemplate(code);
+            helper.setText(htmlContent, true); // true = isHtml
+
+            mailSender.send(message);
+
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            // production ma proper logging + exception handling gara
+        }
+    }
+    
+    
+    
+    
 
     private String buildHtmlTemplate(int code) {
         return "<!DOCTYPE html>" +

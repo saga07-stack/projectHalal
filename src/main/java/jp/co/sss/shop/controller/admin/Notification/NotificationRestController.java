@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jp.co.sss.shop.RestControllerDTO.ItemDto;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderRepository;
 
 @RestController
 @RequestMapping("/admin/notification")
@@ -20,6 +21,9 @@ public class NotificationRestController {
 
 	@Autowired
 	private ItemRepository itemRepo;
+	
+	@Autowired
+	private OrderRepository orderRepo;
 	
 	@GetMapping("/list")
 	ResponseEntity<?> getNotificationList(){
@@ -61,6 +65,17 @@ public class NotificationRestController {
 		return ResponseEntity.ok(itemDto);
 	}
 	
+
+	@RequestMapping("/admin")
+	@GetMapping("/menu")
+	ResponseEntity<?> getOrderNotificationCount(){
+	 long count = orderRepo.countByStatus("pending");
+		return ResponseEntity.ok(count);
+		
+	}
+	
+	
 	
 }
+
 
