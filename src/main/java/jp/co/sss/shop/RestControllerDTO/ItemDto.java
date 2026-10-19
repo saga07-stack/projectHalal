@@ -111,5 +111,17 @@ public class ItemDto {
 		this.id = id;
 		this.dateExpired = dateExpired;
 	}
+	public ItemDto(String name2, String description2, Integer price2, Integer stock2, String image, Integer id2,
+			Object object) {
+		// TODO Auto-generated constructor stub
+		this.name = name2;
+		this.description = description2;
+			this.price = price2;
+			this.stock = stock2;
+			this.imagePath = image;
+			this.id = id2;
+			this.categoryName = (String) object;
+				
+	}
 
 }
