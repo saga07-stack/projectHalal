@@ -41,6 +41,12 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
   Long countByStatus(String status);
 
 
+@Query("""
+		select count(o) from Order o where o.status = 'pending'
+		""")
+  List<Integer> findByStatusCount();
+
+
 }
 
 

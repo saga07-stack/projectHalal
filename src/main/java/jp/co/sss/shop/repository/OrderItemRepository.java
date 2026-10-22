@@ -3,6 +3,8 @@ package jp.co.sss.shop.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import jp.co.sss.shop.entity.OrderItem;
 
@@ -15,5 +17,12 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 
 	//List<OrderItem> findByUserIdAndDeleteFlagOrderByOrderDateDesc(String userBean, int i);
 
+//@Query("""
+//		select o from OrderItem o where o.order = :orderId
+//		"""
+//		 )
+//List<OrderItem> findByIdOrderId(@Param("orderId") Integer orderId);
+//	
+List<OrderItem>findByOrderId(Integer orderId);
 
 }
