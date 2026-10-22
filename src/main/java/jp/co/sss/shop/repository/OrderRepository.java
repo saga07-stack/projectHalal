@@ -37,6 +37,16 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	                 o.insertDate DESC
 	        """)
 	    List<Order> findByUserIdPendingFirst(@Param("userId") Integer userId);
-	}
+	
+  Long countByStatus(String status);
+
+
+@Query("""
+		select count(o) from Order o where o.status = 'pending'
+		""")
+  List<Integer> findByStatusCount();
+
+
+}
 
 

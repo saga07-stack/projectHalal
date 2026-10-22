@@ -1,7 +1,10 @@
 package jp.co.sss.shop.controller.login;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.form.LoginForm;
+import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
 
@@ -28,6 +32,8 @@ public class LoginController {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired private OrderRepository orderRepository;
+	
 	/**
 	 * セッション情報
 	 */
@@ -92,12 +98,18 @@ public class LoginController {
 	 * @return "admin/menu" 管理者メニュー画面表示
 	 */
 	@RequestMapping(path = "/admin/menu", method = RequestMethod.GET)
-	public String showAdminMenu() {
+	public String showAdminMenu(
+			Model model) {
 
 		if(session.getAttribute("user") == null) {
 			// セッション情報がない場合、ログイン画面表示処理にリダイレクト
 			return "redirect:/login";
 		}
+		
+		List <Integer> orderCount = orderRepository.findByStatusCount();
+		
+		model.addAttribute("orderCount", (orderCount.size()+1));
+		System.out.println("orderCount: " + orderCount);
 		// 管理者用メニュー画面表示
 		return "admin/admin_menu";
 	}

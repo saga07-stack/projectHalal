@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<body>
+
+<form th:action="@{/admin/order/process}" method="post" th:object="${order}">
+  
+
+	<input type="hidden" th:field="*{id}" />
+
+	<input  th:field="*{name}" />
+	<input  th:field="*{insertDate}" />
+	<input  th:field="*{payMethod}" />
+	<input  th:field="*{postalCode}" />
+	<input  th:field="*{address}" />
+	
+	<input type="hidden" th:field="*{phoneNumber}" />
+
+
+
+
+
+</form>
+
+<div th:object="${orderItems}" >
+
+<!-- <input th:field = "*{item.name}" type="text">
+ -->
+
+</div>
+
+
+</body>
+</html>
