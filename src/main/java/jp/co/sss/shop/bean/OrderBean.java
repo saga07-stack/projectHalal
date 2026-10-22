@@ -52,12 +52,23 @@ public class OrderBean {
 	 */
 	private String userName;
 
+	private String status;
+	
+	
 	/**
 	 * 注文IDの取得
 	 * @return 注文ID
 	 */
 	public Integer getId() {
 		return id;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	/**
