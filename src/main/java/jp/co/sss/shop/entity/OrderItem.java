@@ -53,6 +53,24 @@ public class OrderItem {
 	@Column
 	private int price;
 
+	@Column(name = "total", insertable = false, updatable = false)
+	private Integer total;
+	
+	
+	public Integer getTotal() {
+		return total;
+	}
+
+
+
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+
+
+
+
 	/**
 	 * 注文商品IDの取得
 	 * @return 注文商品ID
@@ -60,6 +78,9 @@ public class OrderItem {
 	public Integer getId() {
 		return id;
 	}
+	
+	
+	
 
 	/**
 	 * 注文商品IDのセット

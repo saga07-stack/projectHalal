@@ -12,6 +12,7 @@
 	<div th:if="${#lists.isEmpty(orders)}">
 		<p th:text="#{msg.client.order.list.none}"></p>
 	</div>
+	
 	<table class="list_table order" th:if="!${#lists.isEmpty(orders)}">
 		<tr>
 			<th>[[#{data.client.order.date}]]</th>

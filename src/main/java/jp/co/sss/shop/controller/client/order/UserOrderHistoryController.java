@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.bean.BasketBean;
@@ -22,6 +25,7 @@ import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
+import jp.co.sss.shop.repository.UserRepository;
 
 @Controller
 public class UserOrderHistoryController {
@@ -31,40 +35,53 @@ public class UserOrderHistoryController {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired private UserRepository userRepository;
  
-	/*
-	 * @RequestMapping(path = "/client/order/list", method = { RequestMethod.GET,
-	 * RequestMethod.POST }) public String basketList(HttpSession session, Model
-	 * model) {
-	 * 
-	 * int userId = ((UserBean) session.getAttribute("user")).getId();
-	 * 
-	 * if(userId == null) { return "redirect:/login"; }
-	 * 
-	 * 
-	 * List<Order> orders = orderRepository.findById(userId); List<OrderBean>
-	 * orderBeans = new ArrayList<>();
-	 * 
-	 * if(orders.isEmpty()) { model.addAttribute("message", "注文履歴はありません。"); }
-	 * 
-	 * for(Order order : orders) { OrderBean orderBean = new OrderBean();
-	 * orderBean.setId(order.getId());
-	 * orderBean.setPostalCode(order.getPostalCode());
-	 * orderBean.setAddress(order.getAddress());
-	 * 
-	 * orderBeans.add(orderBean); } model.addAttribute("orders", orderBeans);
-	 * 
-	 * return "client/basket/basket"; }
-	 */
 	
 	
 	@GetMapping("/client/order/list")
 	public String orderList(HttpSession session, Model model) {
 	    UserBean user = (UserBean) session.getAttribute("user");
-	    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
 	    
-	    model.addAttribute("orders", orders);
+	    if(user == null) {
+	    	
+	    	return "redirect:/client/login";
+	    }
+	    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
+	    Boolean isnull = false;
+	    if(orders.isEmpty()) {
+	    	isnull = true;
+	    		        model.addAttribute("message", "Your Order history is empty.");
+	    				model.addAttribute("isnull", isnull);
+	    				
+	    }else {
+			isnull = false;
+			model.addAttribute("isnull", isnull);
+			model.addAttribute("orders", orders);
+						
+		}
+	    
+	    
 	    return "client/basket/basket";
-	}
+	}   
 
+	@PostMapping("/client/order/detail")
+	public String orderDetail(
+			@RequestParam("id") Integer orderId,
+			Model model,
+		HttpSession session
+			) {
+		//Order order = orderRepository.findById(orderId).orElse(null);
+		
+		
+		
+		List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+		
+
+			model.addAttribute("orderItems", orderItems);
+		
+		return"client/basket/details";
+	}
+	
 }
