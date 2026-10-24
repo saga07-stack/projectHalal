@@ -1,0 +1,69 @@
+
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Tracker</title>
+
+<!-- ====== CSS: yo block lai stylesheet.css ma copy garnu ====== -->
+
+</head>
+
+<body>
+
+<!-- ====== HTML: Thymeleaf ma data-status ma order.status halnu ====== -->
+<div class="tracker-card">
+  <h3>Order #1001</h3>
+
+  <!-- data-status: ordered | processing | out_for_delivery | delivered -->
+  <ul class="tracker" data-status="processing">
+    <!-- Thymeleaf: th:attr="data-status=${order.status}" -->
+    <li><div class="dot" data-n="1"></div>Ordered</li>
+    <li><div class="dot" data-n="2"></div>Processing</li>
+    <li><div class="dot" data-n="3"></div>Out for Delivery</li>
+    <li><div class="dot" data-n="4"></div>Delivered</li>
+  </ul>
+</div>
+
+<div class="order-items-container">
+  <div id="orderList">
+    <div class="order-header">
+      <h2>Order Items</h2>
+      <p class="order-message" th:text="${message}"></p>
+    </div>
+
+    <div class="order-table-wrapper">
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Image</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="orderItem : ${orderItems}">
+            <td data-label="Item Name" th:text="${orderItem.item.name}"></td>
+            <td data-label="Quantity" th:text="${orderItem.quantity}"></td>
+            <td data-label="Total" th:text="${orderItem.total}"></td>
+            <td class="image-cell" data-label="Image">
+              <img th:src="@{'/images/'+ ${orderItem.item.image}}" alt="Product">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+
+</body>
+</html>
+
+</body>
+</html>

@@ -7,17 +7,14 @@
 	<meta charset="UTF-8" />
 </head>
 <body>
+
+<div th:if="${isnull}" > 
 <h1 th:text="${message}" > </h1>
 
-<div th:text="${message}" >
+ </div>
 
-<p> go buy something first  </p> 
-
-
-
-</div>
-
-<table>
+<div th:unless="${isnull}" >
+<table >
   <tr>
     <th>Order No.</th><th>Date</th><th>Status</th><th>Total</th><th></th>
   </tr>
@@ -26,9 +23,15 @@
     <td th:text="${#dates.format(order.insertDate, 'yyyy-MM-dd')}"></td>
     <td th:text="${order.status}"></td>
    <!-- <td th:text="${total[order.id]}"></td>-->
-    <td><a th:href="@{/client/order/detail/{id}(id=${order.id})}">Detail</a></td>
+   <td>
+    <form th:action="@{/client/order/detail}" method="post">
+        <input type="hidden" name="id" th:value="${order.id}">
+        <button type="submit">Detail</button>
+    </form>
+</td>
+     
   </tr>
 </table>
-
+</div>
 </body>
 </html>

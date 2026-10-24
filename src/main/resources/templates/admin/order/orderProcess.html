@@ -7,32 +7,40 @@
 	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
 	<script type="text/javascript" th:src="@{/js/common.js}"></script>
 <body>
+<div id="userDetailsArea" > 
+<h1> Delivery Address Details  </h1>
 
-<form th:action="@{/admin/order/process}" method="post" th:object="${order}">
-  
+<table> 
 
-	<input type="hidden" th:field="*{id}" />
-
-	<input  th:field="*{name}" />
-	<input  th:field="*{insertDate}" />
-	<input  th:field="*{payMethod}" />
-	<input  th:field="*{postalCode}" />
-	<input  th:field="*{address}" />
-	
-	<input type="hidden" th:field="*{phoneNumber}" />
+<tr>
+<th> Name </th>
+<th> Address </th>
+<th> Payment Method </th>
+<th> Postal Code </th>
+<th> Phone Number </th>
 
 
+</tr>
+<tr th:object="${order}" >
+<td  th:text ="${order.name}" > </td>
+<td  th:text ="${order.address}" > </td>
+<td  th:text ="${order.payMethod}" > </td>
+<td  th:text ="${order.postalCode}" > </td>
+<td  th:text ="${order.phoneNumber}" > </td>
 
 
 
-</form>
+</tr>
 
-<div th:object="${orderItems}" >
+</table>
 
-<!-- <input th:field = "*{item.name}" type="text">
- -->
+
 
 </div>
+
+
+
+
 
 
 </body>

@@ -26,7 +26,9 @@ public class AdminOrderProcessController {
 			@PathVariable("orderId") Integer orderId,
 			Model model ) {
 		
-		Optional<Order> order = orderRepository.findById(orderId);
+		Order order = orderRepository.findById(orderId).orElse(null);
+		
+		
 		List<OrderItem> orderItems =  orderItemRepository.findByOrderId(orderId);
 		// System.out.println("orderItems: " + orderItems.size());
 	  System.out.println("orderItems :" + orderItems);

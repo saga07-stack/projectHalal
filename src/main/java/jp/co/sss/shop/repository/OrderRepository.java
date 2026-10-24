@@ -1,6 +1,7 @@
 package jp.co.sss.shop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	
 	
 
-	    @Query("""
+  	    @Query("""
 	        SELECT o FROM Order o
 	        WHERE o.user.id = :userId
 	        ORDER BY CASE WHEN LOWER(o.status) = 'pending' THEN 0 ELSE 1 END,
