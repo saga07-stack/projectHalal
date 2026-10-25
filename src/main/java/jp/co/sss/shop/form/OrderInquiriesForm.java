@@ -9,11 +9,19 @@ public class OrderInquiriesForm {
 	
 	
 	private Integer id;
+	private Integer orderId;
+	public Integer getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
 	private String inquiryCode;
 	private String customerName;
 	private String customerPhone;
 	private String  customerAddress;
 	private String memo;
+	private Integer sentBy;
 	private Date sentAt;
 	private Date expiresAt;
 	private Integer usedFlag;
@@ -70,6 +78,12 @@ public class OrderInquiriesForm {
 	}
 	public void setUsedFlag(Integer usedFlag) {
 		this.usedFlag = usedFlag;
+	}
+	public Integer getSentBy() {
+		return sentBy;
+	}
+	public void setSentBy(Integer sentBy) {
+		this.sentBy = sentBy;
 	}
 	
 	
