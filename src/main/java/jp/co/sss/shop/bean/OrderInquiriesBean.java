@@ -2,7 +2,7 @@ package jp.co.sss.shop.bean;
 
 import java.sql.Date;
 
-public class Order_inquiriesBean {
+public class OrderInquiriesBean {
 	
 	
 	private Integer id;

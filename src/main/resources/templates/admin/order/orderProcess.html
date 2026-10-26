@@ -39,9 +39,22 @@
 </div>
 
 
+<div id="orderDetailsInputArea" >  
+<h1>Order Details Input Area </h1>
 
+</div>
 
-
+<form th:object="${orderInquiriesForm}" th:action="@{/admin/order/process/confirm}" method="post">
+    <span>Inquiry Code</span>     <input type="text" th:field="*{inquiryCode}">
+    <span>Customer Name</span>    <input type="text" th:field="*{customerName}">
+    <span>Customer Phone</span>   <input type="text" th:field="*{customerPhone}">
+    <span>Customer Address</span> <input type="text" th:field="*{customerAddress}">
+    <span>Sent By</span>          <input type="number" th:field="*{sentBy}">
+    <span>Sent At</span>          <input type="date" th:field="*{sentAt}">
+    <span>Expire At</span>        <input type="date" th:field="*{expiresAt}">
+    <span>Use Flag</span>         <input type="text" th:field="*{usedFlag}">
+    <input type="submit" value="Submit">
+</form>
 
 </body>
 </html>

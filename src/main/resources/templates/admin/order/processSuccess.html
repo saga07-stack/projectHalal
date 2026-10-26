@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<body>
+
+successed
+
+</body>
+</html>

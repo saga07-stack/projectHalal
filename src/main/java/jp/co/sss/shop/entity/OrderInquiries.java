@@ -12,23 +12,32 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "order_inquiries")
-public class Order_inquiries {
+public class OrderInquiries {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inquiry_seq")
 	@SequenceGenerator(name ="inquiry_seq", sequenceName ="order_inquiries_seq", allocationSize = 1)
-	private Integer inquiryId;
+	private Integer id;
 	
 	
 	
 	
 	@Column(name = "inquiry_code")
 	private String inquiryCode;
+	@Column(name = "order_id")
+	private Integer orderId;
+	public Integer getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
 	@Column(name = "customer_name")
 	private String customerName;
 	@Column(name = "customer_phone")
 	private String customerPhone;
-	
+	@Column (name = "sent_by")
+	private Integer sentBy;
 	@Column(name = "customer_address")
 	private String  customerAddress;
 	@Column(name = "memo")
@@ -40,11 +49,12 @@ public class Order_inquiries {
 	@Column(name = "used_flag")
 	private Integer usedFlag;
 	
-	public Integer getInquiryId() {
-		return inquiryId;
+	
+	public Integer getId() {
+		return id;
 	}
-	public void setInquiryId(Integer inquiryId) {
-		this.inquiryId = inquiryId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public String getInquiryCode() {
 		return inquiryCode;
@@ -93,6 +103,12 @@ public class Order_inquiries {
 	}
 	public void setUsedFlag(Integer usedFlag) {
 		this.usedFlag = usedFlag;
+	}
+	public Integer getSentBy() {
+		return sentBy;
+	}
+	public void setSentBy(Integer sentBy) {
+		this.sentBy = sentBy;
 	}
 	
 	
