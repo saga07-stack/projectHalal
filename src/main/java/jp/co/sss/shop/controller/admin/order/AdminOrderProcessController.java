@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jp.co.sss.shop.bean.OrderInquiriesBean;
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderInquiries;
 import jp.co.sss.shop.entity.OrderItem;
@@ -105,6 +106,8 @@ System.out.println("orderId: " + orderId);
 			)
 	{ 
 		
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		System.out.println("authority id: " +  userId);
 		//Integer userId = (Integer) session.getAttribute("userId");
 		OrderInquiries oq = new OrderInquiries();
         OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
@@ -114,7 +117,7 @@ System.out.println("orderId: " + orderId);
 		oq.setCustomerPhone(oqf.getCustomerPhone());  
 		oq.setCustomerAddress(oqf.getCustomerAddress());
 		oq.setMemo(oqf.getMemo());
-		oq.setSentBy(oqf.getSentBy()); 
+		oq.setSentBy(userId); 
 		oq.setSentAt(oqf.getSentAt());
 		oq.setExpiresAt(oqf.getExpiresAt());
 		oq.setUsedFlag(0);
