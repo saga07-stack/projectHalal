@@ -79,8 +79,8 @@ public class UserOrderHistoryController {
 	    List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
 	   Order orders = orderRepository.findById(orderId).orElse(null);
 	    
-	   
 	    String orderStatus;
+	    Boolean cancelStatus = false;
 	    switch (orders.getStatus()) {
 	        case "out_for_delivery":
 	            orderStatus = "out_for_delivery";
@@ -90,9 +90,11 @@ public class UserOrderHistoryController {
 	            break;
 	        default: // pending ra aru sabai
 	            orderStatus = "processing";
+	            cancelStatus = true;
 	    }
+	    model.addAttribute("cancelStatus", cancelStatus);
 	    model.addAttribute("orderStatus", orderStatus);
-
+        model.addAttribute("orderNumber", orderId);
 			model.addAttribute("orderItems", orderItems);
 		
 		return"client/basket/details";

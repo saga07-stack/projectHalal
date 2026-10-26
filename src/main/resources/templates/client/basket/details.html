@@ -7,15 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Order Tracker</title>
 
-<!-- ====== CSS: yo block lai stylesheet.css ma copy garnu ====== -->
 
 </head>
 
 <body>
 
-<!-- ====== HTML: Thymeleaf ma data-status ma order.status halnu ====== -->
+
 <div class="tracker-card">
-  <h3>Order #1001</h3>
+  <h3  > Order No : <span th:text="${orderNumber}" > </span></h3>
 
   <!-- data-status: ordered | processing | out_for_delivery | delivered -->
   <ul class="tracker" th:data-status="${orderStatus}">
@@ -58,7 +57,11 @@
     </div>
   </div>
 </div>
+<div th:if="${cancelStatus}" >
+<button class="cancel-order-btn"> Cancel Order </button>
 
+</div>
+<button onclick="goBack()" > Back to Order List </button>
 
 
 
