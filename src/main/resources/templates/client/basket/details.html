@@ -18,7 +18,7 @@
   <h3>Order #1001</h3>
 
   <!-- data-status: ordered | processing | out_for_delivery | delivered -->
-  <ul class="tracker" data-status="processing">
+  <ul class="tracker" th:data-status="${orderStatus}">
     <!-- Thymeleaf: th:attr="data-status=${order.status}" -->
     <li><div class="dot" data-n="1"></div>Ordered</li>
     <li><div class="dot" data-n="2"></div>Processing</li>

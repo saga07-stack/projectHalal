@@ -76,8 +76,22 @@ public class UserOrderHistoryController {
 		
 		
 		
-		List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-		
+	    List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+	   Order orders = orderRepository.findById(orderId).orElse(null);
+	    
+	   
+	    String orderStatus;
+	    switch (orders.getStatus()) {
+	        case "out_for_delivery":
+	            orderStatus = "out_for_delivery";
+	            break;
+	        case "delivered":
+	            orderStatus = "delivered";
+	            break;
+	        default: // pending ra aru sabai
+	            orderStatus = "processing";
+	    }
+	    model.addAttribute("orderStatus", orderStatus);
 
 			model.addAttribute("orderItems", orderItems);
 		
