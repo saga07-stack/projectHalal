@@ -24,9 +24,14 @@ import jp.co.sss.shop.form.OrderInquiriesForm;
 import jp.co.sss.shop.repository.OrderInquiriesRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
+import jp.co.sss.shop.repository.UserRepository;
 
 @Controller
 public class AdminOrderProcessController {
+	
+	
+	@Autowired 
+	private UserRepository userRepository;
 
 	@Autowired
 	private OrderRepository orderRepository;
@@ -98,7 +103,8 @@ System.out.println("orderId: " + orderId);
 	public String processSuccess(
 			HttpSession session, Model model
 			)
-	{
+	{ 
+		
 		//Integer userId = (Integer) session.getAttribute("userId");
 		OrderInquiries oq = new OrderInquiries();
         OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");

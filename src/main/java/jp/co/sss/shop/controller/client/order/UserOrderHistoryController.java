@@ -73,7 +73,12 @@ public class UserOrderHistoryController {
 		HttpSession session
 			) {
 		//Order order = orderRepository.findById(orderId).orElse(null);
-		
+		 UserBean user = (UserBean) session.getAttribute("user");
+		    
+		    if(user == null) {
+		    	
+		    	return "redirect:/client/login";
+		    }
 		
 		
 	    List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
@@ -82,7 +87,7 @@ public class UserOrderHistoryController {
 	    String orderStatus;
 	    Boolean cancelStatus = false;
 	    switch (orders.getStatus()) {
-	        case "out_for_delivery":
+	        case "out for delivery":
 	            orderStatus = "out_for_delivery";
 	            break;
 	        case "delivered":

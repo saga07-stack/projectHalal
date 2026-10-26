@@ -8,13 +8,12 @@
 <title>Order Tracker</title>
 
 
+
 </head>
 
 <body>
-
-
 <div class="tracker-card">
-  <h3  > Order No : <span th:text="${orderNumber}" > </span></h3>
+  <h3>Order #1001</h3>
 
   <!-- data-status: ordered | processing | out_for_delivery | delivered -->
   <ul class="tracker" th:data-status="${orderStatus}">
@@ -58,7 +57,7 @@
   </div>
 </div>
 <div th:if="${cancelStatus}" >
-<button class="cancel-order-btn"> Cancel Order </button>
+<button> Cancel Order </button>
 
 </div>
 <button onclick="goBack()" > Back to Order List </button>
