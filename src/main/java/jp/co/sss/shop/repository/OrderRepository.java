@@ -47,6 +47,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 		""")
   List<Integer> findByStatusCount();
 
+List<Order> findById(int id);
+
 
 }
 
