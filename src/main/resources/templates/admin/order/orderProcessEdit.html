@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<body>
+<!-- <div id="userDetailsArea" > 
+<h1> Delivery Address Details  </h1>
+
+<table> 
+
+<tr>
+<th> Name </th>
+<th> Address </th>
+<th> Payment Method </th>
+<th> Postal Code </th>
+<th> Phone Number </th>
+
+
+</tr>
+<tr th:object="${order}" >
+<td  th:text ="${order.name}" > </td>
+<td  th:text ="${order.address}" > </td>
+<td  th:text ="${order.payMethod}" > </td>
+<td  th:text ="${order.postalCode}" > </td>
+<td  th:text ="${order.phoneNumber}" > </td>
+
+
+
+</tr>
+
+</table>
+
+
+
+</div>
+ -->
+
+<div id="orderDetailsInputArea" >  
+<h1>Order Details Input Area </h1>
+
+</div>
+
+<form th:object="${orderInquiriesForm}" th:action="@{/admin/order/edit/success}" method="post">
+    <span>Inquiry Code</span>     <input type="text" th:field="*{inquiryCode}">
+    <span>Customer Name</span>    <input  type="text" th:field="*{customerName}" readonly >
+    <span>Customer Phone</span>   <input type="text" th:field="*{customerPhone}" readonly>
+    <span>Customer Address</span> <input type="text" th:field="*{customerAddress}" readonly >
+   <!--  <span>Sent By</span>          <input type="number" th:field="*{sentBy}"> -->
+    <span>Sent At</span>          <input type="date" th:field="*{sentAt}" readonly>
+    <span>Expire At</span>        <input type="date" th:field="*{expiresAt}" readonly>
+    <span>Use Flag</span>         <input type="text" th:field="*{usedFlag}" readonly>
+    <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
