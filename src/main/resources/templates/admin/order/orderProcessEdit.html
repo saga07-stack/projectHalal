@@ -45,7 +45,7 @@
 </div>
 
 <form th:object="${orderInquiriesForm}" th:action="@{/admin/order/edit/success}" method="post">
-    <span>Inquiry Code</span>     <input type="text" th:field="*{inquiryCode}">
+    <span>Inquiry Code</span>     <input type="text" name="inquiryCode" th:value="*{inquiryCode}">
     <span>Customer Name</span>    <input  type="text" th:field="*{customerName}" readonly >
     <span>Customer Phone</span>   <input type="text" th:field="*{customerPhone}" readonly>
     <span>Customer Address</span> <input type="text" th:field="*{customerAddress}" readonly >
