@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.OrderInquiries;
 import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.repository.OrderInquiriesRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.PriceCalc;
@@ -43,6 +45,8 @@ public class AdminOrderShowController {
 	 */
 	@Autowired
 	HttpSession session;
+	
+	@Autowired private OrderInquiriesRepository oIRepository;
 
 	/**
 	 * 合計金額計算サービス
@@ -115,7 +119,12 @@ public class AdminOrderShowController {
 
 		// 合計金額を算出
 		int total = priceCalc.orderItemBeanPriceTotalUseSubtotal(orderItemBeanList);
-
+        Boolean hasStatus = false;  
+		if(order.getStatus().equals("out for delivery")) {
+			hasStatus = true;
+        	  model.addAttribute("hasStatus", hasStatus);
+          }
+      
 		// 注文情報をViewへ渡す
 		model.addAttribute("order", orderBean);
 		model.addAttribute("orderItemBeans", orderItemBeanList);

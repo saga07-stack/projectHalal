@@ -8,5 +8,6 @@ public interface OrderInquiriesRepository extends JpaRepository<OrderInquiries, 
 	// ここに必要なクエリメソッドを定義できます
 	
 	
-
+OrderInquiries findByOrderId(Integer orderId);
+	
 }

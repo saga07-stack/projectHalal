@@ -49,8 +49,8 @@ public class AdminOrderProcessController {
 
 		session.setAttribute("orderId", orderId);
 		session.removeAttribute("orderInquiriesForm");
-System.out.println("orderId: " + orderId);
-
+        System.out.println("orderId: " + orderId);
+        
 		return "redirect:/admin/order/orderProcess";
 	}
 
@@ -130,9 +130,66 @@ System.out.println("orderId: " + orderId);
          
          		session.removeAttribute("orderInquiriesForm");
          		session.removeAttribute("orderId");
-         		session.removeAttribute("orderItems");
+         		session.removeAttribute("orderItems");  
          		session.removeAttribute("order");
 		
 		return "admin/order/processSuccess";
 	}
+	
+	@GetMapping("/admin/order/edit/form/{orderId}")
+	public String ediProcessForm(@PathVariable("orderId") Integer orderId, HttpSession session,
+			Model model
+
+	) {
+		
+		OrderInquiriesBean oIBean = new OrderInquiriesBean();
+		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);
+		
+		oIBean.setInquiryCode(oI.getInquiryCode());
+			oIBean.setCustomerName(oI.getCustomerName());
+			oIBean.setCustomerPhone(oI.getCustomerPhone());
+			oIBean.setCustomerAddress(oI.getCustomerAddress());
+			oIBean.setSentAt(oI.getSentAt());
+			oIBean.setExpiresAt(oI.getExpiresAt());
+			oIBean.setUsedFlag(oI.getUsedFlag());
+            
+			session.setAttribute("orderInquiriesBean",oIBean);
+			model.addAttribute("orderInquiriesForm", oIBean);
+		
+		  
+		return "admin/order/orderProcessEdit";
+	}
+
+	@PostMapping("/admin/order/edit/success")
+	public String editProcessSuccess(
+			HttpSession session, Model model
+			)
+	{ 
+		OrderInquiriesBean oIBean = (OrderInquiriesBean) session.getAttribute("orderInquiriesBean");
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		
+		System.out.println("authority id: " +  userId);
+		//Integer userId = (Integer) session.getAttribute("userId");
+		OrderInquiries oq = orderInquiriesRepository.findByOrderId((Integer) session.getAttribute("orderId"));
+		OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
+		
+		oq.setInquiryCode(oIBean.getInquiryCode());
+				oq.setCustomerName(oqf.getCustomerName());
+		oq.setCustomerPhone(oqf.getCustomerPhone());  
+		oq.setCustomerAddress(oqf.getCustomerAddress());
+		oq.setMemo(oqf.getMemo());
+		oq.setSentBy(userId); 
+		oq.setSentAt(oqf.getSentAt());
+		oq.setExpiresAt(oqf.getExpiresAt());
+		
+		 orderInquiriesRepository.save(oq);
+		 
+		 		session.removeAttribute("orderInquiriesForm");
+		 		session.removeAttribute("orderId");
+		 		session.removeAttribute("orderItems");  
+		 		session.removeAttribute("order");
+		
+		return "admin/order/processSuccess";
+	}
+	
 }
