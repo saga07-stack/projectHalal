@@ -112,7 +112,7 @@ public class AdminOrderProcessController {
 		OrderInquiries oq = new OrderInquiries();
         OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
         oq.setOrderId(session.getAttribute("orderId") != null ? (Integer) session.getAttribute("orderId") : null);
-		oq.setInquiryCode(oqf.getInquiryCode());
+		oq.setInquiryCode(" ");
 		oq.setCustomerName(oqf.getCustomerName());
 		oq.setCustomerPhone(oqf.getCustomerPhone());  
 		oq.setCustomerAddress(oqf.getCustomerAddress());
@@ -153,6 +153,7 @@ public class AdminOrderProcessController {
 			oIBean.setExpiresAt(oI.getExpiresAt());
 			oIBean.setUsedFlag(oI.getUsedFlag());
             
+			session.setAttribute("orderId", orderId);
 			session.setAttribute("orderInquiriesBean",oIBean);
 			model.addAttribute("orderInquiriesForm", oIBean);
 		
@@ -162,32 +163,50 @@ public class AdminOrderProcessController {
 
 	@PostMapping("/admin/order/edit/success")
 	public String editProcessSuccess(
+			@RequestParam("inquiryCode") String inquiryCode,
 			HttpSession session, Model model
 			)
 	{ 
-		OrderInquiriesBean oIBean = (OrderInquiriesBean) session.getAttribute("orderInquiriesBean");
+		
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		
-		System.out.println("authority id: " +  userId);
-		//Integer userId = (Integer) session.getAttribute("userId");
-		OrderInquiries oq = orderInquiriesRepository.findByOrderId((Integer) session.getAttribute("orderId"));
-		OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
+		if(userId.equals(null)) {
+			return "redirect:/login";
+		}
 		
-		oq.setInquiryCode(oIBean.getInquiryCode());
-				oq.setCustomerName(oqf.getCustomerName());
-		oq.setCustomerPhone(oqf.getCustomerPhone());  
-		oq.setCustomerAddress(oqf.getCustomerAddress());
-		oq.setMemo(oqf.getMemo());
-		oq.setSentBy(userId); 
-		oq.setSentAt(oqf.getSentAt());
-		oq.setExpiresAt(oqf.getExpiresAt());
+		Integer orderId = (Integer) session.getAttribute("orderId");
+		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);
+		oI.setInquiryCode(inquiryCode);
+		orderInquiriesRepository.save(oI);
+		session.removeAttribute("orderInquiriesBean");
+		session.removeAttribute("orderId");
+		session.removeAttribute("orderInquiriesForm");
+		session.removeAttribute("orderItems");
 		
-		 orderInquiriesRepository.save(oq);
-		 
-		 		session.removeAttribute("orderInquiriesForm");
-		 		session.removeAttribute("orderId");
-		 		session.removeAttribute("orderItems");  
-		 		session.removeAttribute("order");
+		
+//		OrderInquiriesBean oIBean = (OrderInquiriesBean) session.getAttribute("orderInquiriesBean");
+//		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+//		
+//		System.out.println("authority id: " +  userId);
+//		//Integer userId = (Integer) session.getAttribute("userId");
+//		OrderInquiries oq = orderInquiriesRepository.findByOrderId((Integer) session.getAttribute("orderId"));
+//		OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
+//		
+//		oq.setInquiryCode(oIBean.getInquiryCode());
+//				oq.setCustomerName(oqf.getCustomerName());
+//		oq.setCustomerPhone(oqf.getCustomerPhone());  
+//		oq.setCustomerAddress(oqf.getCustomerAddress());
+//		oq.setMemo(oqf.getMemo());
+//		oq.setSentBy(userId); 
+//		oq.setSentAt(oqf.getSentAt());
+//		oq.setExpiresAt(oqf.getExpiresAt());
+//		
+//		 orderInquiriesRepository.save(oq);
+//		 
+//		 		session.removeAttribute("orderInquiriesForm");
+//		 		session.removeAttribute("orderId");
+//		 		session.removeAttribute("orderItems");  
+//		 		session.removeAttribute("order");
 		
 		return "admin/order/processSuccess";
 	}

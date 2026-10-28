@@ -22,7 +22,9 @@ import jp.co.sss.shop.bean.OrderBean;
 import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.OrderInquiries;
 import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.repository.OrderInquiriesRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
@@ -38,7 +40,7 @@ public class UserOrderHistoryController {
 	
 	@Autowired private UserRepository userRepository;
  
-	
+    @Autowired private OrderInquiriesRepository oIR;
 	
 	@GetMapping("/client/order/list")
 	public String orderList(HttpSession session, Model model) {
@@ -97,6 +99,25 @@ public class UserOrderHistoryController {
 	            orderStatus = "processing";
 	            cancelStatus = true;
 	    }
+	        
+	    OrderInquiries oI = oIR.findByOrderId(orderId);
+	    
+	    Boolean trackingDetails = true;
+	    if(oI == null) {
+	    	trackingDetails = false;
+	    	model.addAttribute("trackingDetails", trackingDetails);
+	    	
+	    }else
+	    
+	    if(oI.getInquiryCode().trim().equals(null)) {
+	    	 
+	    	trackingDetails = false;
+	    	model.addAttribute("trackingDetails", trackingDetails);
+	    }else  {
+	    	trackingDetails = true;
+	    	model.addAttribute("trackingDetails", trackingDetails);
+	    }
+	    
 	    model.addAttribute("cancelStatus", cancelStatus);
 	    model.addAttribute("orderStatus", orderStatus);
         model.addAttribute("orderNumber", orderId);
