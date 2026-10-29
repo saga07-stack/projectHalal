@@ -25,10 +25,13 @@
   </ul>
 </div>
 
-<div th:if="${trackingDetails}"> > 
+<div th:if="${trackingDetails}"> 
 
-<button id="trackingdetails"   > click here for the tracking details   </button>
-
+<button id="trackingDetail" th:data-order-id="${orderNumber}"   > click here for the tracking details   </button>
+  <div id="trackingDetails"   >
+  
+  
+   </div>
 
  </div>
 
@@ -71,8 +74,6 @@
 
 
 
-</body>
-</html>
 
 </body>
 </html>

@@ -117,7 +117,7 @@ public class UserOrderHistoryController {
 	    	trackingDetails = true;
 	    	model.addAttribute("trackingDetails", trackingDetails);
 	    }
-	    
+	 
 	    model.addAttribute("cancelStatus", cancelStatus);
 	    model.addAttribute("orderStatus", orderStatus);
         model.addAttribute("orderNumber", orderId);

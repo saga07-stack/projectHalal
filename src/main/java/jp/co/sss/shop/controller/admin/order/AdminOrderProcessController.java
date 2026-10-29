@@ -184,29 +184,7 @@ public class AdminOrderProcessController {
 		session.removeAttribute("orderItems");
 		
 		
-//		OrderInquiriesBean oIBean = (OrderInquiriesBean) session.getAttribute("orderInquiriesBean");
-//		Integer userId = ((UserBean) session.getAttribute("user")).getId();
-//		
-//		System.out.println("authority id: " +  userId);
-//		//Integer userId = (Integer) session.getAttribute("userId");
-//		OrderInquiries oq = orderInquiriesRepository.findByOrderId((Integer) session.getAttribute("orderId"));
-//		OrderInquiriesForm oqf= (OrderInquiriesForm) session.getAttribute("orderInquiriesForm");
-//		
-//		oq.setInquiryCode(oIBean.getInquiryCode());
-//				oq.setCustomerName(oqf.getCustomerName());
-//		oq.setCustomerPhone(oqf.getCustomerPhone());  
-//		oq.setCustomerAddress(oqf.getCustomerAddress());
-//		oq.setMemo(oqf.getMemo());
-//		oq.setSentBy(userId); 
-//		oq.setSentAt(oqf.getSentAt());
-//		oq.setExpiresAt(oqf.getExpiresAt());
-//		
-//		 orderInquiriesRepository.save(oq);
-//		 
-//		 		session.removeAttribute("orderInquiriesForm");
-//		 		session.removeAttribute("orderId");
-//		 		session.removeAttribute("orderItems");  
-//		 		session.removeAttribute("order");
+ 		session.removeAttribute("order");
 		
 		return "admin/order/processSuccess";
 	}
