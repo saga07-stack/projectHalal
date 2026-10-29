@@ -803,8 +803,27 @@ document.addEventListener("click", function(event) {
 	}
 });
 const count_badge = document.getElementById("count_badge");
-if(count_badge){
-	console.log("count_badge found");
-}else{
-	console.log("count_badge not found");
-	}
+	//fetch the tracking details parts 
+	
+	const trackingDetail = document.getElementById("trackingDetail");
+	const trackingDetails = document.getElementById("trackingDetails");
+
+	
+	trackingDetail.addEventListener("click", ()=>{
+	alert("trackingDetails clicked");
+	const orderId = trackingDetail.dataset.orderId;
+		fetch(`${FixedUrl}client/order/details/trackingDetails/${orderId}`)
+		.then((response)=>{
+					return response.json();
+		}).then ((data)=>{
+			const li = document.createElement("li");
+			li.textContent = `your inquiry Code  is ${data.inquiry_code} you can track your order with this code in クロネコヤマト site `
+			li.style.color = "red";
+			trackingDetails.appendChild(li);
+			
+			console.log("tracking data", data);
+		}).catch ((error)=>{
+			console.log("Error fetching tracking data:", error);
+		})
+	
+	});

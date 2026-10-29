@@ -110,7 +110,7 @@ public class OrderInquiries {
 	public void setSentBy(Integer sentBy) {
 		this.sentBy = sentBy;
 	}
-	
+
 	
 	
 	
