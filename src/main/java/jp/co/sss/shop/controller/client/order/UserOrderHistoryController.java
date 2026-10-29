@@ -47,8 +47,8 @@ public class UserOrderHistoryController {
 	    UserBean user = (UserBean) session.getAttribute("user");
 	    
 	    if(user == null) {
-	    	
-	    	return "redirect:/client/login";
+	    	model.addAttribute("message", "Session time out");
+	    	return "redirect:/login";
 	    }
 	    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
 	    Boolean isnull = false;
@@ -78,8 +78,8 @@ public class UserOrderHistoryController {
 		 UserBean user = (UserBean) session.getAttribute("user");
 		    
 		    if(user == null) {
-		    	
-		    	return "redirect:/client/login";
+		    	model.addAttribute("message", "Session time out");
+		    	return "redirect:/login";
 		    }
 		
 		

@@ -54,6 +54,11 @@ public class AdminCategoryDeleteController {
 	@RequestMapping(path = "/admin/category/delete/check/{id}", method = RequestMethod.POST)
 	public String deleteCheck(@PathVariable Integer id) {
 
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+
 		// 削除対象の情報取得
 		Category category = categoryRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 		if (category == null) {
@@ -82,6 +87,12 @@ public class AdminCategoryDeleteController {
 	@RequestMapping(path = "/admin/category/delete/check", method = RequestMethod.GET)
 	public String deleteCheckView(Model model) {
 
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
+
 		//セッションから入力フォーム取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 		if (categoryForm == null) {
@@ -103,6 +114,11 @@ public class AdminCategoryDeleteController {
 	 */
 	@RequestMapping(path = "/admin/category/delete/complete", method = RequestMethod.POST)
 	public String deletetComplete() {
+
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 
 		// セッションから削除対象フォーム情報を取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
@@ -150,6 +166,11 @@ public class AdminCategoryDeleteController {
 	 */
 	@RequestMapping(path = "/admin/category/delete/complete", method = RequestMethod.GET)
 	public String deletetCompleteRedirect() {
+
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 
 		return "admin/category/delete_complete";
 	}

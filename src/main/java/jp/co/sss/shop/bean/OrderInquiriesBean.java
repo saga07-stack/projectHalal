@@ -12,7 +12,7 @@ public class OrderInquiriesBean {
 	private String  customerAddress;
 	private String memo;
 	private Date sentAt;
-	private Date expiresAt;
+	private Date arrivedAt;
 	private Integer usedFlag;
 	
 	
@@ -58,11 +58,12 @@ public class OrderInquiriesBean {
 	public void setSentAt(Date sentAt) {
 		this.sentAt = sentAt;
 	}
-	public Date getExpiresAt() {
-		return expiresAt;
+	
+	public Date getArrivedAt() {
+		return arrivedAt;
 	}
-	public void setExpiresAt(Date expiresAt) {
-		this.expiresAt = expiresAt;
+	public void setArrivedAt(Date arrivedAt) {
+		this.arrivedAt = arrivedAt;
 	}
 	public Integer getUsedFlag() {
 		return usedFlag;

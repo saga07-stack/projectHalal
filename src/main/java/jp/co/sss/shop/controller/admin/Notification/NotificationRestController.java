@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +27,16 @@ public class NotificationRestController {
 	@Autowired
 	private OrderRepository orderRepo;
 	
+	@Autowired
+	private HttpSession session;
+	
 	@GetMapping("/list")
 	ResponseEntity<?> getNotificationList(){
+		
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return ResponseEntity.status(401).body("Session time out");
+		}
 		
 		List<Item> items = itemRepo.findByStockLessThenFiveAndDeleteFlagOrderByInsertDateDesc();
 		
@@ -51,6 +61,11 @@ public class NotificationRestController {
 	@GetMapping("/expired")
 	ResponseEntity<?> getExpiredNotificationList(){
 		
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return ResponseEntity.status(401).body("Session time out");
+		}
+		
 		// 7日以内に賞味期限/消費期限が切れる商品を対象とする
 		LocalDate limitDate = LocalDate.now().plusDays(7);
 		List<Item> items = itemRepo.findExpiringItems(limitDate);
@@ -69,6 +84,11 @@ public class NotificationRestController {
 	@RequestMapping("/admin")
 	@GetMapping("/menu")
 	ResponseEntity<?> getOrderNotificationCount(){
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return ResponseEntity.status(401).body("Session time out");
+		}
+		
 	 long count = orderRepo.countByStatus("pending");
 		return ResponseEntity.ok(count);
 		
