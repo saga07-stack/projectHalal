@@ -56,6 +56,7 @@ public class BasketController {
 
 	    UserBean userBean = (UserBean) session.getAttribute("user");   // tapai ko asli key
 	    if (userBean == null) {
+	        model.addAttribute("message", "Session time out");
 	        return "redirect:/login";
 	    }
 

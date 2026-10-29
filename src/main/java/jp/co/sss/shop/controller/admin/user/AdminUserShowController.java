@@ -89,6 +89,12 @@ public class AdminUserShowController {
 	 */
 	@RequestMapping(path = "/admin/user/detail/{id}", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showUser(@PathVariable int id, Model model) {
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
+		
 		// 表示対象の情報を取得
 		User user = userRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 		if (user == null) {

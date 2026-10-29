@@ -70,6 +70,12 @@ public class AdminOrderShowController {
 	@RequestMapping(path = "/admin/order/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showOrderList(Model model, Pageable pageable) {
 
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
+
 		// すべての注文情報を取得(注文日降順)
 		//表示画面でページングが必要なため、ページ情報付きの検索を行う
 		Page<Order> orderList = orderRepository.findAllOrderByInsertdateDescIdDesc(pageable);
@@ -106,7 +112,13 @@ public class AdminOrderShowController {
 	 * @return "admin/order/detail" 詳細画面　表示
 	 */
 	@RequestMapping(path = "/admin/order/detail/{id}")
-	public String showOrder(@PathVariable int id, Model model) {
+	public String showOrder(@PathVariable int id, Model model, HttpSession session) {
+
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
 
 		// 選択された注文情報に該当する情報を取得
 		Order order = orderRepository.getReferenceById(id);

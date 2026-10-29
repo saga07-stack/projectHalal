@@ -16,6 +16,11 @@ public class EmailVerificationRestController {
 	public ResponseEntity<?> sendVerificationEmail(
 		HttpSession session	){
 		
+		// Check if session has timed out
+		if (session.getAttribute("verificationCode") == null) {
+			return ResponseEntity.status(401).body("Session time out");
+		}
+		
 		int verificationCode = (int) session.getAttribute("verificationCode");
 		return ResponseEntity.ok(verificationCode);
 	}

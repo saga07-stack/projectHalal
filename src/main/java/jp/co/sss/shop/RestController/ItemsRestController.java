@@ -80,7 +80,7 @@ public class ItemsRestController {
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 		
 		if(session.getAttribute("user") == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session time out");
 		}
 			System.out.println("ユーザーがログインしています");
 		ItemDto item = itemService.getItemById(id);
@@ -131,7 +131,7 @@ public class ItemsRestController {
 	    // ১. কে লগইন করে আছে? (session থেকে নাও)
 	    UserBean user = (UserBean) session.getAttribute("user");
 	    if (user == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("notLogin");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session time out");
 	    }
 
 	    // ২. এই item আসলে আছে কি না

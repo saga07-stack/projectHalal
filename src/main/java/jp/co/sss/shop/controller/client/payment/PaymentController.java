@@ -55,6 +55,7 @@ public class PaymentController {
 			HttpSession session
 			){
 		if(session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
 			return "redirect:/login";
 		}
 		
@@ -98,8 +99,14 @@ public class PaymentController {
 	    		HttpSession session,
 	    		Model model 
 	    		) throws StripeException {
+	    	// Check if session has timed out
+	    	if(session.getAttribute("user") == null) {
+	    		model.addAttribute("message", "Session time out");
+	    		return "redirect:/login";
+	    	}
+	    	
 	        Stripe.apiKey = stripeSecretKey;
-      int totalPrice = (int) session.getAttribute("totalPrice");
+	      int totalPrice = (int) session.getAttribute("totalPrice");
 	        SessionCreateParams params = SessionCreateParams.builder()
 	            .setMode(SessionCreateParams.Mode.PAYMENT)
 	            .setSuccessUrl("http://localhost:55000/shared_shop/client/order/payment/success")

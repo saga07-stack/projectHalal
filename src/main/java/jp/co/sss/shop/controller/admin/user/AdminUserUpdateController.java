@@ -52,6 +52,11 @@ public class AdminUserUpdateController {
 	@RequestMapping(path = "/admin/user/update/input/{id}", method = RequestMethod.POST)
 	public String updateInputInit(@PathVariable Integer id) {
 
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+
 		//セッションスコープより入力情報を取り出す
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
@@ -89,6 +94,12 @@ public class AdminUserUpdateController {
 	@RequestMapping(path = "/admin/user/update/input", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
+
 		//セッションから入力フォーム取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
@@ -121,6 +132,11 @@ public class AdminUserUpdateController {
 	 */
 	@RequestMapping(path = "/admin/user/update/check", method = RequestMethod.POST)
 	public String updateInputCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
+
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 
 		//直前のセッション情報を取得
 		UserForm lastUserForm = (UserForm) session.getAttribute("userForm");
@@ -158,6 +174,12 @@ public class AdminUserUpdateController {
 	 */
 	@RequestMapping(path = "/admin/user/update/check", method = RequestMethod.GET)
 	public String updateCheck(Model model) {
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			model.addAttribute("message", "Session time out");
+			return "redirect:/login";
+		}
+		
 		//セッションから入力フォーム情報取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
@@ -180,6 +202,11 @@ public class AdminUserUpdateController {
 	 */
 	@RequestMapping(path = "/admin/user/update/complete", method = RequestMethod.POST)
 	public String updateComplete() {
+
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 
 		//セッション保持情報から入力値再取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
@@ -231,6 +258,11 @@ public class AdminUserUpdateController {
 	@RequestMapping(path = "/admin/user/update/complete", method = RequestMethod.GET)
 	public String updateCompleteFinish() {
 		
+		// Check if session has timed out
+		if (session.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
+
 		return "admin/user/update_complete";
 	}
 
