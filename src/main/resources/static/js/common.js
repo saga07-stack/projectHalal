@@ -813,8 +813,7 @@ if(trackingDetail){
 	
 
 	trackingDetail.addEventListener("click", ()=>{
-	
-	trackingDetails.innerHTML = ""; // Clear previous tracking details
+	alert("trackingDetails clicked");
 	const orderId = trackingDetail.dataset.orderId;
 		fetch(`${FixedUrl}client/order/details/trackingDetails/${orderId}`)
 		.then((response)=>{
@@ -823,19 +822,7 @@ if(trackingDetail){
 			const li = document.createElement("li");
 			li.textContent = `your inquiry Code  is ${data.inquiry_code} you can track your order with this code in クロネコヤマト site `
 			li.style.color = "red";
-			const li1 = document.createElement("li");
-			li1.textContent = `your order is currently ${data.status} `
-			const li2 = document.createElement("li");
-			li2.textContent = `your order is expected to be delivered on ${data.expected_delivery_date} `
-			const li3 = document.createElement("li");
-			li3.textContent = `your order is shipped by ${data.shipping_company} `
-			
-			
 			trackingDetails.appendChild(li);
-			trackingDetails.appendChild(li1);
-			trackingDetails.appendChild(li2);
-			trackingDetails.appendChild(li3);
-			
 			
 			console.log("tracking data", data);
 		}).catch ((error)=>{
