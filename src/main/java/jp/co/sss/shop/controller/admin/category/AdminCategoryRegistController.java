@@ -55,11 +55,6 @@ public class AdminCategoryRegistController {
 	@RequestMapping(path = "/admin/category/regist/input", method = RequestMethod.POST)
 	public String registInput() {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		//セッションスコープより入力情報を取り出す
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 
@@ -80,12 +75,6 @@ public class AdminCategoryRegistController {
 	 */
 	@RequestMapping(path = "/admin/category/regist/input", method = RequestMethod.GET)
 	public String registInput(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		//セッションから入力フォーム情報取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 		if (categoryForm == null) {
@@ -120,11 +109,6 @@ public class AdminCategoryRegistController {
 	@RequestMapping(path = "/admin/category/regist/check", method = RequestMethod.POST)
 	public String registInputCheck(@Valid @ModelAttribute CategoryForm form, BindingResult result) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		// 入力されたカテゴリ情報をセッションに保持
 		session.setAttribute("categoryForm", form);
 
@@ -148,12 +132,6 @@ public class AdminCategoryRegistController {
 	 */
 	@RequestMapping(path = "/admin/category/regist/check", method = RequestMethod.GET)
 	public String registCheck(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		// セッションから入力フォーム情報取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 		if (categoryForm == null) {
@@ -174,11 +152,6 @@ public class AdminCategoryRegistController {
 	 */
 	@RequestMapping(path = "/admin/category/regist/complete", method = RequestMethod.POST)
 	public String registComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//セッションから入力フォーム情報取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
@@ -219,11 +192,6 @@ public class AdminCategoryRegistController {
 	 */
 	@RequestMapping(path = "/admin/category/regist/complete", method = RequestMethod.GET)
 	public String registCompleteFinish() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		return "admin/category/regist_complete";
 	}

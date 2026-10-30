@@ -53,12 +53,6 @@ public class AdminItemShowController {
 	@RequestMapping(path = "/admin/item/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showItemList(Model model, Pageable pageable) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		// 商品情報の登録数の取得と新規追加可否チェック
 		Long itemsCount = itemRepository.count();
 		Boolean registrable = true;
@@ -94,13 +88,7 @@ public class AdminItemShowController {
 	 * TIPS: 一般会員向けの商品詳細表示機能に類似した処理です。
 	 */
 	@RequestMapping(path = "/admin/item/detail/{id}", method = { RequestMethod.GET, RequestMethod.POST })
-	public String showItem(@PathVariable int id, Model model, HttpSession httpSession) {
-
-		// Check if session has timed out
-		if (httpSession.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
+	public String showItem(@PathVariable int id, Model model) {
 
 		// 対象の商品情報を取得
 		Item item = itemRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);

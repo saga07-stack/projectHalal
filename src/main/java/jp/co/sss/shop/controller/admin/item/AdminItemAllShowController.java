@@ -27,11 +27,6 @@ public class AdminItemAllShowController {
 			HttpSession session 
 			
 			) { 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-		
 		session.setAttribute("keyword", keyword);
 		
 		return"redirect:/admin/item/listAll";
@@ -43,13 +38,7 @@ public class AdminItemAllShowController {
 		
 		HttpSession session,
 		Model model
-				) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
+			) {
 		System.out.println("keyword: " +session.getAttribute("keyword"));
     String keyword = (String) session.getAttribute("keyword");
 		List<Item> items = itemRepository.findByNameContainingAndDeleteFlag(keyword,0);
@@ -65,13 +54,7 @@ public class AdminItemAllShowController {
 			@RequestParam("keyword") String keyword,
 			HttpSession session,
 			Model model
-					) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
+				) {
 		//	System.out.println("keyword: " +session.getAttribute("keyword"));
 	    //String keyword = (String) session.getAttribute("keyword");
 			List<Item> items = itemRepository.findByNameContainingAndDeleteFlag(keyword,0);

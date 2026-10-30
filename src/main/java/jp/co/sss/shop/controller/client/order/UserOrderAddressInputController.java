@@ -41,8 +41,9 @@ public class UserOrderAddressInputController {
 			) {
 		
 		if(session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
 			return "redirect:/login";
+			
+			
 		}
 		
 		OrderForm orderForm = new OrderForm();
