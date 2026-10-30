@@ -48,12 +48,6 @@ public class AdminCategoryShowController {
 	@RequestMapping(path = "/admin/category/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showCategoryList(Model model, Pageable pageable) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		// 商品情報の登録数の取得と新規追加可否チェック
 		Long categoriesCount = categoryRepository.count();
 		Boolean registrable = true;
@@ -88,12 +82,6 @@ public class AdminCategoryShowController {
 	 */
 	@RequestMapping(path = "/admin/category/detail/{id}", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showCategory(@PathVariable Integer id, Model model) {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 
 		// 表示対象の情報取得
 		Category category = categoryRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);

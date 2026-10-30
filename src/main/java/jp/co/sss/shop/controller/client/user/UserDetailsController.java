@@ -30,13 +30,7 @@ public class UserDetailsController {
 	public String userDetails(
 		Model model,
 		HttpSession session
-				) {
-		
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
+			) {
 		
 		Integer userId = ((UserBean)session.getAttribute("user")).getId();
 		
@@ -86,12 +80,6 @@ public class UserDetailsController {
 			HttpSession session			
 			) {
 		
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		UserBean userBean = (UserBean) session.getAttribute("userBean");
 		
 		if(userBean == null) {
@@ -115,11 +103,6 @@ public class UserDetailsController {
 			@Valid @ModelAttribute UserForm userForm, BindingResult result, Model model
 			) {
 		
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 		
 		
 		Boolean hasErrors = result.hasErrors();

@@ -761,9 +761,10 @@ function goBack() {
     }
 }
 
+
 const categoryBtn = document.getElementById("categoryBtn");
 const categoryList = document.getElementById("categoryList");
-if(categoryBtn && categoryList){
+
 	categoryBtn.addEventListener("click",()=>{
 		const popup = document.getElementById("categoryPopup");
 		if(!popup) return;
@@ -789,8 +790,6 @@ if(categoryBtn && categoryList){
 			console.log("Error fetching category data:", error);
 		})
 	})
-	}
-
 
 // Close category popup when clicking outside of it
 document.addEventListener("click", function(event) {
@@ -809,9 +808,7 @@ const count_badge = document.getElementById("count_badge");
 	const trackingDetail = document.getElementById("trackingDetail");
 	const trackingDetails = document.getElementById("trackingDetails");
 
-if(trackingDetail){
 	
-
 	trackingDetail.addEventListener("click", ()=>{
 	
 	trackingDetails.innerHTML = ""; // Clear previous tracking details
@@ -843,27 +840,3 @@ if(trackingDetail){
 		})
 	
 	});
-	}else{
-		console.log("trackingDetail not found");
-	}
-	
-//	const FixedUrl = "http://localhost:55000/shared_shop/";
-
-	const countBadge = document.getElementById('count_badge');
- if(countBadge){
-console.log("triggred form admin_menu.js");
-	
- }else{
-	console.log(	"triggred form admin_menu.js else");
- }
-	
-fetch(`${FixedUrl}admin/menu`)
-	   .then(response => response.json())
-	   .then(data => {
-		   console.log('Order count:', data);
-		   countBadge.textContent = data.count;
-	   }).catch(error => {
-		   console.error('Error fetching order count:', error);
-	   });
-	
-	
