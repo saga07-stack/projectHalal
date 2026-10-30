@@ -1,23 +1,78 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>About Us - Nepali Pasal</title>
 <link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/hero-slider.css}" />
-
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+<style>
+  .about-hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #8b1e1e, #d9822b); color: #fff; }
+  .about-hero h1 { font-size: 2.5rem; margin: 0 0 10px; }
+  .about-section { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+  .about-section h2 { border-left: 5px solid #d9822b; padding-left: 12px; }
+  .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .about-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+  .about-card img { width: 100%; border-radius: 8px; height: 180px; object-fit: cover; }
+  .timeline { border-left: 3px solid #d9822b; padding-left: 20px; }
+  .timeline-item { margin-bottom: 20px; }
+  @media (max-width: 600px) {
+    .about-hero h1 { font-size: 1.8rem; }
+  }
+</style>
 </head>
 <body>
   <div th:replace="~{common/header :: layout-header('/client/dishitem/list/1', 'search dish ')}"></div>
+
+  <section class="about-hero">
+    <h1>About Nepali Pasal</h1>
+    <p>Dummy tagline: Bringing the taste of Nepal to your doorstep.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>Our Story</h2>
+    <p>Dummy text: Replace this with your story.</p>
+  </section>
+
+  <section class="about-section">
+    <h2>About the Owner</h2>
+    <div class="about-card">
+      <img src="https://via.placeholder.com/400x180" alt="Owner photo">
+      <h3>Owner Name</h3>
+      <p>Dummy bio text.</p>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>Our Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item"><strong>2020</strong> - Dummy milestone.</div>
+      <div class="timeline-item"><strong>2023</strong> - Dummy milestone.</div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>Photo Gallery</h2>
+    <div class="about-grid">
+      <img src="https://via.placeholder.com/300x200" alt="Gallery">
+      <img src="https://via.placeholder.com/300x200" alt="Gallery">
+      <img src="https://via.placeholder.com/300x200" alt="Gallery">
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>Our Branches</h2>
+    <div class="about-grid">
+      <div class="about-card"><h3>Branch 1</h3><p>Dummy address</p></div>
+      <div class="about-card"><h3>Branch 2</h3><p>Dummy address</p></div>
+    </div>
+  </section>
 
 
    <footer id="footerParent">
 		<div th:replace="~{common/footer :: layout-footer}"></div>
 	</footer>
 	<script th:src="@{/js/common.js}" defer></script>
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
     <script th:src="@{/js/Restauranthero-slider.js}"></script>
 </body>
 </html>
