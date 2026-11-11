@@ -47,11 +47,6 @@ public class AdminUserDeleteController {
 	@RequestMapping(path = "/admin/user/delete/check/{id}", method = RequestMethod.POST)
 	public String deleteCheck(@PathVariable Integer id) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		// 削除対象の会員情報を取得
 		User user = userRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 
@@ -80,12 +75,6 @@ public class AdminUserDeleteController {
 	@RequestMapping(path = "/admin/user/delete/check", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		//セッションから入力フォーム取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
@@ -106,11 +95,6 @@ public class AdminUserDeleteController {
 	 */
 	@RequestMapping(path = "/admin/user/delete/complete", method = RequestMethod.POST)
 	public String deleteComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		// セッションから削除対象フォーム情報を取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
@@ -146,11 +130,6 @@ public class AdminUserDeleteController {
 	 */
 	@RequestMapping(path = "/admin/user/delete/complete", method = RequestMethod.GET)
 	public String deleteCompleteFinish() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		return "admin/user/delete_complete";
 	}

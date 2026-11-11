@@ -50,11 +50,6 @@ public class AdminItemDeleteController {
 	@RequestMapping(path = "/admin/item/delete/check/{id}", method = RequestMethod.POST)
 	public String deleteCheck(@PathVariable Integer id) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		// 対象の商品情報を取得
 		Item item = itemRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 
@@ -83,12 +78,6 @@ public class AdminItemDeleteController {
 	@RequestMapping(path = "/admin/item/delete/check", method = RequestMethod.GET)
 	public String deleteChecjView(Model model) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		//セッションから入力フォーム表示情報取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 		if (itemForm == null) {
@@ -110,11 +99,6 @@ public class AdminItemDeleteController {
 	 */
 	@RequestMapping(path = "/admin/item/delete/complete", method = RequestMethod.POST)
 	public String deleteComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		// セッションから削除対象フォーム情報を取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
@@ -154,11 +138,6 @@ public class AdminItemDeleteController {
 	 */
 	@RequestMapping(path = "/admin/item/delete/complete", method = RequestMethod.GET)
 	public String deleteCompleteRedirect() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		return "admin/item/delete_complete";
 	}

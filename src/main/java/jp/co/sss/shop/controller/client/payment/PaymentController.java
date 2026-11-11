@@ -55,41 +55,10 @@ public class PaymentController {
 			HttpSession session
 			){
 		if(session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
 			return "redirect:/login";
 		}
 		
-		//System.out.println("paymentType: " + session.getAttribute("paymentType"));
-//		if(session.getAttribute("paymentType").equals(1))
-//		{	
-//			
-//			return "client/order/Credit";
-//		}	else if(session.getAttribute("paymentType").equals(2)) {
-//			
-//		
-//			
-//			//System.out.println("paymentType: " + session.getAttribute("bank tranfer"));
-//			
-//			return "client/order/BankTransfer";
-//		
-//		}else if(session.getAttribute("paymentType").equals(3)) {
-//		
-//			System.out.println("other  3");
-//			
-//			return "client/order/onarrival";
-//		}else if(session.getAttribute("paymentType").equals(4)) {
-//			
-//			System.out.println("other  4");
-//			return "client/order/emoney";
-//			
-//		}else if(session.getAttribute("paymentType").equals(5)) {
-//			
-//			System.out.println("other 5 ");
-//			return "client/order/convenience";
-//		}
-//		
-//		return"";
-//	}
+	
 		return "client/order/Credit";
 	}
 	
@@ -99,14 +68,8 @@ public class PaymentController {
 	    		HttpSession session,
 	    		Model model 
 	    		) throws StripeException {
-	    	// Check if session has timed out
-	    	if(session.getAttribute("user") == null) {
-	    		model.addAttribute("message", "Session time out");
-	    		return "redirect:/login";
-	    	}
-	    	
 	        Stripe.apiKey = stripeSecretKey;
-	      int totalPrice = (int) session.getAttribute("totalPrice");
+      int totalPrice = (int) session.getAttribute("totalPrice");
 	        SessionCreateParams params = SessionCreateParams.builder()
 	            .setMode(SessionCreateParams.Mode.PAYMENT)
 	            .setSuccessUrl("http://localhost:55000/shared_shop/client/order/payment/success")

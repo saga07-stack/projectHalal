@@ -46,10 +46,6 @@ public class AdminOrderProcessController {
 	public String processForm(@PathVariable("orderId") Integer orderId, HttpSession session
 
 	) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		session.setAttribute("orderId", orderId);
 		session.removeAttribute("orderInquiriesForm");
@@ -62,12 +58,6 @@ public class AdminOrderProcessController {
 	public String orderProcess(
 
 			Model model, HttpSession session) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		Integer orderId = (Integer) session.getAttribute("orderId");
 
 		Order order = orderRepository.findById(orderId).orElse(null);
@@ -89,11 +79,6 @@ public class AdminOrderProcessController {
 			@Valid @ModelAttribute OrderInquiriesForm orderInquiriesForm, BindingResult bindingResult,
 
 			HttpSession session, Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 		
 
 
@@ -120,11 +105,6 @@ public class AdminOrderProcessController {
 			HttpSession session, Model model
 			)
 	{ 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 		
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
 		System.out.println("authority id: " +  userId);
@@ -139,7 +119,7 @@ public class AdminOrderProcessController {
 		oq.setMemo(oqf.getMemo());
 		oq.setSentBy(userId); 
 		oq.setSentAt(oqf.getSentAt());
-		oq.setArrivedAt(oqf.getArrivedAt());
+		oq.setExpiresAt(oqf.getExpiresAt());
 		oq.setUsedFlag(0);
 		
          orderInquiriesRepository.save(oq);
@@ -161,11 +141,6 @@ public class AdminOrderProcessController {
 			Model model
 
 	) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 		
 		OrderInquiriesBean oIBean = new OrderInquiriesBean();
 		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);
@@ -175,7 +150,7 @@ public class AdminOrderProcessController {
 			oIBean.setCustomerPhone(oI.getCustomerPhone());
 			oIBean.setCustomerAddress(oI.getCustomerAddress());
 			oIBean.setSentAt(oI.getSentAt());
-			oIBean.setArrivedAt(oI.getArrivedAt());
+			oIBean.setExpiresAt(oI.getExpiresAt());
 			oIBean.setUsedFlag(oI.getUsedFlag());
             
 			session.setAttribute("orderId", orderId);
@@ -192,13 +167,12 @@ public class AdminOrderProcessController {
 			HttpSession session, Model model
 			)
 	{ 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
 		
 		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		
+		if(userId.equals(null)) {
+			return "redirect:/login";
+		}
 		
 		Integer orderId = (Integer) session.getAttribute("orderId");
 		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);

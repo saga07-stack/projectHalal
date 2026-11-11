@@ -1,0 +1,769 @@
+================================================================================
+                       UNDONE PARTS & MISSING FEATURES
+             Things completely missing or not started (30 tasks)
+================================================================================
+
+Project: Nepali Pasal E-Commerce Platform
+Analysis Date: November 2026
+Framework: Spring Boot 3.1.5, Java 17, Oracle DB
+
+Status key:
+  ✗ = Not implemented at all
+  ~ = Partially implemented / skeletal code exists
+
+================================================================================
+                    SECTION 1: USER FEATURES (12 tasks)
+================================================================================
+
+[U-01] PASSWORD RESET FLOW
+  - Why it matters
+    Users who forget passwords are locked out forever. Need recovery.
+  - Where in code
+    User.java (entity), LoginController.java (auth entry)
+  - Steps
+    1. Add ForgotPasswordForm (email input)
+    2. Add "Forgot Password" link on login page
+    3. Create PasswordResetController with GET /forgot-password
+    4. Generate reset token (UUID) stored in DB with 1-hour expiry
+    5. Send reset email with link containing token
+    6. Create reset page (GET /reset-password?token=XYZ)
+    7. Validate token on submission
+    8. Update password via POST /reset-password
+    9. Invalidate all tokens for user after reset
+  - Done when
+    User can reset forgotten password via email link, new password works on login
+  - Concept learned
+    Token-based security, email workflows, time-based expiry, UUID generation
+  - Difficulty: Medium
+
+[U-02] PERSISTENT DATABASE-BACKED SHOPPING CART
+  - Why it matters
+    Cart lost on browser close/logout. Business loss. CartItems entity exists but unused.
+  - Where in code
+    CartItems.java (entity), CartRepository.java (repo), controller/client/basket/
+  - Steps
+    1. Review CartItems entity (already has user_id, item_id, quantity)
+    2. Implement CartRepository methods: findByUserId, save, delete
+    3. Create CartService with addToCart(), removeFromCart(), getCart(), clearCart()
+    4. Modify basket controller to use CartService instead of session
+    5. On login: load cart from DB into session
+    6. On add/remove: update both session AND database
+    7. On logout: do NOT clear database cart
+    8. Add cart synchronization on page load
+  - Done when
+    Cart persists after logout/browser close; user sees same cart on login
+  - Concept learned
+    JPA relationships, transaction handling, session vs database state
+  - Difficulty: Medium
+
+[U-03] COMPLETE ORDER CHECKOUT FLOW
+  - Why it matters
+    Users cannot finish purchases. Current flow incomplete.
+  - Where in code
+    UserOrderAddressInputController.java, Order.java, order form
+  - Steps
+    1. Add order summary page (shows items, quantities, total price)
+    2. Add promo/discount code input field
+    3. Implement discount validation & price calculation
+    4. Add shipping method selection (Standard/Express)
+    5. Calculate shipping cost based on method & address
+    6. Add final confirmation page
+    7. Validate stock before order creation
+    8. Create transaction that: decrements stock, creates order, clears cart
+    9. Add payment method selection
+    10. POST /checkout/complete creates order with status "pending_payment"
+  - Done when
+    User can add items, review order, apply discount, select shipping, confirm
+  - Concept learned
+    Multi-step forms, transaction atomicity, business logic validation
+  - Difficulty: Hard
+
+[U-04] REAL-TIME STOCK MANAGEMENT
+  - Why it matters
+    Stock field exists but never updated. Overbooking possible.
+  - Where in code
+    Item.java (has stock field), OrderItem.java, repository queries
+  - Steps
+    1. Add stock update logic in OrderService
+    2. On order creation: decrement item.stock by quantity ordered
+    3. Add stock reservation during checkout (prevent race condition)
+    4. Add "back in stock" notification if user views out-of-stock item
+    5. Display "Low Stock - Only 3 left!" warning on product page
+    6. Show "Out of Stock" and disable add-to-cart for 0 stock
+    7. For cancelled orders: add stock back
+    8. Add admin interface to adjust stock manually
+  - Done when
+    Stock decreases after order, matches item availability, no overbooking
+  - Concept learned
+    Concurrency issues, optimistic locking, business rule enforcement
+  - Difficulty: Hard
+
+[U-05] ORDER STATUS TRACKING & STATE MACHINE
+  - Why it matters
+    Orders have status field but no workflow. Users don't know order state.
+  - Where in code
+    Order.java (has status field), OrderRepository.java
+  - Steps
+    1. Define order states: PENDING_PAYMENT → PAID → SHIPPED → DELIVERED → COMPLETED
+    2. Add validation: only allow valid state transitions
+    3. Create OrderStatus enum to enforce states
+    4. Add status update methods in OrderService (marked @Transactional)
+    5. Prevent invalid transitions (e.g., can't go COMPLETED → PENDING)
+    6. Add update_date tracking for each status change
+    7. Display status with visual indicator on customer order page
+    8. Add admin interface to transition orders between states
+  - Done when
+    Order transitions through states correctly, user sees current status
+  - Concept learned
+    State pattern, enums, transaction boundaries, business rule enforcement
+  - Difficulty: Medium
+
+[U-06] ORDER CONFIRMATION & TRANSACTIONAL EMAILS
+  - Why it matters
+    Users don't know if order was placed. Email is proof of transaction.
+  - Where in code
+    EmailService.java (only has verification code), OrderController
+  - Steps
+    1. Add new method to EmailService: sendOrderConfirmationEmail(Order)
+    2. Build HTML email template with order details, items, total
+    3. Include order ID for tracking
+    4. On POST /checkout/complete: call emailService.sendOrderConfirmationEmail()
+    5. Make email service ASYNC to not block checkout (@Async)
+    6. Add error handling if email fails (log but don't fail order)
+    7. Add retry logic for failed emails (scheduled task)
+    8. Add shipping confirmation email when status → SHIPPED
+  - Done when
+    User receives confirmation email within seconds of placing order
+  - Concept learned
+    Email templates, async processing, Spring @Async, error handling
+  - Difficulty: Medium
+
+[U-07] PRODUCT REVIEWS & RATINGS SYSTEM
+  - Why it matters
+    No user feedback. Can't build social proof or improve products.
+  - Where in code
+    NEW entity: Review.java (user_id, item_id, rating, text, approved)
+  - Steps
+    1. Create Review entity with fields: id, userId, itemId, rating, text, approved, createdAt
+    2. Create ReviewRepository with findByItemId(), findByUserId()
+    3. Create ReviewController with POST /item/{id}/review and GET /item/{id}/reviews
+    4. Add ReviewValidator: rating 1-5, text 10-1000 chars
+    5. Add ReviewForm (binding object)
+    6. Display reviews on item detail page
+    7. Calculate average rating per item
+    8. Add admin approval flow for reviews
+    9. Add "helpful/unhelpful" voting
+  - Done when
+    User can submit review, see other reviews, admin can approve/reject
+  - Concept learned
+    JPA relationships (User-Review-Item), validation, moderation workflow
+  - Difficulty: Hard
+
+[U-08] PAYMENT GATEWAY INTEGRATION (Khalti/Stripe)
+  - Why it matters
+    No payment collection. Cannot process transactions (critical for business).
+  - Where in code
+    pom.xml has stripe-java dependency but unused, OrderController
+  - Steps
+    1. Choose provider: Khalti (Nepal) or Stripe (global)
+    2. Register account & get API keys (store in env vars, NOT code)
+    3. Create PaymentService with charge() method
+    4. On checkout: show payment form (iframe or redirect)
+    5. Handle payment callback (webhook)
+    6. On success callback: update order status to PAID
+    7. On failure: show error, order remains PENDING_PAYMENT
+    8. Implement retry logic for failed transactions
+    9. Never store full credit card (PCI DSS compliance)
+  - Done when
+    User can pay via credit card/digital wallet, order marked paid
+  - Concept learned
+    Payment gateway APIs, webhook handling, PCI DSS basics, async callbacks
+  - Difficulty: Hard
+
+[U-09] MULTI-ADDRESS MANAGEMENT
+  - Why it matters
+    Users can only use one address. Flexibility needed.
+  - Where in code
+    User.java (has single address field), OrderController
+  - Steps
+    1. Create UserAddress entity (user_id, address, postal_code, phone, label, isDefault)
+    2. Create UserAddressRepository
+    3. Add UserAddressController (CRUD operations)
+    4. On checkout: show address dropdown, allow "add new"
+    5. Allow setting default address
+    6. Delete old addresses
+    7. Show recent addresses at checkout
+  - Done when
+    User has multiple saved addresses, selects one at checkout
+  - Concept learned
+    One-to-many relationships, default values, user workflows
+  - Difficulty: Easy
+
+[U-10] WISHLIST / FAVORITES ENHANCEMENTS
+  - Why it matters
+    FavoriteItem entity exists but underutilized. Wishlist is key feature.
+  - Where in code
+    FavoriteItem.java (exists), FavoriteRepository.java
+  - Steps
+    1. Create FavoriteService for add/remove/list operations
+    2. Add "Add to Favorites" button on product pages
+    3. Show favorite indicator on products in favorites list
+    4. Add "Move to Cart" one-click action from favorites
+    5. Show price drop notifications (email when favorited item price drops)
+    6. Add "Share Wishlist" feature (generate shareable link)
+    7. Allow public wishlist viewing
+    8. Add expiry cleanup (remove items not viewed in 6 months)
+  - Done when
+    Users can favorite items, see favorites, share wishlist
+  - Concept learned
+    User-to-item many-to-many, notification services, sharing patterns
+  - Difficulty: Medium
+
+[U-11] RETURN & REFUND REQUEST SYSTEM
+  - Why it matters
+    No way to handle customer dissatisfaction. Trust issue.
+  - Where in code
+    NEW entity: ReturnRequest.java, NEW OrderController endpoint
+  - Steps
+    1. Create ReturnRequest entity (order_id, reason, status, requested_at, approved_at)
+    2. Create ReturnRequestController with POST /order/{id}/return-request
+    3. Add ReturnForm (reason selection + notes)
+    4. Admin can APPROVE/REJECT return requests
+    5. On approval: generate return shipping label
+    6. User ships back with label
+    7. On receipt: admin marks as received
+    8. Issue refund (reverse payment to original card)
+    9. Update order status to RETURNED
+  - Done when
+    Customer can request return, admin approves/processes, refund issued
+  - Concept learned
+    Status workflows, payment reversals, shipping integration
+  - Difficulty: Hard
+
+[U-12] PROMO CODE / DISCOUNT SYSTEM
+  - Why it matters
+    No way to run promotions or loyalty discounts.
+  - Where in code
+    NEW entity: PromoCode.java
+  - Steps
+    1. Create PromoCode entity (code, discountType: FLAT/PERCENTAGE, amount, maxUses, expiresAt)
+    2. Create PromoCodeRepository with findByCode()
+    3. Add validation: code exists, not expired, uses remaining
+    4. On checkout: validate promo code in OrderService
+    5. Calculate discount (10% or $10 off)
+    6. Show discount on order summary
+    7. Decrement maxUses after order
+    8. Admin interface to create/edit promo codes
+  - Done when
+    User enters "NEPAL10" code, gets 10% discount applied
+  - Concept learned
+    Discount calculation patterns, code validation, date handling
+  - Difficulty: Medium
+
+================================================================================
+                   SECTION 2: DEVELOPER FEATURES (12 tasks)
+================================================================================
+
+[D-01] EXTERNALIZE SECRETS & CONFIGURATION
+  - Why it matters
+    Email password & DB credentials visible in source code (GIT EXPOSURE RISK).
+  - Where in code
+    application.properties (has HARDCODED passwords), application-local.properties
+  - Steps
+    1. DO NOT commit application.properties with secrets
+    2. Create application.properties.example with placeholders
+    3. Move secrets to environment variables:
+       - DB_URL=jdbc:oracle:...
+       - DB_USER=JAVAPRJ2026
+       - DB_PASSWORD=xxxxx
+       - MAIL_USERNAME=user@gmail.com
+       - MAIL_PASSWORD=app-password
+    4. Update application*.properties to use ${DB_USER} syntax
+    5. Update .gitignore to exclude actual properties
+    6. Document how to set env vars in README
+    7. Add Spring profiles support
+  - Done when
+    No secrets in git history, env vars used for all environments
+  - Concept learned
+    12-factor app principles, Spring property resolution, env vars
+  - Difficulty: Easy
+
+[D-02] GLOBAL EXCEPTION HANDLER (@ControllerAdvice)
+  - Why it matters
+    No centralized error handling. Each controller returns different format. Stack traces leak to users.
+  - Where in code
+    ErrorController.java (basic), NEW GlobalExceptionHandler.java
+  - Steps
+    1. Create GlobalExceptionHandler class with @ControllerAdvice
+    2. Add @ExceptionHandler methods for common exceptions
+    3. Handle: NullPointerException, IllegalArgumentException, DataIntegrityViolation, etc.
+    4. Return standardized error response format:
+       { "error": "Product not found", "status": 404, "timestamp": "..." }
+    5. Log exception with proper level (ERROR/WARN)
+    6. Do NOT return stack traces in production
+    7. Add custom exception classes (ProductNotFoundException, etc.)
+    8. Handle validation errors with field-level messages
+  - Done when
+    All exceptions return JSON with consistent format, no stack traces in production
+  - Concept learned
+    @ControllerAdvice, exception hierarchy, error response design
+  - Difficulty: Medium
+
+[D-03] LOGGING INFRASTRUCTURE (SLF4J/Logback)
+  - Why it matters
+    No structured logging. Debugging production issues impossible.
+  - Where in code
+    pom.xml, NEW logback.xml, all service/controller classes
+  - Steps
+    1. Add SLF4J & Logback to pom.xml (Spring Boot starter includes these)
+    2. Create logback-spring.xml in src/main/resources
+    3. Configure appenders: CONSOLE + FILE
+    4. Set log levels: ERROR (errors), WARN (warnings), INFO (important flow), DEBUG (dev only)
+    5. Add pattern: [%d{yyyy-MM-dd HH:mm:ss}] [%thread] %-5level %logger{36} - %msg%n
+    6. Add rolling file appender (max 10MB, keep 10 files)
+    7. Add package-specific levels (ROOT=INFO, jp.co.sss=DEBUG, org.springframework=WARN)
+    8. Inject Logger in all services: private static final Logger log = LoggerFactory.getLogger(MyClass.class);
+    9. Add logging: log.info("Order created: {}", order.getId());
+    10. Do NOT use System.out.println (use logger)
+  - Done when
+    All logs go to console & file, no System.out, debug logs available
+  - Concept learned
+    SLF4J patterns, log levels, appenders, rolling files
+  - Difficulty: Easy
+
+[D-04] REQUEST/RESPONSE LOGGING INTERCEPTOR
+  - Why it matters
+    Hard to debug API issues without seeing what clients sent.
+  - Where in code
+    NEW LoggingInterceptor.java, NEW WebMvcConfig.java modification
+  - Steps
+    1. Create LoggingInterceptor implementing HandlerInterceptor
+    2. Override preHandle(): log request URL, method, parameters, user
+    3. Override postHandle(): log response status, time taken
+    4. Add to WebMvcConfig via addInterceptors()
+    5. Log format: [GET] /client/item/list (userId=5) → 200 in 45ms
+    6. Exclude static resources (/static/**, /images/**)
+    7. Exclude sensitive endpoints (password reset)
+  - Done when
+    Every request/response logged with timing, can trace user actions
+  - Concept learned
+    HandlerInterceptor pattern, Spring MVC configuration, timing
+  - Difficulty: Easy
+
+[D-05] SOLVE N+1 QUERY PROBLEM
+  - Why it matters
+    Each order iterates items (1 query), then fetches each item (N queries). Performance killer.
+  - Where in code
+    OrderRepository.java, Order.java relationships
+  - Steps
+    1. Identify N+1: Run code, check SQL logs
+    2. Problem example: order.getOrderItems() → loop over items → item.getCategory()
+    3. Solution: Use fetch join in JPQL query
+    4. Create custom query: 
+       @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItemsList oi JOIN FETCH oi.item")
+    5. Use EntityGraph annotation as alternative
+    6. Add similar fix for all relationships
+    7. Test with multiple orders to verify single query
+  - Done when
+    Order retrieval uses 1 query instead of 1+N queries
+  - Concept learned
+    JPA eager/lazy loading, fetch join, EntityGraph, query optimization
+  - Difficulty: Medium
+
+[D-06] UNIT TESTS WITH JUNIT 5 & MOCKITO
+  - Why it matters
+    No tests. Code breaks silently. Can't refactor safely.
+  - Where in code
+    src/test/java/jp/co/sss/shop/service/, pom.xml (already has junit5)
+  - Steps
+    1. Choose service class to test (e.g., PriceCalc)
+    2. Create test class: PriceCalcTest.java in src/test/java
+    3. Import: import org.junit.jupiter.api.Test; import static org.junit.jupiter.api.Assertions.*;
+    4. Create test method: @Test void testCalculateTotal() { }
+    5. Arrange-Act-Assert pattern:
+       - Arrange: create test data
+       - Act: call method
+       - Assert: verify result
+    6. Use @Mock for dependencies
+    7. Use @InjectMocks to inject mocks
+    8. Test happy path + edge cases
+    9. Run tests: mvn test
+    10. Add more test classes for other services
+  - Done when
+    All services have unit tests, mvn test passes, code coverage visible
+  - Concept learned
+    Unit testing patterns, Mockito, JUnit lifecycle, test data builders
+  - Difficulty: Medium
+
+[D-07] INTEGRATION TESTS FOR REPOSITORIES (@DataJpaTest)
+  - Why it matters
+    Repository code not tested. Database queries might be wrong.
+  - Where in code
+    src/test/java/jp/co/sss/shop/repository/, pom.xml
+  - Steps
+    1. Create test class: UserRepositoryTest.java
+    2. Use @DataJpaTest annotation (spins up H2 in-memory DB)
+    3. Inject UserRepository via @Autowired
+    4. Test custom queries: findByEmail(), findByAuthority(), etc.
+    5. Create test data via EntityManager or saved entities
+    6. Verify query results
+    7. Test with Testcontainers for Oracle specifically (advanced)
+    8. Create similar tests for ItemRepository, OrderRepository
+  - Done when
+    Repository tests pass, verify all custom queries work
+  - Concept learned
+    @DataJpaTest, in-memory databases, TestContainers, test fixtures
+  - Difficulty: Medium
+
+[D-08] API DOCUMENTATION WITH SWAGGER/OPENAPI
+  - Why it matters
+    No API documentation. Other developers/frontend don't know endpoints.
+  - Where in code
+    NEW pom.xml dependency, NEW Swagger config class, existing RestControllers
+  - Steps
+    1. Add springdoc-openapi-starter-webmvc-ui to pom.xml
+    2. Create SwaggerConfig.java with @Configuration
+    3. Add @Operation, @ApiResponse annotations to REST controllers
+    4. Add @Schema annotations to DTO classes
+    5. Access UI at /swagger-ui.html
+    6. Document: endpoint path, method, parameters, response body, status codes
+    7. Add example response JSON
+  - Done when
+    All REST endpoints documented in Swagger UI, can see request/response format
+  - Concept learned
+    OpenAPI specification, Swagger UI, API documentation as code
+  - Difficulty: Easy
+
+[D-09] DATABASE MIGRATIONS WITH FLYWAY
+  - Why it matters
+    No migration strategy. Can't deploy schema changes safely.
+  - Where in code
+    NEW pom.xml dependency, NEW src/main/resources/db/migration/, entities
+  - Steps
+    1. Add org.flywaydb:flyway-core to pom.xml
+    2. Create src/main/resources/db/migration/ folder
+    3. Create V1__initial_schema.sql with all CREATE TABLE statements
+    4. Create V2__add_new_column.sql for each change
+    5. Naming: V{version}__{description}.sql
+    6. Flyway runs migrations on startup automatically
+    7. Never modify old migration files (breaks version control)
+    8. Test migrations: fresh install, then upgrade
+  - Done when
+    Database schema version-controlled, migrations run on deployment
+  - Concept learned
+    Schema versioning, zero-downtime migrations, IaC (Infrastructure as Code)
+  - Difficulty: Medium
+
+[D-10] CI/CD PIPELINE WITH GITHUB ACTIONS
+  - Why it matters
+    No automated testing/deployment. Manual releases error-prone.
+  - Where in code
+    NEW .github/workflows/build.yml
+  - Steps
+    1. Create .github/workflows/maven-build.yml
+    2. Trigger: on push to main branch
+    3. Steps:
+       - Checkout code
+       - Setup Java 17
+       - Run: mvn clean test
+       - Run: mvn clean package
+       - Upload artifact
+    4. Add: run SonarQube scan (code quality)
+    5. Add: deploy to staging if build passes
+    6. Email notification on failure
+  - Done when
+    Every push runs tests, can see build status in GitHub
+  - Concept learned
+    CI/CD pipelines, GitHub Actions, automated testing, deployment
+  - Difficulty: Medium
+
+[D-11] DOCKER CONTAINERIZATION
+  - Why it matters
+    Can't easily deploy to production. Docker standardizes environment.
+  - Where in code
+    NEW Dockerfile, NEW docker-compose.yml in project root
+  - Steps
+    1. Create Dockerfile:
+       FROM openjdk:17-slim
+       COPY target/*.jar app.jar
+       ENTRYPOINT ["java", "-jar", "app.jar"]
+    2. Create docker-compose.yml with:
+       - App service (Spring Boot container)
+       - Oracle service (Oracle DB container)
+       - Redis service (optional, for caching)
+    3. Build image: docker build -t nepali-pasal .
+    4. Run: docker-compose up
+    5. Test: app runs in container, connects to DB
+  - Done when
+    App runs in Docker, all services in docker-compose, no localhost hardcoding
+  - Concept learned
+    Dockerfile layers, docker-compose orchestration, containerization
+  - Difficulty: Medium
+
+[D-12] CODE QUALITY WITH SONARQUBE
+  - Why it matters
+    No code smell detection. Technical debt accumulates silently.
+  - Where in code
+    pom.xml, .github/workflows/
+  - Steps
+    1. Add Maven Sonar plugin to pom.xml
+    2. Create SonarQube project (cloud or local)
+    3. Run: mvn sonar:sonar -Dsonar.projectKey=nepali-pasal
+    4. Add quality gates (code coverage > 50%, no critical issues)
+    5. Add to GitHub Actions pipeline
+    6. Fix issues suggested by SonarQube
+  - Done when
+    SonarQube reports code quality metrics, integrated in CI/CD
+  - Concept learned
+    Code smell detection, technical debt, code coverage metrics
+  - Difficulty: Easy
+
+================================================================================
+                    SECTION 3: SECURITY FEATURES (6 tasks)
+================================================================================
+
+[S-01] PASSWORD HASHING WITH BCRYPT
+  - Why it matters
+    CRITICAL: Passwords stored as plaintext. Database breach = all users hacked.
+  - Where in code
+    User.java, RegistUserController.java, LoginController.java
+  - Steps
+    1. Add spring-security-crypto to pom.xml (includes BCrypt)
+    2. Create BCryptPasswordEncoder bean in @Configuration class
+    3. Inject into service that handles password saves
+    4. On user registration: hashedPassword = encoder.encode(plainTextPassword)
+    5. On login: encoder.matches(inputPassword, storedHashedPassword)
+    6. Update existing passwords in DB (create migration script)
+    7. Test: same password hashes differently each time (salt different)
+  - Done when
+    All new passwords hashed with BCrypt, login still works with hashed passwords
+  - Concept learned
+    BCrypt algorithm, salt, iterations, password security best practices
+  - Difficulty: Easy
+
+[S-02] SPRING SECURITY FRAMEWORK INTEGRATION
+  - Why it matters
+    Custom filter is fragile. Spring Security provides battle-tested, configurable auth.
+  - Where in code
+    pom.xml, NEW SecurityConfig.java, LoginController.java (modify)
+  - Steps
+    1. Add spring-security-starter to pom.xml
+    2. Create SecurityConfig class extending WebSecurityConfigurerAdapter
+    3. Configure: authorizeRequests(): /login → allow, /admin/** → ROLE_ADMIN, /client/** → ROLE_USER
+    4. Configure: formLogin(), logout()
+    5. Replace custom LoginCheckFilter with Spring Security's security chain
+    6. Implement UserDetailsService to load users for auth
+    7. Set authentication manager
+    8. Test: /admin page shows 403 for regular users
+  - Done when
+    Spring Security controls auth, authorities enforced at URL level
+  - Concept learned
+    Spring Security filter chain, UserDetailsService, authentication manager
+  - Difficulty: Medium
+
+[S-03] CSRF PROTECTION WITH TOKENS
+  - Why it matters
+    Forms can be exploited via cross-site requests (CSRF attacks).
+  - Where in code
+    Thymeleaf templates (HTML forms), SecurityConfig.java
+  - Steps
+    1. Enable CSRF in SecurityConfig: http.csrf().and()
+    2. Spring Security generates CSRF token automatically
+    3. In Thymeleaf forms, add: <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    4. On POST/PUT/DELETE: Spring verifies token automatically
+    5. Test: try form submit with wrong token → 403 Forbidden
+    6. Add CSRF token to AJAX requests via header
+  - Done when
+    All forms have CSRF tokens, token validation happens automatically
+  - Concept learned
+    CSRF attacks, token-based prevention, double-submit cookies
+  - Difficulty: Medium
+
+[S-04] SECURITY HEADERS
+  - Why it matters
+    Browsers can't protect against clickjacking, MIME sniffing, XSS without headers.
+  - Where in code
+    SecurityConfig.java, NEW HeadersHttpFilter.java (or use Spring Security headers())
+  - Steps
+    1. In SecurityConfig, configure headers:
+       http.headers()
+         .frameOptions().sameOrigin()
+         .contentSecurityPolicy("script-src 'self'")
+         .xssProtection();
+    2. Result: Add headers to all responses:
+       - X-Frame-Options: SAMEORIGIN (clickjacking)
+       - X-Content-Type-Options: nosniff (MIME sniffing)
+       - Content-Security-Policy: script-src 'self' (XSS)
+       - Strict-Transport-Security: max-age=31536000 (HTTPS only)
+    3. Test: inspect response headers in browser
+  - Done when
+    All responses have security headers, no MIME sniffing/clickjacking
+  - Concept learned
+    HTTP security headers, browser protection, CSP, HSTS
+  - Difficulty: Easy
+
+[S-05] IDOR PREVENTION (AUTHORIZATION CHECKS)
+  - Why it matters
+    User can view other user's orders/data by changing URL (/order/123 → /order/124).
+  - Where in code
+    UserOrderHistoryController.java, all controllers that access user-specific data
+  - Steps
+    1. In every endpoint that accesses user data:
+       - Get logged-in user ID from session
+       - Load requested resource from DB
+       - Verify: resource.getUserId() == sessionUserId
+       - If not match: return 403 Forbidden or redirect
+    2. Create utility method: void assertOwnership(Integer userId, Integer resourceOwnerId)
+    3. Apply to: getOrder(), updateProfile(), viewReview(), etc.
+    4. Test: try accessing other user's order → 403
+  - Done when
+    Users can only access their own resources, others get 403
+  - Concept learned
+    Authorization vs authentication, authorization checks, OWASP IDOR
+  - Difficulty: Medium
+
+[S-06] INPUT VALIDATION & OUTPUT ENCODING
+  - Why it matters
+    XSS attacks via user inputs (product reviews, comments).
+  - Where in code
+    Form validators, Thymeleaf templates
+  - Steps
+    1. Server-side validation (already exists):
+       - Use @NotBlank, @Email, @Size annotations
+       - Custom validators for business rules
+    2. Sanitize output in Thymeleaf:
+       - Use [[text]] (HTML escaped) by default
+       - Never use [(text)] for user content
+    3. Add content security: sanitize user reviews before saving
+    4. Use OWASP ESAPI or Spring Security for encoding
+    5. Test: submit <script>alert('xss')</script> → should be escaped
+  - Done when
+    User input validated, output encoded, no JavaScript execution
+  - Concept learned
+    XSS attacks, input validation, output encoding, Content Security Policy
+  - Difficulty: Medium
+
+================================================================================
+                        SUGGESTED ORDER & LEVELS
+================================================================================
+
+LEVEL 1 - FOUNDATION (Security, Config, Errors)
+Priority order - Do these FIRST:
+
+  [S-01] Password hashing with BCrypt (EASY, 2h)
+  [D-01] Externalize secrets (EASY, 1h)
+  [S-02] Spring Security integration (MEDIUM, 3h)
+  [S-03] CSRF protection (MEDIUM, 2h)
+  [D-02] Global exception handler (MEDIUM, 2h)
+  [D-03] SLF4J logging setup (EASY, 1h)
+  [S-04] Security headers (EASY, 1h)
+  [S-05] IDOR prevention (MEDIUM, 2h)
+  [S-06] Input validation & encoding (MEDIUM, 2h)
+  [D-04] Request/response logging (EASY, 1h)
+
+Subtotal: ~17 hours of work
+
+LEVEL 2 - CORE BUSINESS (Cart, Checkout, Orders, Notifications)
+Do after Level 1:
+
+  [U-02] Persistent cart in DB (MEDIUM, 4h)
+  [U-04] Stock management (HARD, 5h)
+  [U-03] Complete checkout flow (HARD, 8h)
+  [U-05] Order status tracking (MEDIUM, 3h)
+  [U-06] Order confirmation emails (MEDIUM, 3h)
+  [U-01] Password reset flow (MEDIUM, 4h)
+  [U-12] Promo code system (MEDIUM, 3h)
+  [U-09] Multi-address management (EASY, 2h)
+
+Subtotal: ~32 hours of work
+
+LEVEL 3 - INTERMEDIATE (Performance, Testing, APIs)
+Do after Level 2:
+
+  [D-05] Solve N+1 queries (MEDIUM, 2h)
+  [D-06] Unit tests with Mockito (MEDIUM, 4h)
+  [D-07] Integration tests (@DataJpaTest) (MEDIUM, 3h)
+  [D-08] Swagger API docs (EASY, 2h)
+  [D-09] Flyway migrations (MEDIUM, 3h)
+  [U-07] Product reviews system (HARD, 6h)
+  [U-10] Wishlist enhancements (MEDIUM, 3h)
+
+Subtotal: ~23 hours of work
+
+LEVEL 4 - INTERMEDIATE-PLUS (Advanced, DevOps, Scale)
+Do after Level 3:
+
+  [U-08] Payment gateway (HARD, 8h)
+  [U-11] Return/refund system (HARD, 7h)
+  [D-10] CI/CD pipeline (MEDIUM, 4h)
+  [D-11] Docker containerization (MEDIUM, 4h)
+  [D-12] SonarQube code quality (EASY, 2h)
+
+Subtotal: ~25 hours of work
+
+GRAND TOTAL: ~97 hours of focused development work
+
+================================================================================
+                      TASK DEPENDENCIES
+================================================================================
+
+Strict order required:
+  S-01 (hash) → S-02 (Spring Security) → S-03 (CSRF)
+  D-01 (secrets) → any deploy task
+  U-02 (cart DB) → U-03 (checkout) → U-06 (email)
+  D-06 (unit tests) → D-07 (integration tests) → D-09 (migrations)
+  All Level 1 → Level 2 → Level 3 → Level 4
+
+Independent tasks (can do in any order):
+  D-03 (logging) - independent
+  D-04 (interceptor) - independent
+  D-08 (Swagger) - independent
+  U-09 (addresses) - independent
+  U-12 (promo codes) - independent
+
+================================================================================
+                     CONCEPTS YOU'LL LEARN (By Task)
+================================================================================
+
+Security Concepts:
+  - BCrypt algorithm, salt, iteration count
+  - Spring Security architecture & filter chain
+  - CSRF attack mechanics & token-based prevention
+  - HTTP security headers & browser protection
+  - Authorization vs authentication
+  - OWASP IDOR, XSS, injection attacks
+
+Java/Spring Concepts:
+  - @Configuration, @Bean dependency injection
+  - @ControllerAdvice exception handling
+  - Custom annotations (@ControllerAdvice)
+  - Interceptors & filter chains
+  - Logging best practices (SLF4J patterns)
+
+JPA/Database Concepts:
+  - Eager vs lazy loading
+  - N+1 query problem & solutions (fetch join)
+  - EntityGraph annotations
+  - Custom JPQL queries
+  - Transaction boundaries
+  - Flyway versioned migrations
+
+Testing Concepts:
+  - Unit test patterns (Arrange-Act-Assert)
+  - Mockito mocking & stubbing
+  - JUnit lifecycle (@BeforeEach, @Test)
+  - @DataJpaTest for repository testing
+  - Test fixtures & data builders
+
+Business Logic Concepts:
+  - E-commerce cart patterns
+  - Order state machines
+  - Stock management & concurrency
+  - Discount calculation strategies
+  - Payment flow architecture
+  - Refund & return workflows
+
+================================================================================
+Generated: November 2026
+Analysis: Comprehensive code review + existing documentation
+================================================================================

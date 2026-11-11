@@ -73,11 +73,6 @@ public class AdminItemRegistController {
 	@RequestMapping(path = "/admin/item/regist/input", method = RequestMethod.POST)
 	public String registInput() {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		//セッションスコープより入力情報を取り出す
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 
@@ -100,12 +95,6 @@ public class AdminItemRegistController {
 	 */
 	@RequestMapping(path = "/admin/item/regist/input", method = RequestMethod.GET)
 	public String registInput(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		//セッションから入力フォーム情報取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 		if (itemForm == null) {
@@ -139,11 +128,6 @@ public class AdminItemRegistController {
 	 */
 	@RequestMapping(path = "/admin/item/regist/check", method = RequestMethod.POST)
 	public String registInputCheck(@Valid @ModelAttribute ItemForm form, BindingResult result) {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		
 		
@@ -198,12 +182,6 @@ public class AdminItemRegistController {
 	 */
 	@RequestMapping(path = "/admin/item/regist/check", method = RequestMethod.GET)
 	public String registCheck(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		//セッションから入力フォーム情報取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 		if (itemForm == null) {
@@ -225,11 +203,6 @@ public class AdminItemRegistController {
 	 */
 	@RequestMapping(path = "/admin/item/regist/complete", method = RequestMethod.POST)
 	public String registComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//セッション保持情報から入力値再取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
@@ -261,11 +234,6 @@ public class AdminItemRegistController {
 	 */
 	@RequestMapping(path = "/admin/item/regist/complete", method = RequestMethod.GET)
 	public String registCompleteFinish() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//登録完了画面　表示
 		return "admin/item/regist_complete";

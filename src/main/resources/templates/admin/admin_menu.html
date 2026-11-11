@@ -4,7 +4,8 @@
 
 <head>
 	<meta charset="UTF-8" />
-	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>]
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 
 <body class="admin admin_menu">
@@ -15,7 +16,7 @@
 			<dd class="link_area">
 			<a th:href="@{/admin/user/list}" th:text="#{admin.menu.user.list}"></a></dd>
 			<th:block th:if="${session.user.authority == 1}">
-				<dd id="counts" class="link_area"><a th:href="@{/admin/order/list}" th:text="#{admin.menu.order.list}"></a><span th:text="${orderCount}"  id="count_badge">0</span></dd>
+				<dd id="counts" class="link_area"><a th:href="@{/admin/order/list}" th:text="#{admin.menu.order.list}"></a><span id="count_badge">0</span></dd>
 			
 				<dd  class="link_area"><a th:href="@{/admin/item/list}" th:text="#{admin.menu.item.list}"></a></dd>  
 				
@@ -30,7 +31,23 @@
 	</div>
 	
 	
+	<script type="text/javascript">
+	const FixedUrl = "http://localhost:55000/shared_shop/";
+
+const countBadge = document.getElementById('count_badge');
+
+fetch(`${FixedUrl}admin/list`)
+   .then(response => response.json())
+   .then(data => {
+	   console.log('Order count:', data.count);
+	   countBadge.textContent = data.count;
+   }).catch(error => {
+	   console.error('Error fetching order count:', error);
+   });
+   
+
 	
+	</script>
 	
 	
 </body>

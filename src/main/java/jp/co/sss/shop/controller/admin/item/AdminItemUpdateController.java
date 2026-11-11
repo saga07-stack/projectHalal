@@ -70,11 +70,6 @@ public class AdminItemUpdateController {
 	@RequestMapping(path = "/admin/item/update/input/{id}", method = RequestMethod.POST)
 	public String updateInputInit(@PathVariable Integer id) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		//セッションスコープより入力情報を取り出す
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 
@@ -109,12 +104,6 @@ public class AdminItemUpdateController {
 	@RequestMapping(path = "/admin/item/update/input", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		//セッションから入力フォーム表示情報取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 		if (itemForm == null) {
@@ -148,11 +137,6 @@ public class AdminItemUpdateController {
 	 */
 	@RequestMapping(path = "/admin/item/update/check", method = RequestMethod.POST)
 	public String updateInputCheck(@Valid @ModelAttribute ItemForm form, BindingResult result) {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//直前のセッション情報を取得
 		ItemForm lastItemForm = (ItemForm) session.getAttribute("itemForm");
@@ -199,12 +183,6 @@ public class AdminItemUpdateController {
 	 */
 	@RequestMapping(path = "/admin/item/update/check", method = RequestMethod.GET)
 	public String updateCheck(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		//セッションから情報取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
 		if (itemForm == null) {
@@ -226,11 +204,6 @@ public class AdminItemUpdateController {
 	 */
 	@RequestMapping(path = "/admin/item/update/complete", method = RequestMethod.POST)
 	public String updateComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//セッション保持情報から入力値再取得
 		ItemForm itemForm = (ItemForm) session.getAttribute("itemForm");
@@ -274,11 +247,6 @@ public class AdminItemUpdateController {
 	 */
 	@RequestMapping(path = "/admin/item/update/complete", method = RequestMethod.GET)
 	public String updateCompleteFinish() {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-		
 		return "admin/item/update_complete";
 	}
 

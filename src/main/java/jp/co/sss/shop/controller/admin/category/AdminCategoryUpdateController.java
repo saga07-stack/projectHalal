@@ -58,11 +58,6 @@ public class AdminCategoryUpdateController {
 	@RequestMapping(path = "/admin/category/update/input/{id}", method = RequestMethod.POST)
 	public String updateInput(@PathVariable Integer id) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		//セッションスコープより入力情報を取り出す
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 
@@ -99,12 +94,6 @@ public class AdminCategoryUpdateController {
 	@RequestMapping(path = "/admin/category/update/input", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-
 		//セッションから入力フォーム取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 		if (categoryForm == null) {
@@ -140,11 +129,6 @@ public class AdminCategoryUpdateController {
 	@RequestMapping(path = "/admin/category/update/check", method = RequestMethod.POST)
 	public String updateInputCheck(@Valid @ModelAttribute CategoryForm form, BindingResult result) {
 
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
-
 		// 入力されたカテゴリ情報をセッションに保持
 		session.setAttribute("categoryForm", form);
 
@@ -168,12 +152,6 @@ public class AdminCategoryUpdateController {
 	 */
 	@RequestMapping(path = "/admin/category/update/check", method = RequestMethod.GET)
 	public String updateCheck(Model model) {
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
-		
 		//セッションから入力フォーム情報取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
 		if (categoryForm == null) {
@@ -195,11 +173,6 @@ public class AdminCategoryUpdateController {
 	 */
 	@RequestMapping(path = "/admin/category/update/complete", method = RequestMethod.POST)
 	public String updateComplete() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		//セッション保持情報から入力値再取得
 		CategoryForm categoryForm = (CategoryForm) session.getAttribute("categoryForm");
@@ -255,11 +228,6 @@ public class AdminCategoryUpdateController {
 	 */
 	@RequestMapping(path = "/admin/category/update/complete", method = RequestMethod.GET)
 	public String updateCompleteFinish() {
-
-		// Check if session has timed out
-		if (session.getAttribute("user") == null) {
-			return "redirect:/login";
-		}
 
 		return "admin/category/update_complete";
 	}

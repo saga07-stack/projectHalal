@@ -106,14 +106,9 @@ public class LoginController {
 			return "redirect:/login";
 		}
 		
-		int count = 0;
 		List <Integer> orderCount = orderRepository.findByStatusCount();
-		for(Integer i : orderCount ) {
-			count += i;
-		}
-		System.out.println("count : " + count );
-		model.addAttribute("orderCount", count);
-		System.out.println("orderCount: " + orderCount.size());
+		
+		model.addAttribute("orderCount", (orderCount.size()+1));
 		System.out.println("orderCount: " + orderCount);
 		// 管理者用メニュー画面表示
 		return "admin/admin_menu";

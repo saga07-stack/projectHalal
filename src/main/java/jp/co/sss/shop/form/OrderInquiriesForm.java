@@ -23,7 +23,7 @@ public class OrderInquiriesForm {
 	private String memo;
 	private Integer sentBy;
 	private Date sentAt;
-	private Date arrivedAt;
+	private Date expiresAt;
 	private Integer usedFlag;
 	public Integer getId() {
 		return id;
@@ -67,12 +67,11 @@ public class OrderInquiriesForm {
 	public void setSentAt(Date sentAt) {
 		this.sentAt = sentAt;
 	}
-	
-	public Date getArrivedAt() {
-		return arrivedAt;
+	public Date getExpiresAt() {
+		return expiresAt;
 	}
-	public void setArrivedAt(Date arrivedAt) {
-		this.arrivedAt = arrivedAt;
+	public void setExpiresAt(Date expiresAt) {
+		this.expiresAt = expiresAt;
 	}
 	public Integer getUsedFlag() {
 		return usedFlag;

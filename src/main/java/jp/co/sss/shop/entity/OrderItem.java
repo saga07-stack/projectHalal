@@ -43,7 +43,7 @@ public class OrderItem {
 	/**
 	 * 商品情報
 	 */
-	@ManyToOne 
+	@ManyToOne
 	@JoinColumn(name = "item_id", referencedColumnName = "id")
 	private Item item;
 

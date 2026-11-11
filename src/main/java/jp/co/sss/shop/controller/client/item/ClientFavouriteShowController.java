@@ -16,12 +16,11 @@ public class ClientFavouriteShowController {
 	public String favouriteList(
 		HttpSession session 
 		, Model model 
-				) {
+			) {
 		
 		if(session.getAttribute("user") == null) {
-			model.addAttribute("message", "Session time out");
-			return "redirect:/login";
-		}
+				return "redirect:/login";
+			}
 		return "client/favourite/list";
 		
 	}
