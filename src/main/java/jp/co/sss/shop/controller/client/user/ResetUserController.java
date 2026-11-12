@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.client.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,8 @@ public class ResetUserController {
 	@Autowired
 	private UserRepository userRepo;
 	
+	@Autowired 
+	private BCryptPasswordEncoder passwordEncoder;
 	 
 	/**
 	 * Display password reset page
@@ -142,7 +145,10 @@ public class ResetUserController {
                    
 	 		// TODO: Update user password in database
 			// userService.updatePassword(email, newPassword);
-	       userRepo.updatePasswordByEmail(email, newPassword);
+			
+			String encodedPassword  = passwordEncoder.encode(newPassword);
+			
+	       userRepo.updatePasswordByEmail( email, encodedPassword);
 
 
 			// Clear session attributes

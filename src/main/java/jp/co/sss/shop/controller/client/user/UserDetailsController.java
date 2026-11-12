@@ -43,7 +43,7 @@ public class UserDetailsController {
 //		}
 //		
 		
-	Optional<User> user = userRepository.findById(3);
+	Optional<User> user = userRepository.findById(((UserBean) session.getAttribute("user")).getId());
 		
 	if (user.isPresent()) {
 			

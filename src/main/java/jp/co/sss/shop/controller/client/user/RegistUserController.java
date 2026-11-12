@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.mail.Session;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jp.co.sss.shop.bean.PasswordConfig;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.EmailForm;
@@ -35,6 +37,8 @@ public class RegistUserController {
 	@Autowired(required = false)
 	private UserBean userBean;
 
+	@Autowired
+	private BCryptPasswordEncoder passwordConfig;
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -153,11 +157,11 @@ public class RegistUserController {
      User userObj = new User();
      userObj.setName(user.getName());
      userObj.setEmail(user.getEmail());
-     userObj.setPassword(user.getPassword());
+     userObj.setPassword(passwordConfig.encode(user.getPassword()));
      userObj.setPostalCode(user.getPostalCode());
      userObj.setAddress(user.getAddress());
      userObj.setPhoneNumber(user.getPhoneNumber());
- 
+      
      userObj.setAuthority(user.getAuthority());
      userRepo.save(userObj);
      session.removeAttribute("registUser");

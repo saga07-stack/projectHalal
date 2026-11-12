@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jp.co.sss.shop.annotation.LoginCheck;
 import jp.co.sss.shop.bean.UserBean;
@@ -27,6 +28,9 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 	UserRepository userRepository;
 
 	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
 	HttpSession session;
 
 	@Override
@@ -44,13 +48,13 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 
 		User user = userRepository.findByEmailAndDeleteFlag(emailProp, Constant.NOT_DELETED);
 
-		if (user != null && passwordProp.equals(user.getPassword())) {
+		if (user != null && passwordEncoder.matches(passwordProp, user.getPassword())) {
 			UserBean userBean = new UserBean();
 
 			userBean.setId(user.getId());
 			userBean.setName(user.getName());
 			userBean.setAuthority(user.getAuthority());
-
+           
 			// セッションスコープにログインしたユーザの情報を登録
 			session.setAttribute("user", userBean);
 			isValidFlg = true;
