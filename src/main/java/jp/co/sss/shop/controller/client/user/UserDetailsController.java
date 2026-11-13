@@ -31,15 +31,19 @@ public class UserDetailsController {
 		Model model,
 		HttpSession session
 			) {
+
 		
-		Integer userId = ((UserBean)session.getAttribute("user")).getId();
+//		  if (session.getAttribute("user") == null) { model.addAttribute("message",
+//		  "Session time out"); return "redirect:/login"; }
+//	
+//		Integer userId = ((UserBean)session.getAttribute("user")).getId().intValue();
+//		
+//		if(userId == null) {
+//			return "redirect:/client/user/login";
+//		}
+//		
 		
-		if(userId == null) {
-			return "redirect:/client/user/login";
-		}
-		
-		
-	Optional<User> user = userRepository.findById(userId);
+	Optional<User> user = userRepository.findById(((UserBean) session.getAttribute("user")).getId());
 		
 	if (user.isPresent()) {
 			

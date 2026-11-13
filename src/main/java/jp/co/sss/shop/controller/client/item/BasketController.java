@@ -55,9 +55,11 @@ public class BasketController {
 	public String list(HttpSession session, Model model) {
 
 	    UserBean userBean = (UserBean) session.getAttribute("user");   // tapai ko asli key
+
 	    if (userBean == null) {
 	        return "redirect:/login";
 	    }
+
 
 	    List<CartItems> cartItems = cartRepository.findByUserId(userBean.getId());
      if(cartItems.isEmpty()) {

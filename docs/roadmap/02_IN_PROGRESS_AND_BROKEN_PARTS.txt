@@ -1,0 +1,591 @@
+================================================================================
+              IN PROGRESS & BROKEN PARTS - HALF-DONE OR BUGGY CODE
+        Things that exist but are incomplete, incorrect, or poorly designed
+================================================================================
+
+Project: Nepali Pasal E-Commerce Platform
+Analysis Date: November 2026
+Framework: Spring Boot 3.1.5, Java 17, Oracle DB
+
+Status: 20 issues identified in production code
+
+================================================================================
+                         ISSUES BY PRIORITY
+================================================================================
+
+🔴 CRITICAL (Block Production)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[BP-01] PLAINTEXT PASSWORDS IN DATABASE
+  Current problem
+    User.java stores password as plain String in database.
+    RegistUserController line 143: userObj.setPassword(user.getPassword()) - direct assignment
+    LoginController manually compares plain passwords
+    File: User.java (entity), RegistUserController.java, LoginController.java
+  Correct way
+    Hash passwords with BCrypt BEFORE saving
+    Use Spring Security's PasswordEncoder bean
+    Compare hashed passwords with encoder.matches()
+  Steps to fix
+    1. Add BCryptPasswordEncoder @Bean to @Configuration class
+    2. Modify RegistUserController: userObj.setPassword(encoder.encode(user.getPassword()))
+    3. Modify LoginController: encoder.matches(formPassword, dbPassword)
+    4. Create Flyway migration to hash existing passwords
+    5. Test: verify bcrypt hashes change each time
+  Done when
+    All passwords hashed with BCrypt, login still works, existing data migrated
+  Concept learned
+    BCrypt, password security, migration strategies
+  Difficulty: Easy
+
+[BP-02] HARDCODED CREDENTIALS IN PROPERTIES FILES
+  Current problem
+    application.properties line 8-9:
+      spring.mail.username=sagarmatha603@gmail.com
+      spring.mail.password=ozbk yetf issn yxvr
+    Also: database credentials in application-local.properties
+    These files are in git repository (exposure risk)
+  Correct way
+    Use environment variables for all secrets
+    application.properties should have ${MAIL_USERNAME} placeholders only
+    .gitignore must exclude actual properties files
+  Steps to fix
+    1. Create application.properties.example with placeholders
+    2. Update application*.properties to use:
+       spring.mail.username=${MAIL_USERNAME:defaultLocal@test.com}
+       spring.mail.password=${MAIL_PASSWORD:defaultLocal123}
+    3. Remove credentials from git history: git filter-branch (complex) OR start new repo
+    4. Update .gitignore to exclude application*.properties
+    5. Document how to set environment variables in README
+    6. For Docker/CI: use environment variable injection
+  Done when
+    No secrets in git, CI/CD uses env vars, documentation updated
+  Concept learned
+    12-factor app, externalized configuration, secrets management
+  Difficulty: Easy
+
+[BP-03] NO CSRF TOKEN PROTECTION
+  Current problem
+    Forms in HTML have no CSRF tokens
+    File: All Thymeleaf templates (regist_*.html, order pages, etc.)
+    Anyone can submit forms to your site from malicious website
+  Correct way
+    Add hidden CSRF token input in every POST form
+    Spring Security validates token automatically
+  Steps to fix
+    1. Enable Spring Security CSRF protection
+    2. In all Thymeleaf <form> elements, add:
+       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    3. For AJAX requests, send token in header:
+       fetch(url, {
+         headers: {'X-CSRF-TOKEN': csrfToken}
+       })
+    4. Test: verify token changes on each page load
+  Done when
+    All forms have tokens, attempting fake form submission fails
+  Concept learned
+    CSRF attack mechanics, token validation, double-submit pattern
+  Difficulty: Medium
+
+[BP-04] NO SPRING SECURITY FRAMEWORK
+  Current problem
+    Custom LoginCheckFilter.java (line 21+) is manual auth implementation
+    Fragile, missing features (no roles enforcement, no session fixation protection)
+    File: filter/LoginCheckFilter.java, LoginController.java
+    Only checks if "user" exists in session - no role/permission checks
+  Correct way
+    Use Spring Security framework with:
+    - UserDetailsService for user loading
+    - SecurityConfig with role-based URL protection
+    - Automatic session management, CSRF, headers
+  Steps to fix
+    1. Add spring-security-starter to pom.xml
+    2. Create SecurityConfig class with @EnableWebSecurity
+    3. Configure: authorizeRequests() for /admin, /client URLs
+    4. Implement UserDetailsService interface
+    5. Replace LoginController logic with Spring's FormLogin
+    6. Remove LoginCheckFilter (Spring Security handles this)
+    7. Test: verify /admin page shows 403 for regular users
+  Done when
+    Spring Security enforces authentication/authorization, all tests pass
+  Concept learned
+    Spring Security architecture, UserDetailsService, filter chain
+  Difficulty: Medium
+
+[BP-05] NO GLOBAL EXCEPTION HANDLER
+  Current problem
+    ErrorController.java only has /syserror endpoint
+    Other exceptions not caught - users see raw error pages or stack traces
+    No standardized error response format
+    File: ErrorController.java (line 22-27), all controllers
+  Correct way
+    Create @ControllerAdvice class with @ExceptionHandler methods
+    Return standardized error response JSON/HTML
+    Log exceptions properly with SLF4J
+  Steps to fix
+    1. Create GlobalExceptionHandler class with @ControllerAdvice
+    2. Add @ExceptionHandler(Exception.class) method
+    3. Return ErrorResponse object: { "error": "...", "status": 500, "timestamp": "..." }
+    4. Add specific handlers for common exceptions
+    5. Use logger.error() with exception details
+    6. Test: trigger exception, verify response format
+  Done when
+    All exceptions handled consistently, no stack traces in production mode
+  Concept learned
+    @ControllerAdvice, exception hierarchy, error response design
+  Difficulty: Medium
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🟡 HIGH (Should Fix Before Production)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[BP-06] STOCK NOT UPDATED ON ORDER
+  Current problem
+    Item.java has stock field but never decremented after order
+    User can order same item multiple times - overbooking possible
+    File: OrderService/business logic missing
+  Correct way
+    When order status → PAID: decrement item.stock by quantity ordered
+    Check stock BEFORE creating order
+    Handle refunds: increment stock back
+  Steps to fix
+    1. Create StockService with updateStock() method
+    2. In OrderService (POST /checkout): verify stock available
+    3. After payment confirmed: stockService.decrementStock(item, quantity)
+    4. On order cancellation: stockService.incrementStock(item, quantity)
+    5. Add pessimistic lock to prevent race conditions (SELECT FOR UPDATE)
+    6. Test: verify stock decreases after order
+  Done when
+    Stock accurate, no overbooking, refunds increment stock
+  Concept learned
+    Inventory management, concurrency, pessimistic/optimistic locking
+  Difficulty: Hard
+
+[BP-07] SESSION-ONLY CART (No Database Persistence)
+  Current problem
+    Cart stored only in HttpSession (see common.js loadAllItems)
+    Cart lost on logout, browser close, or session expiry
+    CartItems.java entity exists but not used in BasketController
+    File: common.js (uses sessionStorage), controller/client/basket/
+  Correct way
+    CartItems already maps to cart_items table - use it!
+    Save cart to DB on every add/remove
+    Load cart from DB on login
+    Keep session copy for performance (read from DB, write to both)
+  Steps to fix
+    1. Create CartService: addToCart(), removeFromCart(), getCart(), clearCart()
+    2. Modify BasketController to call CartService instead of session only
+    3. On add: service.addToCart(userId, itemId, quantity) → saves to DB
+    4. On login: load cart from DB, put in session
+    5. On logout: keep cart in DB (don't delete)
+    6. Sync on page load: session.cart = db.cart
+    7. Test: logout/login, cart still there
+  Done when
+    Cart persists across sessions, database is source of truth
+  Concept learned
+    Service layer patterns, database state management, session sync
+  Difficulty: Medium
+
+[BP-08] ORDER STATUS NOT TRACKED PROPERLY
+  Current problem
+    Order.java has status field but it's a plain String (line 57)
+    No validation - can set to any value
+    No state transitions - can go from COMPLETED → PENDING
+    No update timestamp - can't see when status changed
+    File: Order.java (line 57), OrderController
+  Correct way
+    Use OrderStatus enum with valid states
+    Enforce state transitions (only allow valid sequences)
+    Add updatedAt timestamp
+    Add audit log of who changed status when
+  Steps to fix
+    1. Create OrderStatus enum: PENDING_PAYMENT, PAID, SHIPPED, DELIVERED, COMPLETED, CANCELLED
+    2. Change Order.status from String to OrderStatus enum
+    3. Create OrderStatusTransition entity (for audit trail)
+    4. Add status change validation in OrderService
+    5. Add updatedAt and updatedBy fields to Order
+    6. Update migration: add constraint, convert values to enum
+    7. Test: verify invalid transitions blocked
+  Done when
+    Order states validated, transitions recorded, audit trail available
+  Concept learned
+    Enums, state pattern, audit trails, temporal data
+  Difficulty: Medium
+
+[BP-09] EMAIL SERVICE ONLY SENDS VERIFICATION CODES
+  Current problem
+    EmailService.java (line 15+) has sendVerificationCode() only
+    No order confirmation emails
+    No shipping/delivery status emails
+    No promotional emails
+    File: service/EmailService.java
+  Correct way
+    Add sendOrderConfirmationEmail(), sendShippingEmail(), etc.
+    Make sending asynchronous (@Async) - don't block checkout
+    Add error handling & retry logic
+    Add email templates (separate HTML files, not concatenated strings)
+  Steps to fix
+    1. Add more methods to EmailService:
+       - sendOrderConfirmationEmail(Order order)
+       - sendShippingNotificationEmail(Order order)
+       - sendDeliveryConfirmationEmail(Order order)
+    2. Make methods @Async (add @EnableAsync to @Configuration)
+    3. Create email templates in src/main/resources/templates/emails/
+    4. Use Thymeleaf to render email HTML
+    5. Add exception handling: log but don't fail order if email fails
+    6. Test: order placed, confirmation email arrives in test inbox
+  Done when
+    Users receive confirmation, shipping, and delivery emails
+  Concept learned
+    Async processing, @Async methods, Spring Task Execution, template rendering
+  Difficulty: Medium
+
+[BP-10] NO INPUT VALIDATION FOR PRICE/QUANTITY TAMPERING
+  Current problem
+    User could submit cart with modified price via JavaScript
+    quantity could be negative or 0
+    promo code discount not validated server-side
+    File: OrderController, basketController
+  Correct way
+    Never trust client input
+    Re-fetch item prices from DB
+    Re-validate discount codes
+    Recalculate totals on server
+  Steps to fix
+    1. In OrderService.createOrder():
+       - Fetch fresh item prices from DB (don't trust form submission)
+       - Verify quantity > 0
+       - Validate promo code on server
+       - Recalculate total = sum of (item.price * quantity) + promo
+    2. Add validation annotations to OrderForm
+    3. Add business logic validation in service
+    4. Test: try submitting tampered form data
+  Done when
+    Tampered orders rejected, prices recalculated, totals match
+  Concept learned
+    Business rule enforcement, server-side validation, total audit
+  Difficulty: Easy
+
+[BP-11] NO IDOR PREVENTION (Can Access Other Users' Data)
+  Current problem
+    User A can access User B's order by guessing order ID
+    URL: /client/order/detail/123 - anyone can change 123 to 456
+    File: UserOrderHistoryController.java, all user-specific endpoints
+  Correct way
+    Verify logged-in user owns the resource
+    Return 403 Forbidden if not owner
+  Steps to fix
+    1. Create AuthUtil.assertOwnership(userId, resourceOwnerId) method
+    2. In every controller endpoint that accesses user data:
+       User currentUser = getLoggedInUser();
+       Order order = orderRepo.findById(orderId);
+       if (!order.getUser().getId().equals(currentUser.getId())) {
+         return new ResponseEntity(HttpStatus.FORBIDDEN);
+       }
+    3. Apply to: /client/order/*, /client/user/*, /client/basket/*
+    4. Test: try accessing other user's data → 403
+  Done when
+    Users can only see/edit their own data, others get 403
+  Concept learned
+    Authorization checks, ownership verification, OWASP IDOR
+  Difficulty: Medium
+
+[BP-12] WEAK/MISSING INPUT VALIDATION
+  Current problem
+    Some validation exists (ItemForm, UserForm) but:
+    - No cross-field validation (password != email)
+    - No regex patterns for phone (should be Nepali format)
+    - File upload not validated (could upload .exe files)
+    - Order address validation missing
+    File: form/ validators, UploadFileService.java
+  Correct way
+    Add comprehensive validation:
+    - Server-side with @Valid annotations + custom validators
+    - JSR-303 bean validation
+    - File type whitelist
+    - Regex patterns for Nepali formats
+  Steps to fix
+    1. Review all Form classes (UserForm, ItemForm, OrderForm)
+    2. Add @Size, @Pattern, @Email, @NotBlank annotations
+    3. Create custom validators for complex rules
+    4. Add file upload validation in UploadFileService:
+       - Whitelist file types (jpg, png only)
+       - Check magic bytes (not just extension)
+       - Limit file size
+    5. Add phone number validator for Nepali format
+    6. Test: try invalid data, should get validation errors
+  Done when
+    All inputs validated, invalid data rejected with clear messages
+  Concept learned
+    Bean validation, @Valid, custom validators, file security
+  Difficulty: Medium
+
+[BP-13] FILE UPLOAD SECURITY ISSUES
+  Current problem
+    UploadFileService.java doesn't validate file type
+    Could upload .exe, .sh files masquerading as images
+    No virus scanning
+    File stored with predictable name
+    File: service/UploadFileService.java
+  Correct way
+    Validate file content (magic bytes), not just extension
+    Whitelist allowed types
+    Scan for malware (ClamAV integration)
+    Rename to random UUID
+    Store outside webroot
+  Steps to fix
+    1. Add magic byte validation:
+       - JPEG: starts with FF D8 FF
+       - PNG: starts with 89 50 4E 47
+       - Reject anything else
+    2. Create FileValidator class
+    3. Use temp file with UUID name
+    4. Scan with ClamAV (optional, advanced)
+    5. Move to /images/ folder after validation
+    6. Test: try uploading .exe → rejected
+  Done when
+    Only valid image formats accepted, no executable files uploaded
+  Concept learned
+    File security, magic bytes, whitelist validation, sandboxing
+  Difficulty: Hard
+
+[BP-14] N+1 QUERY PROBLEM (Performance)
+  Current problem
+    When loading Order with OrderItems:
+    Query 1: SELECT * FROM orders WHERE id=?
+    Query 2-N: for each OrderItem, SELECT * FROM items (in loop)
+    Visible in logs if debug enabled
+    File: Order.java relationships, OrderRepository.java
+  Correct way
+    Use fetch join in JPQL
+    Or EntityGraph annotation
+  Steps to fix
+    1. In OrderRepository, create custom query:
+       @Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItemsList " +
+              "LEFT JOIN FETCH o.user WHERE o.id=?1")
+       Optional<Order> findByIdWithItems(Integer id);
+    2. Replace findById() calls with this method
+    3. Test with SQL logging enabled:
+       logging.level.org.hibernate.SQL=DEBUG
+    4. Verify single query instead of 1+N
+  Done when
+    Order queries execute in single SQL statement
+  Concept learned
+    JPA eager/lazy loading, fetch join, JPQL optimization, N+1 detection
+  Difficulty: Medium
+
+[BP-15] NO LOGGING INFRASTRUCTURE
+  Current problem
+    Code uses System.out.println() instead of logger
+    Examples: LoginController line 112, EmailService line 39
+    Logs not captured in files
+    No log levels (DEBUG, INFO, WARN, ERROR)
+    File: All classes with System.out, no logback.xml
+  Correct way
+    Use SLF4J for all logging
+    Create logback-spring.xml with appenders
+    Configure log levels
+    Use structured logging
+  Steps to fix
+    1. Create src/main/resources/logback-spring.xml with:
+       - CONSOLE appender
+       - FILE appender (rolling)
+       - Pattern with timestamp, level, class, message
+    2. In every service/controller:
+       private static final Logger log = LoggerFactory.getLogger(ClassName.class);
+       Replace System.out.println("msg") with log.info("msg")
+    3. Set log levels in properties:
+       logging.level.jp.co.sss.shop=DEBUG
+       logging.level.org.springframework=INFO
+    4. Test: verify logs appear in console and files
+  Done when
+    All logs use SLF4J, logs written to files, no System.out
+  Concept learned
+    SLF4J patterns, log levels, Logback appenders, rolling files
+  Difficulty: Easy
+
+[BP-16] EMAIL VERIFICATION CODE NOT PERSISTENT
+  Current problem
+    RegistUserController line 89: stores verification code in session only
+    session.setAttribute("verificationCode", randomNumber);
+    If session times out → code lost → user can't register
+    No database persistence of codes
+    Codes don't expire automatically
+  Correct way
+    Store codes in database with expiry timestamp
+    Delete expired codes
+    Validate and delete code on use
+  Steps to fix
+    1. Create EmailVerificationCode entity:
+       - id, email, code, createdAt, expiresAt, used
+    2. Create EmailVerificationCodeRepository
+    3. In sendVerificationCode(): save code to DB with 15-min expiry
+    4. In verifyCode(): check if code exists, not used, not expired
+    5. On successful verify: mark as used, delete after 1 hour
+    6. Add scheduled task to clean up old codes
+    7. Test: verify code expires after 15 minutes
+  Done when
+    Email codes persist in DB, expire automatically, can't reuse
+  Concept learned
+    Database state management, timestamp handling, scheduled cleanup
+  Difficulty: Medium
+
+[BP-17] USER REGISTRATION FLOW INCOMPLETE
+  Current problem
+    RegistUserController.java has multiple endpoints for registration
+    Validation exists but some issues:
+    - Email already exists check (line 122) returns error but continues flow
+    - No duplicate email checking during registration
+    - Password not confirmed (just one input)
+  Correct way
+    Clear multi-step flow: email verification → user details → password confirm → review → submit
+    Email uniqueness checked at registration start
+    Password confirmation field
+  Steps to fix
+    1. Add password confirmation field to UserForm
+    2. Add validator: password must equal confirmPassword
+    3. Check email uniqueness early in flow
+    4. Return clear error messages
+    5. Add @Unique annotation for email field
+    6. Test: verify can't register with existing email
+  Done when
+    Registration flow validates all fields, prevents duplicates
+  Concept learned
+    Multi-step forms, cross-field validation, unique constraints
+  Difficulty: Easy
+
+[BP-18] NO TRANSACTIONAL BOUNDARIES DOCUMENTED
+  Current problem
+    Some service methods create orders, update stock, send emails
+    No @Transactional annotations
+    If email fails: order created but email not sent (inconsistent)
+    File: OrderService (missing), OrderController
+  Correct way
+    Use @Transactional on service methods
+    Define rollback scenarios
+    Test transaction rollback
+  Steps to fix
+    1. Create OrderService class
+    2. Add @Transactional on createOrder() method
+    3. Inside method:
+       - Create order
+       - Update stock
+       - Add to database
+       - Send email (in separate @Async method)
+    4. If order creation fails: entire transaction rolls back
+    5. If email fails: order still saved (email is async)
+    6. Test: trigger error, verify rollback
+  Done when
+    Orders created/updated within transactions, consistency maintained
+  Concept learned
+    @Transactional annotation, propagation, rollback rules, isolation levels
+  Difficulty: Medium
+
+[BP-19] PRODUCT IMAGE HANDLING FRAGILE
+  Current problem
+    Images stored with timestamp prefix (20260930084734_waiwai.webp)
+    File path hardcoded in properties
+    Broken image fallback exists (good!) but path construction error-prone
+    File: UploadFileService.java, stylesheet.css
+  Correct way
+    Use centralized image path utility
+    Store relative paths in database
+    Validate file existence before serving
+  Steps to fix
+    1. Create ImageService class with:
+       - getImagePath(filename): return correct path
+       - getImageUrl(filename): return public URL
+       - deleteImage(filename): remove from disk
+    2. In properties: image.upload.dir=/uploads/images
+    3. In database: store only filename, not full path
+    4. In Thymeleaf: th:src="@{/images/{name}(name=${item.image})}"
+    5. Test: verify all images load, fallback works
+  Done when
+    Image paths centralized, validation works, no 404s
+  Concept learned
+    Resource management, path handling, URL generation
+  Difficulty: Easy
+
+[BP-20] CATEGORY-ITEM RELATIONSHIP NOT ENFORCED
+  Current problem
+    Item.java has categoryId but no database constraint
+    Could create items without valid category
+    Could delete category with items still referencing it
+    File: Item.java, Category.java
+  Correct way
+    Add foreign key with ON DELETE CASCADE or ON DELETE RESTRICT
+    Use JPA @ManyToOne relationship
+    Validate category exists before saving item
+  Steps to fix
+    1. In Item.java:
+       @ManyToOne
+       @JoinColumn(name = "category_id", nullable = false)
+       private Category category;
+    2. In Category.java:
+       @OneToMany(mappedBy = "category")
+       private List<Item> items;
+    3. Add database constraint (Flyway migration)
+    4. Modify ItemForm/ItemValidator to validate category exists
+    5. Test: try creating item without category → error
+  Done when
+    Category-item relationship enforced, referential integrity maintained
+  Concept learned
+    JPA relationships, foreign keys, cascading deletes, constraints
+  Difficulty: Easy
+
+================================================================================
+                        FIX PRIORITY MATRIX
+================================================================================
+
+DO FIRST (Block production release):
+  1. [BP-01] Plaintext passwords → hash with BCrypt
+  2. [BP-02] Hardcoded credentials → env vars
+  3. [BP-03] No CSRF tokens → add to all forms
+  4. [BP-04] No Spring Security → integrate framework
+  5. [BP-05] No exception handler → add @ControllerAdvice
+
+DO SECOND (Before go-live):
+  6. [BP-11] IDOR vulnerability → add ownership checks
+  7. [BP-06] Stock not updated → implement stock management
+  8. [BP-07] Session-only cart → use database
+  9. [BP-10] Price tampering → server-side validation
+  10. [BP-12] Weak validation → add comprehensive validation
+
+DO THIRD (Before scaling):
+  11. [BP-09] Email service limited → add transactional emails
+  12. [BP-14] N+1 queries → fix with fetch join
+  13. [BP-15] No logging → add SLF4J/Logback
+  14. [BP-08] Order status not tracked → use state machine
+
+NICE TO HAVE (Quality improvements):
+  15. [BP-13] File upload security → add magic byte checks
+  16. [BP-16] Code not persistent → move to DB
+  17. [BP-17] Registration incomplete → add validations
+  18. [BP-18] No transactional boundaries → add @Transactional
+  19. [BP-19] Image handling fragile → centralize logic
+  20. [BP-20] No referential integrity → add constraints
+
+================================================================================
+                         ESTIMATED EFFORT
+================================================================================
+
+CRITICAL tier: ~20 hours
+  BP-01: 2h, BP-02: 1h, BP-03: 2h, BP-04: 3h, BP-05: 2h, 
+  BP-11: 2h, BP-06: 5h, BP-07: 4h
+
+HIGH tier: ~18 hours
+  BP-10: 1h, BP-12: 3h, BP-09: 3h, BP-14: 2h, BP-15: 1h,
+  BP-08: 3h, BP-13: 5h
+
+MEDIUM tier: ~12 hours
+  BP-16: 2h, BP-17: 1h, BP-18: 2h, BP-19: 1h, BP-20: 1h, BP-14-repeat: 2h
+
+TOTAL: ~50 hours of refactoring work
+
+Recommendation: Fix CRITICAL tier FIRST before production launch.
+
+================================================================================
+Generated: November 2026
+Analysis: Code review against Spring Boot best practices
+================================================================================

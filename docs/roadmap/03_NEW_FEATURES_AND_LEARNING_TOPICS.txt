@@ -1,0 +1,1262 @@
+================================================================================
+           NEW FEATURES & LEARNING TOPICS FOR INTERMEDIATE-PLUS LEVEL
+        Topics to master + practical features for Nepali e-commerce
+================================================================================
+
+Project: Nepali Pasal E-Commerce Platform
+Analysis Date: November 2026
+Goal: Reach intermediate-plus level in backend development
+Total learning topics: 45+ features organized by difficulty
+
+================================================================================
+                    JAVA & PROGRAMMING CONCEPTS (8 tasks)
+================================================================================
+
+[J-01] JAVA STREAMS API & FUNCTIONAL PROGRAMMING
+  - What to learn
+    Stream API: map(), filter(), reduce(), collect()
+    Lambda expressions
+    Functional interfaces: Function, Predicate, Consumer
+    Method references
+  - Why useful
+    Clean data transformations
+    Concurrent processing
+    Readability improvement
+  - Example for this project
+    List<Item> expiredItems = items.stream()
+      .filter(item -> item.getExpiry().isBefore(LocalDate.now()))
+      .collect(Collectors.toList());
+  - Task
+    Convert cart total calculation to use streams
+    Convert product filtering to use streams
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[J-02] JAVA OPTIONAL - AVOIDING NULLPOINTEREXCEPTION
+  - What to learn
+    Optional.of(), Optional.ofNullable(), orElse(), orElseThrow()
+    map(), flatMap() on Optional
+    When NOT to use Optional
+  - Why useful
+    Eliminates null pointer exceptions
+    Express intent: value might be absent
+    Functional style code
+  - Example for this project
+    Optional<User> user = userRepo.findByEmail(email)
+      .filter(u -> encoder.matches(password, u.getPassword()))
+      .orElseThrow(() -> new UserNotFoundException());
+  - Task
+    Refactor all findById() calls to use Optional
+    Replace null checks with Optional
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[J-03] JAVA GENERICS DEEP DIVE
+  - What to learn
+    Generic classes: List<T>, Map<K,V>
+    Type bounds: <T extends Comparable>
+    Wildcards: <? super T>, <? extends T>
+    Type erasure
+  - Why useful
+    Type safety at compile time
+    Reusable code
+    Better IDE support
+  - Example for this project
+    Create generic Response<T> class:
+      public class Response<T> {
+        T data;
+        String message;
+      }
+  - Task
+    Create generic repository base class
+    Create generic response wrapper
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[J-04] JAVA RECORDS (Java 16+)
+  - What to learn
+    Record syntax: record Point(int x, int y) { }
+    Immutability by default
+    When to use records vs classes
+  - Why useful
+    Less boilerplate
+    Immutability guaranteed
+    Clear intent
+  - Example for this project
+    public record OrderSummary(
+      Integer orderId,
+      BigDecimal total,
+      LocalDateTime createdAt
+    ) { }
+  - Task
+    Convert DTO classes to records
+    Create immutable data carriers
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[J-05] EXCEPTION HANDLING DESIGN
+  - What to learn
+    Checked vs unchecked exceptions
+    Custom exception hierarchy
+    Exception wrapping & cause chain
+    When to throw vs return error
+  - Why useful
+    Clear error communication
+    Proper error recovery
+    Debugging aid
+  - Example for this project
+    public class OutOfStockException extends RuntimeException {
+      private Integer itemId;
+      private Integer requested;
+      private Integer available;
+    }
+  - Task
+    Create custom exception classes (UserNotFoundException, etc.)
+    Create exception hierarchy (AppException extends RuntimeException)
+    Use in controllers
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[J-06] JAVA COLLECTIONS INTERNALS
+  - What to learn
+    ArrayList vs LinkedList (time complexity)
+    HashMap vs TreeMap vs ConcurrentHashMap
+    HashSet implementation (hash + linked list)
+    When each collection is optimal
+  - Why useful
+    Performance optimization
+    Avoiding bottlenecks
+    Concurrency safety
+  - Example for this project
+    Choose ConcurrentHashMap for session cart if multi-threaded
+    Use TreeMap for sorted products by price
+  - Task
+    Profile current code: which collections used?
+    Identify and fix inefficient choices
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[J-07] EQUALS & HASHCODE IMPLEMENTATION
+  - What to learn
+    Contract: if a.equals(b) then a.hashCode() == b.hashCode()
+    Implementing equals() correctly
+    Implementing hashCode() correctly
+    Using @EqualsAndHashCode in Lombok
+  - Why useful
+    Prevents bugs in HashSet/HashMap
+    Entity equality checks work correctly
+  - Example for this project
+    User entity: equals() by email or id?
+    Item entity: equals() by id?
+  - Task
+    Add equals/hashCode to entities
+    Test with HashSet
+  - Difficulty: Easy
+  - Time: 1 hour
+
+[J-08] CONCURRENCY BASICS
+  - What to learn
+    Thread safety, synchronized, volatile
+    AtomicInteger, ConcurrentHashMap
+    Race conditions
+    Deadlocks
+  - Why useful
+    Multi-user application safety
+    Stock management race conditions
+    Session management
+  - Example for this project
+    Stock update race condition: 2 users buy last item simultaneously
+    Solution: optimistic locking (@Version) or pessimistic lock
+  - Task
+    Identify potential race conditions in code
+    Implement optimistic locking with @Version
+  - Difficulty: Hard
+  - Time: 4 hours
+
+================================================================================
+                SPRING BOOT & FRAMEWORK CONCEPTS (12 tasks)
+================================================================================
+
+[SB-01] LAYERED ARCHITECTURE PATTERNS
+  - What to learn
+    Controller → Service → Repository → Entity pattern
+    DTO vs Entity (data transfer objects)
+    Dependency injection at each layer
+    When to create new layers
+  - Why useful
+    Separation of concerns
+    Testability
+    Reusability
+  - Current state
+    Project uses this pattern already
+  - Task
+    Create separate DTO classes for API responses
+    Map Entity → DTO in service layer
+    Document the pattern
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[SB-02] SPRING SECURITY - COMPLETE PICTURE
+  - What to learn
+    Security filter chain
+    Authentication vs Authorization
+    UserDetailsService
+    Granting authorities & roles
+    Method-level security @PreAuthorize
+  - Why useful
+    Foundation for all security features
+    Production-grade authentication
+  - Current gap
+    No Spring Security integrated
+  - Task
+    See task S-02 in roadmap file
+    Implement complete Spring Security setup
+  - Difficulty: Hard
+  - Time: 6 hours
+
+[SB-03] SPRING DATA JPA CUSTOM QUERIES
+  - What to learn
+    @Query with JPQL
+    @Query with native SQL
+    Specification/Criteria API for dynamic queries
+    QueryDSL for type-safe queries
+  - Why useful
+    Complex queries beyond simple find()
+    Dynamic filters (search/sort)
+    Performance optimization
+  - Example for this project
+    Find products by category, price range, in-stock
+    Find orders by status and date range
+  - Task
+    Convert search endpoints to use Specification
+    Create reusable filter builders
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[SB-04] @TRANSACTIONAL & PROPAGATION
+  - What to learn
+    @Transactional annotation
+    Propagation types: REQUIRED, REQUIRES_NEW, NESTED
+    Rollback rules
+    Read-only transactions
+    Isolation levels (READ_UNCOMMITTED, etc.)
+  - Why useful
+    Data consistency
+    Proper error handling
+    Performance optimization (read-only)
+  - Example for this project
+    @Transactional(propagation=REQUIRED)
+    public Order createOrder(Order order) {
+      // order + stock update in same transaction
+    }
+  - Task
+    Add @Transactional to service methods
+    Document transaction boundaries
+    Test rollback behavior
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[SB-05] DTO & MAPSTRUCT MAPPING
+  - What to learn
+    Why DTOs separate from entities
+    Manual mapping vs MapStruct
+    MapStruct annotations @Mapper, @Mapping
+    Component model
+  - Why useful
+    API contract independent from DB
+    Security (hide internal fields)
+    Version API without DB changes
+  - Example for this project
+    Item → ItemDto (exclude internal prices)
+    User → UserDto (never return password)
+  - Task
+    Create DTOs for all entities
+    Setup MapStruct
+    Create mappers
+  - Difficulty: Medium
+  - Time: 4 hours
+
+[SB-06] SPRING VALIDATION FRAMEWORK
+  - What to learn
+    @Valid and @Validated annotations
+    JSR-303 constraints (@NotBlank, @Size, etc.)
+    Custom validators
+    Cross-field validation with @ScriptAssert
+  - Why useful
+    Input validation everywhere
+    Declarative validation
+    Error messages from properties files
+  - Current state
+    Basic validation exists
+  - Task
+    Enhance validation annotations
+    Create custom validators
+    Add cross-field validation
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[SB-07] APPLICATION PROFILES & PROPERTIES
+  - What to learn
+    spring.profiles.active
+    application-{profile}.properties
+    @Profile annotation
+    Property placeholders ${...}
+  - Why useful
+    Separate configs for dev/test/prod
+    Environment-specific behavior
+  - Current state
+    application-local.properties and application-aws.properties exist
+  - Task
+    Add application-test.properties
+    Use @Profile in beans
+    Document profile setup
+  - Difficulty: Easy
+  - Time: 1 hour
+
+[SB-08] SPRING EVENTS & EVENT LISTENERS
+  - What to learn
+    ApplicationEvent, @EventListener
+    @Async event listeners
+    Event publishing: applicationContext.publishEvent()
+    Decoupling via events
+  - Why useful
+    Loose coupling between components
+    Async processing
+    Audit/logging events
+  - Example for this project
+    Event: OrderCreatedEvent
+    Listeners: send email, update analytics, notify admins
+  - Task
+    Create event classes
+    Add event listeners
+    Use in order creation flow
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[SB-09] @ASYNC PROCESSING & SCHEDULING
+  - What to learn
+    @EnableAsync, @Async annotation
+    Task execution in thread pool
+    TaskExecutor bean
+    @Scheduled for periodic tasks
+  - Why useful
+    Non-blocking operations
+    Background jobs
+    Periodic cleanup
+  - Example for this project
+    @Async email sending (don't block checkout)
+    @Scheduled cleanup of expired tokens
+  - Task
+    Make email sending async
+    Add scheduled task for cleanup
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[SB-10] SPRING ACTUATOR & MONITORING
+  - What to learn
+    /actuator endpoints
+    Health checks, metrics
+    Custom endpoints
+    Micrometer integration
+  - Why useful
+    Production monitoring
+    Health status
+    Performance metrics
+  - Task
+    Add spring-boot-starter-actuator
+    Explore /actuator/health, /actuator/metrics
+    Create custom health check
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[SB-11] CACHING WITH SPRING CACHE ABSTRACTION
+  - What to learn
+    @Cacheable, @CacheEvict, @CachePut
+    Cache abstraction (Redis, Caffeine)
+    Cache key generation
+    TTL (time-to-live)
+  - Why useful
+    Reduce database load
+    Faster responses
+    Improved UX
+  - Example for this project
+    @Cacheable(value="products")
+    public List<Product> getAllProducts() { }
+  - Task
+    Add Redis/Caffeine to pom.xml
+    Implement caching for products & categories
+    Test cache invalidation
+  - Difficulty: Medium
+  - Time: 4 hours
+
+[SB-12] TESTING WITH @WEBMVCTEST
+  - What to learn
+    @WebMvcTest for controller testing
+    MockMvc, perform(), andExpect()
+    Mocking services
+    Testing request/response
+  - Why useful
+    Test controller logic without full app
+    Fast tests
+    Isolated testing
+  - Task
+    Create test for ProductController
+    Test GET /products returns 200
+    Test invalid input returns 400
+  - Difficulty: Medium
+  - Time: 2 hours
+
+================================================================================
+                JPA / HIBERNATE CONCEPTS (8 tasks)
+================================================================================
+
+[JPA-01] LAZY VS EAGER LOADING
+  - What to learn
+    FetchType.LAZY (default for @ManyToOne)
+    FetchType.EAGER (use carefully)
+    Lazy loading exceptions
+    LazyInitializationException
+  - Why useful
+    Performance optimization
+    Preventing N+1 queries
+    Avoiding overfetching
+  - Example for this project
+    Order.user (LAZY by default)
+    Order.orderItems (should be LAZY)
+  - Task
+    Review all relationships
+    Ensure appropriate fetch type
+    Add fetch join where needed
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[JPA-02] FETCH JOIN & ENTITY GRAPH
+  - What to learn
+    JOIN FETCH in JPQL
+    @EntityGraph annotation
+    Avoiding N+1 queries
+    Batch fetching
+  - Why useful
+    Explicit loading strategy
+    Consistent queries
+    Performance control
+  - Task
+    See BP-14 in broken parts
+    Implement fetch joins
+    Use EntityGraph
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[JPA-03] JPQL & NATIVE QUERIES
+  - What to learn
+    JPQL vs SQL
+    JPQL syntax: SELECT, FROM, WHERE
+    Native SQL queries
+    Parameter binding
+  - Why useful
+    Complex queries
+    Raw SQL when needed
+    Performance tuning
+  - Task
+    Write JPQL for complex searches
+    Create native SQL query
+    Compare performance
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[JPA-04] SPECIFICATION/CRITERIA FOR DYNAMIC QUERIES
+  - What to learn
+    Specification interface
+    Criteria API
+    Building dynamic WHERE clauses
+    Predicate composition
+  - Why useful
+    Search filters
+    Dynamic filtering
+    Reusable components
+  - Example for this project
+    Search: products by category, price range, in-stock
+    Build Specification at runtime
+  - Task
+    Create ProductSpecification
+    Use in search endpoint
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[JPA-05] PAGEABLE & SORTING
+  - What to learn
+    Pageable interface
+    Sort objects
+    Page vs List
+    PagingAndSortingRepository
+  - Why useful
+    Large dataset handling
+    User-friendly pagination
+    Sorting options
+  - Current state
+    Product list has pagination (see ABOUT.txt)
+  - Task
+    Verify pagination in all list endpoints
+    Add sorting by price/date
+    Test large datasets
+  - Difficulty: Easy
+  - Time: 1 hour
+
+[JPA-06] OPTIMISTIC LOCKING WITH @VERSION
+  - What to learn
+    @Version annotation
+    Version field (Long)
+    OptimisticLockException
+    When to use
+  - Why useful
+    Prevent concurrent update conflicts
+    Detect conflicts without locks
+    Scalable concurrency
+  - Example for this project
+    Stock updates (multiple users)
+    Order status updates
+  - Task
+    Add @Version to Order, Item
+    Implement optimistic locking
+    Handle OptimisticLockException
+  - Difficulty: Hard
+  - Time: 3 hours
+
+[JPA-07] AUDITING WITH @CreatedDate/@LastModifiedDate
+  - What to learn
+    @CreatedDate, @LastModifiedDate
+    @CreatedBy, @LastModifiedBy
+    @EnableJpaAuditing
+    AuditorAware interface
+  - Why useful
+    Track changes automatically
+    Audit trail
+    Data quality
+  - Task
+    Add auditing to all entities
+    Setup AuditorAware for user tracking
+    Add created/updated timestamp queries
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[JPA-08] SOFT DELETE PATTERN
+  - What to learn
+    delete_flag field (not actual delete)
+    Filter deleted items in queries
+    @Where annotation
+    Recovery of soft-deleted data
+  - Why useful
+    Data recovery
+    Audit trail
+    Referential integrity
+  - Current state
+    Project already uses delete_flag in entities
+  - Task
+    Implement @Where clauses
+    Create repository method for deleted items
+    Test recovery
+  - Difficulty: Medium
+  - Time: 2 hours
+
+================================================================================
+                ORACLE DATABASE & SQL CONCEPTS (8 tasks)
+================================================================================
+
+[ORA-01] ORACLE INDEXES & PERFORMANCE
+  - What to learn
+    B-tree indexes
+    Composite indexes
+    Index selectivity
+    EXPLAIN PLAN
+  - Why useful
+    Query optimization
+    Faster searches
+    Database tuning
+  - Example for this project
+    Index on users.email (unique)
+    Index on orders.user_id, status
+    Index on items.category_id, stock
+  - Task
+    Review current indexes (if any)
+    Create missing indexes
+    Run EXPLAIN PLAN
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[ORA-02] ORACLE CONSTRAINTS & REFERENTIAL INTEGRITY
+  - What to learn
+    PRIMARY KEY, UNIQUE, NOT NULL
+    FOREIGN KEY with CASCADE/RESTRICT
+    CHECK constraints
+    Constraint naming
+  - Why useful
+    Data quality
+    Prevent orphaned records
+    Database-level validation
+  - Task
+    Review table constraints
+    Add missing FK constraints
+    Add CHECK constraints for status values
+  - Difficulty: Easy
+  - Time: 1 hour
+
+[ORA-03] ORACLE SEQUENCES & ID GENERATION
+  - What to learn
+    SEQUENCE objects
+    nextval, currval
+    Auto-increment behavior
+    Sequence recycling
+  - Current state
+    Project uses sequences (seq_users, seq_items, etc.)
+  - Task
+    Verify sequence names match tables
+    Document sequence allocation
+    Monitor sequence values
+  - Difficulty: Easy
+  - Time: 1 hour
+
+[ORA-04] ORACLE VIEWS & MATERIALIZED VIEWS
+  - What to learn
+    Creating views
+    Complex queries as views
+    Materialized views for performance
+    View maintenance
+  - Why useful
+    Simplified queries
+    Reusable logic
+    Performance optimization
+  - Example for this project
+    v_orders_with_totals (order + order items summary)
+    v_product_inventory (items with stock levels)
+  - Task
+    Create useful views
+    Use in queries
+    Document views
+  - Difficulty: Hard
+  - Time: 3 hours
+
+[ORA-05] ORACLE PROCEDURES & PL/SQL
+  - What to learn
+    CREATE PROCEDURE syntax
+    PL/SQL basics (BEGIN/END)
+    Cursors, loops
+    Exception handling in procedures
+  - Why useful
+    Complex business logic in DB
+    Performance (no round-trips)
+    Atomic operations
+  - Example for this project
+    Procedure: place_order (create order, update stock, send notification)
+  - Task
+    Create stored procedure for order creation
+    Test from Java
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[ORA-06] ORACLE TRIGGERS
+  - What to learn
+    BEFORE/AFTER triggers
+    FOR EACH ROW
+    NEW/OLD references
+    Trigger ordering
+  - Why useful
+    Automatic enforcement
+    Audit trail
+    Complex logic automation
+  - Example for this project
+    Trigger: when order.status changes, log change
+    Trigger: when item.stock < 10, set alert
+  - Task
+    Create trigger for order status logging
+    Test trigger behavior
+  - Difficulty: Hard
+  - Time: 3 hours
+
+[ORA-07] ORACLE TRANSACTIONS & LOCKING
+  - What to learn
+    COMMIT, ROLLBACK, SAVEPOINT
+    Row-level locks
+    Deadlocks
+    Isolation levels
+  - Why useful
+    Data consistency
+    Concurrent access control
+    Error recovery
+  - Task
+    Understand current transaction boundaries
+    Identify and fix potential deadlocks
+    Test with concurrent users
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[ORA-08] ORACLE EXECUTION PLANS & QUERY OPTIMIZATION
+  - What to learn
+    EXPLAIN PLAN output
+    Cost, cardinality, operations
+    Optimization hints
+    SQL*Plus commands
+  - Why useful
+    Slow query diagnosis
+    Query rewriting
+    Performance benchmarking
+  - Task
+    Run EXPLAIN PLAN on slow queries
+    Identify and fix bottlenecks
+  - Difficulty: Hard
+  - Time: 3 hours
+
+================================================================================
+                TESTING & CODE QUALITY (6 tasks)
+================================================================================
+
+[T-01] TESTCONTAINERS FOR ORACLE
+  - What to learn
+    Testcontainers library
+    Docker containers in tests
+    Oracle container setup
+    Test database management
+  - Why useful
+    Test with real database
+    No hardcoded test DB
+    Parallel test execution
+  - Task
+    Add testcontainers-oracle dependency
+    Create base test class with Oracle container
+    Use in integration tests
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[T-02] TEST DATA BUILDERS & FIXTURES
+  - What to learn
+    Builder pattern for test data
+    Fixture factories
+    Reusable test setup
+    Cleanup strategies
+  - Why useful
+    DRY test code
+    Flexible test data
+    Readable tests
+  - Task
+    Create UserBuilder, OrderBuilder
+    Create test data fixtures
+    Use in tests
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[T-03] MOCKITO ADVANCED PATTERNS
+  - What to learn
+    ArgumentCaptor
+    InOrder for call sequence
+    Spy vs Mock
+    Argument matchers
+  - Why useful
+    Sophisticated test scenarios
+    Verify complex interactions
+  - Task
+    Create test using ArgumentCaptor
+    Verify method call sequence
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[T-04] PERFORMANCE & LOAD TESTING
+  - What to learn
+    JMH (Java Microbenchmark Harness)
+    Load testing tools (JMeter, Gatling)
+    Response time analysis
+    Bottleneck identification
+  - Why useful
+    Identify slow code
+    Regression detection
+    Production readiness
+  - Task
+    Add JMH for critical paths
+    Benchmark order creation
+    Identify bottlenecks
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[T-05] SELENIUM FOR UI TESTING
+  - What to learn
+    Selenium WebDriver
+    Page Object Model
+    Waiting strategies
+    Headless browser
+  - Why useful
+    End-to-end testing
+    User workflow validation
+    Regression detection
+  - Task
+    Create test: user login → browse → add to cart → checkout
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[T-06] CODE COVERAGE WITH JACOCO
+  - What to learn
+    JaCoCo code coverage
+    Coverage reports
+    Coverage goals
+    Excluded classes
+  - Why useful
+    Identify untested code
+    Quality metrics
+    CI/CD gates
+  - Task
+    Add JaCoCo to pom.xml
+    Run tests and generate report
+    Set coverage minimum (50%+)
+  - Difficulty: Easy
+  - Time: 1 hour
+
+================================================================================
+                LOGGING & OPERATIONS (4 tasks)
+================================================================================
+
+[LOG-01] AUDIT LOGGING
+  - What to learn
+    Separate audit log
+    What to log: user actions, data changes
+    Log retention
+    Log encryption
+  - Why useful
+    Compliance (GDPR)
+    Security incident investigation
+    User accountability
+  - Example for this project
+    Log: who created/updated/deleted orders
+    Log: login/logout
+    Log: password changes
+  - Task
+    Create AuditLog entity
+    Add interceptor to log CRUD operations
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[LOG-02] STRUCTURED LOGGING (JSON)
+  - What to learn
+    Logstash encoder for Logback
+    JSON log format
+    Log aggregation
+    ELK stack basics
+  - Why useful
+    Machine-readable logs
+    Centralized log analysis
+    Pattern detection
+  - Task
+    Setup Logback JSON encoder
+    Configure JSON output
+    View structured logs
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[LOG-03] DISTRIBUTED TRACING
+  - What to learn
+    Spring Cloud Sleuth
+    Trace ID, Span ID
+    Log correlation
+    Visualization tools (Jaeger, Zipkin)
+  - Why useful
+    Track request through microservices
+    Latency analysis
+    Dependency mapping
+  - Task
+    Add Spring Cloud Sleuth
+    Verify trace IDs in logs
+  - Difficulty: Hard
+  - Time: 3 hours
+
+[LOG-04] ERROR ALERTING & NOTIFICATIONS
+  - What to learn
+    Error tracking services (Sentry, Rollbar)
+    Error grouping
+    Alert thresholds
+    Notification channels (Slack, email)
+  - Why useful
+    Immediate error notifications
+    Error trend detection
+    Team awareness
+  - Task
+    Setup Sentry integration
+    Configure alerts
+  - Difficulty: Medium
+  - Time: 2 hours
+
+================================================================================
+              DESIGN & ARCHITECTURE PATTERNS (5 tasks)
+================================================================================
+
+[DES-01] REST API DESIGN PRINCIPLES
+  - What to learn
+    RESTful principles
+    Resource-oriented design
+    Naming conventions
+    Versioning strategies
+    Idempotency
+  - Why useful
+    Consistent API
+    Easy to understand
+    Scalable design
+  - Example for this project
+    GET /api/v1/orders/{orderId}
+    POST /api/v1/orders
+    PATCH /api/v1/orders/{orderId}
+  - Task
+    Review current REST endpoints
+    Standardize API design
+  - Difficulty: Medium
+  - Time: 2 hours
+
+[DES-02] PAYMENT FLOW ARCHITECTURE
+  - What to learn
+    Payment gateway integration
+    Webhook handling
+    Idempotency keys
+    State transitions
+  - Why useful
+    Reliable payment processing
+    No double-charging
+    Clear transaction trail
+  - Example for this project
+    See U-08 task
+  - Task
+    Design payment flow
+    Implement webhook handler
+  - Difficulty: Hard
+  - Time: 6 hours
+
+[DES-03] ORDER STATE MACHINE
+  - What to learn
+    State machine pattern
+    Valid transitions
+    State validation
+    State history
+  - Why useful
+    Clear business rules
+    Prevents invalid states
+    Easy to extend
+  - Task
+    See U-05 task
+    Implement state machine
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[DES-04] EMAIL QUEUE & NOTIFICATION SYSTEM
+  - What to learn
+    Message queues (RabbitMQ, Kafka)
+    Event-driven architecture
+    Retry logic
+    Dead-letter queues
+  - Why useful
+    Reliable email delivery
+    Async processing
+    Failure handling
+  - Task
+    Implement email queue
+    Add retry logic
+  - Difficulty: Hard
+  - Time: 5 hours
+
+[DES-05] CACHING STRATEGY FOR E-COMMERCE
+  - What to learn
+    Cache levels (browser, CDN, app, database)
+    Cache invalidation
+    Hot vs cold data
+    Cache-warming
+  - Why useful
+    Performance optimization
+    Scalability
+    Reduced database load
+  - Task
+    Identify cacheable data (products, categories)
+    Design invalidation strategy
+    Implement caching
+  - Difficulty: Hard
+  - Time: 4 hours
+
+================================================================================
+           PRACTICAL FEATURES FOR NEPALI E-COMMERCE (7 tasks)
+================================================================================
+
+[FEATURE-01] EXPIRY-DATE STOCK BATCHES
+  - What to learn
+    Batch/lot tracking
+    FIFO (First-In-First-Out) management
+    Expiry notifications
+    Compliance (food products)
+  - Why useful
+    Nepal has many food/spice products
+    Comply with food safety laws
+    Prevent selling expired items
+  - Implementation
+    Create StockBatch entity (item_id, batch_number, expiryDate, quantity)
+    Track batch in orders
+    Warn when expiry approaching
+  - Difficulty: Hard
+  - Time: 5 hours
+
+[FEATURE-02] DASHAIN / FESTIVAL SEASONAL BANNERS
+  - What to learn
+    Seasonal feature toggles
+    Date-based logic
+    UI customization
+  - Why useful
+    Promotional campaigns
+    Seasonal engagement
+  - Implementation
+    Add seasonal_banner table (year, startDate, endDate, imageUrl)
+    Display banner on home page during dates
+    Admin interface to manage banners
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[FEATURE-03] NEPALI LANGUAGE SUPPORT (i18n)
+  - What to learn
+    Internationalization (i18n)
+    Locale switching
+    Message properties files
+    Date/number formatting
+  - Why useful
+    Nepali customers
+    Multi-language support
+  - Implementation
+    messages_ne.properties (Nepali translations)
+    Add language selector in header
+    Locale resolver bean
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[FEATURE-04] NEPALESE PHONE NUMBER & ADDRESS VALIDATION
+  - What to learn
+    Regex patterns for Nepali format
+    Regional address validation
+    Province/district mapping
+  - Why useful
+    Better validation
+    Data quality
+  - Implementation
+    Validator for Nepali phone (9 digits)
+    Validator for address (province, district, municipality)
+    Dropdown for provinces
+  - Difficulty: Easy
+  - Time: 2 hours
+
+[FEATURE-05] KHALTI PAYMENT INTEGRATION
+  - What to learn
+    Khalti API (Nepali payment gateway)
+    Payment webhooks
+    Nepali UPI/digital wallet
+  - Why useful
+    Primary payment method for Nepal
+    Local integration
+  - Implementation
+    See U-08 task (Payment gateway)
+    Use Khalti instead of Stripe
+  - Difficulty: Hard
+  - Time: 6 hours
+
+[FEATURE-06] ORDER TRACKING VIA SMS/PHONE CALL
+  - What to learn
+    SMS gateway integration (Sparrow, Jangling)
+    Voice API for calls
+    Opt-in/opt-out management
+  - Why useful
+    Delivery updates
+    Customer convenience
+  - Implementation
+    Integrate Jangling API
+    Send SMS on order status change
+    Trackable phone call for delivery confirmation
+  - Difficulty: Hard
+  - Time: 4 hours
+
+[FEATURE-07] MULTI-BRANCH STORE SUPPORT
+  - What to learn
+    Multi-tenant architecture
+    Branch inventory management
+    Branch-specific promotions
+  - Why useful
+    Expand to multiple locations
+    Inventory sync across branches
+  - Implementation
+    Add Branch entity
+    Add branch_id to Item, Order
+    Show branch pickup option
+  - Difficulty: Hard
+  - Time: 6 hours
+
+================================================================================
+                  DEPLOYMENT & DEVOPS (4 tasks)
+================================================================================
+
+[DEVOPS-01] GITHUB ACTIONS CI/CD
+  - What to learn
+    See D-10 task
+  - Task to do
+    Build → Test → Code Quality → Deploy
+  - Difficulty: Medium
+  - Time: 4 hours
+
+[DEVOPS-02] DOCKER & DOCKER COMPOSE
+  - What to learn
+    See D-11 task
+  - Task to do
+    Containerize app & database
+  - Difficulty: Medium
+  - Time: 3 hours
+
+[DEVOPS-03] KUBERNETES BASICS
+  - What to learn
+    Pods, Services, Deployments
+    ConfigMaps, Secrets
+    Scaling, rolling updates
+  - Why useful
+    Production deployment
+    Auto-scaling
+    Zero-downtime updates
+  - Task
+    Create Kubernetes manifests
+    Deploy to local Minikube
+  - Difficulty: Hard
+  - Time: 5 hours
+
+[DEVOPS-04] MONITORING & ALERTING (Prometheus)
+  - What to learn
+    Prometheus metrics collection
+    Grafana dashboards
+    Alert rules
+    Custom metrics
+  - Why useful
+    Production visibility
+    Performance monitoring
+    Incident response
+  - Task
+    Setup Prometheus
+    Create Grafana dashboard
+    Configure alerts
+  - Difficulty: Hard
+  - Time: 4 hours
+
+================================================================================
+                        SUGGESTED LEARNING ORDER
+================================================================================
+
+BEGINNER TRACK (Start here if new to Spring Boot):
+  Level 1 - Foundation (20 hours)
+    1. J-01: Streams API (2h)
+    2. J-02: Optional (2h)
+    3. J-07: Equals & Hashcode (1h)
+    4. SB-01: Layered architecture (2h)
+    5. SB-06: Validation (2h)
+    6. SB-07: Profiles (1h)
+    7. JPA-01: Lazy vs Eager (2h)
+    8. ORA-01: Indexes (2h)
+    9. ORA-02: Constraints (1h)
+    10. ORA-03: Sequences (1h)
+    11. LOG-01: Audit logging (3h)
+
+INTERMEDIATE TRACK (After Level 1):
+  Level 2 - Core Features (35 hours)
+    1. SB-04: @Transactional (3h)
+    2. SB-05: DTOs & MapStruct (4h)
+    3. JPA-02: Fetch join (2h)
+    4. JPA-03: JPQL queries (2h)
+    5. J-03: Generics (3h)
+    6. J-05: Exception handling (2h)
+    7. T-01: Testcontainers (3h)
+    8. T-02: Test builders (2h)
+    9. SB-12: @WebMvcTest (2h)
+    10. D-06: Unit tests (4h)
+    11. D-07: Integration tests (3h)
+    12. DES-01: REST API design (2h)
+
+INTERMEDIATE-PLUS TRACK (After Level 2):
+  Level 3 - Advanced (40 hours)
+    1. SB-02: Spring Security (6h)
+    2. SB-03: Custom queries (3h)
+    3. J-04: Records (2h)
+    4. J-06: Collections internals (2h)
+    5. JPA-04: Specification/Criteria (4h)
+    6. JPA-06: Optimistic locking (3h)
+    7. JPA-07: Auditing (2h)
+    8. SB-08: Spring events (3h)
+    9. SB-09: @Async (2h)
+    10. SB-11: Caching (4h)
+    11. DES-02: Payment flow (6h)
+    12. DES-03: Order state machine (3h)
+    13. T-04: Performance testing (4h)
+
+MASTERY TRACK (After Level 3):
+  Level 4 - Expert (30 hours)
+    1. J-08: Concurrency (4h)
+    2. ORA-04: Views (3h)
+    3. ORA-05: Procedures/PL-SQL (4h)
+    4. ORA-06: Triggers (3h)
+    5. ORA-07: Locking/Transactions (4h)
+    6. SB-10: Actuator (2h)
+    7. DEVOPS-01: CI/CD (4h)
+    8. DEVOPS-02: Docker (3h)
+    9. FEATURE-01: Expiry dates (5h)
+    10. DES-04: Email queue (5h)
+
+================================================================================
+                   PRACTICAL IMPLEMENTATION SEQUENCE
+================================================================================
+
+RECOMMENDED: DO THIS ORDER (Learning + Implementation Combined)
+
+Week 1-2 (50 hours combined from roadmap files):
+  → Fix critical issues: S-01, S-02, S-03, D-01, D-02, BP-01-05
+  → Learn: Streams, Optional, Transactional
+  → Implement: BCrypt, Spring Security, CSRF, Logging
+
+Week 3-4 (40 hours):
+  → Fix broken parts: BP-06-10 (stock, cart, email, validation)
+  → Learn: DTOs, Custom queries, Testing
+  → Implement: Persistent cart, email notifications
+
+Week 5-6 (35 hours):
+  → Complete checkout flow: U-03, U-05
+  → Learn: Payment flow architecture, state machine
+  → Test: Write comprehensive tests
+
+Week 7-8 (40 hours):
+  → Intermediate features: U-04, U-07, U-12
+  → Learn: Optimistic locking, caching
+  → Implement: Stock management, reviews, promo codes
+
+Week 9-10 (30 hours):
+  → DevOps: D-10, D-11, DEVOPS-01
+  → Learn: Docker, CI/CD, monitoring
+  → Deploy: Container setup, pipeline
+
+GRAND TOTAL: ~275 hours over 10-12 weeks (intermediate-plus mastery)
+
+================================================================================
+                      LEARNING APPROACH & TIPS
+================================================================================
+
+For each feature/concept:
+  1. THEORY: Read official documentation (10% of time)
+  2. CODE: Write actual implementation (70% of time)
+  3. TEST: Verify with tests & debugging (20% of time)
+  4. DOCUMENT: Write comments/notes for yourself (ongoing)
+
+Tools to use:
+  - IDE: Eclipse (you're using), or migrate to IntelliJ IDEA
+  - Database: SQL Developer (Oracle), or DbVisualizer
+  - Git: Commit after each small feature
+  - Debugging: Use breakpoints, step through code
+  - Profiling: YourKit or JProfiler for performance
+  - Documentation: Keep a personal wiki (GitHub Wiki)
+
+Best practices:
+  - Commit small, meaningful changes frequently
+  - Write tests BEFORE/AFTER implementation
+  - Use git branches for experiments
+  - Review your own code before pushing
+  - Ask on StackOverflow if stuck > 1 hour
+  - Join Spring Boot community (Reddit, Discord, GitHub discussions)
+
+================================================================================
+Generated: November 2026
+Learning Path: 275+ hours from beginner to intermediate-plus level
+================================================================================
