@@ -49,6 +49,7 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 		User user = userRepository.findByEmailAndDeleteFlag(emailProp, Constant.NOT_DELETED);
 
 		if (user != null && passwordEncoder.matches(passwordProp, user.getPassword())) {
+	//	if(user != null && passwordProp.equals(user.getPassword())) {
 			UserBean userBean = new UserBean();
 
 			userBean.setId(user.getId());

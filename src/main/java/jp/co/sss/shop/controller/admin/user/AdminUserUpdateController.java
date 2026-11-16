@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,13 +44,16 @@ public class AdminUserUpdateController {
 	@Autowired
 	HttpSession session;
 
+	
+	@Autowired 
+	private BCryptPasswordEncoder passwordEncoder;
 	/**
 	 * 入力画面　初期表示処理(POST)
 	 * 
 	 * @param id 変更対象ID
 	 * @return "redirect:/admin/user/update/input" 入力録画面　表示処理
 	 */
-	@RequestMapping(path = "/admin/user/update/input/{id}", method = RequestMethod.POST)
+	@RequestMapping(path = "/admin/user/update/input/{id}", method = {RequestMethod.POST , RequestMethod.GET})
 	public String updateInputInit(@PathVariable Integer id) {
 
 		//セッションスコープより入力情報を取り出す
@@ -86,7 +90,7 @@ public class AdminUserUpdateController {
 	 * @param model Viewとの値受渡し
 	 * @return "admin/user/update_input" 変更入力画面 表示
 	 */
-	@RequestMapping(path = "/admin/user/update/input", method = RequestMethod.GET)
+	@RequestMapping(path = "/admin/user/update/input", method = {RequestMethod.GET, RequestMethod.POST})
 	public String updateInput(Model model) {
 
 		//セッションから入力フォーム取得
@@ -200,7 +204,8 @@ public class AdminUserUpdateController {
 
 		// 入力フォーム情報を変更用エンティティに設定
 		BeanUtils.copyProperties(userForm, user);
-
+        String encodedPassword = passwordEncoder.encode(userForm.getPassword());
+        user.setPassword(encodedPassword);
 		// 入力値以外の項目を設定
 		user.setDeleteFlag(deleteFlag);
 		user.setInsertDate(insertDate);
