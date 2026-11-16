@@ -115,22 +115,22 @@ public class UserDetailsController {
 		
 		Integer userId = ((UserBean) session.getAttribute("user")).getId(); //(live user id )
 		User hasAlreadyUser = userRepository.findByEmail(email); //(email already exist cha ki nai check garna )
-//   User hasAlreadyUserAndIdSame = userRepository.findByEmailAndId(email,userId) 
-// if(hasAlreadyUserAndIdSame == null ){
- // return "redirect:/client/user/update/email";
+  User hasAlreadyUserAndIdSame = userRepository.findByEmailAndId(email,userId) ;
+  if(hasAlreadyUserAndIdSame == null ){
+  return "redirect:/client/user/update/email";
 
-  // }
+  }
         
-		if(hasAlreadyUser == null) {
+		//if(hasAlreadyUser == null) {
 	    	
-			return "redirect:/client/user/update/email";
+		//	return "redirect:/client/user/update/email";
 			
-	      }
+	   //   }
 		
 		
 		
 		
-		if(hasAlreadyUser != null) {  // email check bhayo ani found bhayo 
+		if(hasAlreadyUserAndIdSame != null) {  // email check bhayo ani found bhayo 
 			 hasErrors = true;
 			 if(hasErrors) {
 				 model.addAttribute("errorMessage", "email is  already exist you can user another email");
