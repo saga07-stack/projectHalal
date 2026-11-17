@@ -7,6 +7,9 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" type="text/css" th:href="@{/css/forms.css}" />
+	<script type="text/javascript" th:src="@{/js/common.js}" defer></script>
+	
+
 </head>
 
 <body class="user user_update_email">
@@ -15,12 +18,14 @@
 		<div class="form-card">
 			<!-- Header Section -->
 			<div class="form-header with-border">
+				
 				<h2 class="form-title" th:text="#{title.email.verification}">Email Update</h2>
+				
 				<p class="form-subtitle">Please enter your new email address to update your account</p>
 			</div>
 
 			<!-- Simple Email Input Form (single-step) -->
-			<form th:action="@{/client/user/update/email}" method="post" class="email-input-form" id="emailInputForm" th:object="${emailVerificationForm}">
+			<form th:action="@{/client/user/update/email}" method="post" class="email-input-form" id="emailInputForm" th:object="${userForm}">
 
 				<th:block th:if="${error}">
 					<p style="color:red;">This email address is already in use. Please provide a different email address.</p>
@@ -39,14 +44,18 @@
 					<label class="form-label" for="email">Email Address</label>
 					<div class="email-input-wrapper">
 						<input
+						 th:value="${email}"
 							type="email"
 							id="email"
 							name="email"
-							th:field="*{email}"
 							class="form-input email-input"
 							placeholder="Enter your email address"
 							required
-							autocomplete="email" />
+							autocomplete="email" 
+							readonly
+							
+							/>
+							
 						<span class="input-icon">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
 								<path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741z"/>
@@ -60,6 +69,7 @@
 					<button type="submit" class="btn btn-primary btn-full-width btn-send-code">Send Verification Code</button>
 				</div>
 			</form>
+			       <button onclick="goback()" id="backBtn" > Back </button>
 		</div>
 	</div>
 
