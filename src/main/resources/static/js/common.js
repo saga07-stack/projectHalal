@@ -827,3 +827,10 @@ const count_badge = document.getElementById("count_badge");
 		})
 	
 	});
+	
+	const backBtn1 = document.getElementById("backBtn1");
+	if(backBtn1){
+		console.log("backBtn1 found");
+	}else{
+		console.log("backBtn1 not found");
+	}

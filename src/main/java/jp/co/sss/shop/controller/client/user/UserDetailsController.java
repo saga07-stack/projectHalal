@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
@@ -91,7 +92,7 @@ public class UserDetailsController {
 		}
 		
 		model.addAttribute("userForm", userBean);
-		
+	
 		return "client/user/update_input";
 	}
 	
@@ -112,35 +113,36 @@ public class UserDetailsController {
 		Boolean hasErrors = result.hasErrors();
 		hasErrors = false;
 		
-		
 		Integer userId = ((UserBean) session.getAttribute("user")).getId(); //(live user id )
+		User loginUser = userRepository.findById(userId).orElse(null);
 		User hasAlreadyUser = userRepository.findByEmail(email); //(email already exist cha ki nai check garna )
-  User hasAlreadyUserAndIdSame = userRepository.findByEmailAndId(email,userId) ;
-  if(hasAlreadyUserAndIdSame == null ){
-  return "redirect:/client/user/update/email";
-
-  }
-        
-		//if(hasAlreadyUser == null) {
-	    	
+  //User hasAlreadyUserAndIdSame = userRepository.findByEmailAndId(email,userId) ;
+ 	
+		if( hasAlreadyUser != null && hasAlreadyUser.getId().equals(userId)    ) { //yedi recent user ra email same ho bhane chordine 
 		//	return "redirect:/client/user/update/email";
+			return "client/user/update_check";
+		
+		}else	if(hasAlreadyUser != null) {  // email check bhayo ani found bhayo 
+			hasErrors = true;
+			if(hasErrors) {
+				model.addAttribute("errorMessage", "email is  already exist you can user another email");
+				result.hasErrors();
+				return "client/user/update_input";
+			}	
+			}else if(hasAlreadyUser == null)  {
+				userForm.setEmail(email);
+				userForm.setPassword(password);
+				userForm.setName(name);
+				userForm.setPostalCode(postalCode);
+				userForm.setAddress(address);
+				userForm.setPhoneNumber(phoneNumber);
+				session.setAttribute("newEmail", email);
+				session.setAttribute("updateUserForm", userForm);
+				return "redirect:/client/user/update/email";
 			
-	   //   }
-		
-		
-		
-		
-		if(hasAlreadyUserAndIdSame != null) {  // email check bhayo ani found bhayo 
-			 hasErrors = true;
-			 if(hasErrors) {
-				 model.addAttribute("errorMessage", "email is  already exist you can user another email");
-				 result.hasErrors();
-				 return "client/user/update_input";
-			 }
-		                          
-		       
-			 //model.addAttribute("errorMessage", "このメールアドレスは既に使用されています");
-		 }
+			
+        
+				 }
 	
 		
 				
@@ -151,17 +153,14 @@ public class UserDetailsController {
 	
 	}
 	
-	@GetMapping("client/user/update/email")
-	public String userUpdateEmail() {
-		
-		return "redirect:/client/user/email/update/input";
-	}
+	
 	
 	@GetMapping("client/user/email/update/input")
 	public String userUpdateEmailInput(
-			Model model) {
-		
-    model.addAttribute("emailVerificarionForm", new UserForm());		
+			Model model, HttpSession session ) {
+
+		model.addAttribute("email", session.getAttribute("newEmail"));
+    model.addAttribute("userForm", new UserForm());		
 		return "client/user/update_email2";
 	}
 	
