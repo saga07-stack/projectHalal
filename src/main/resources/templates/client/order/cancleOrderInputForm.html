@@ -1,0 +1,126 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancel order Input </title>
+</head>
+
+<body>
+
+
+
+
+
+  <main class="cancel-page">
+    <section class="cancel-card">
+
+      <header class="cancel-head">
+        <h1>Cancel order</h1>
+        <p class="order-ref">Order <strong th:text="'#' + ${orderId}">#1001</strong></p>
+        <p class="lead">Tell us why you want to cancel. Our staff will review your request and refund your payment if it is approved.</p>
+      </header>
+
+      <p class="form-error" id="formError" role="alert" th:if="${error}" th:text="${error}"></p>
+      <p class="form-error" id="clientError" role="alert" hidden></p>
+
+      <form id="cancelForm" method="post" th:action="@{/client/order/cancel/confirmation}" novalidate>
+
+        <fieldset class="reasons">
+          <legend>Reason for cancelling <span class="hint">(select all that apply)</span></legend>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="CHANGED_MIND">
+            <span>I changed my mind</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="ORDERED_BY_MISTAKE">
+            <span>I ordered by mistake</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="WRONG_DETAILS">
+            <span>Wrong item, quantity or address</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="BETTER_PRICE">
+            <span>I found a better price elsewhere</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="SLOW_DELIVERY">
+            <span>Delivery will take too long</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="PAYMENT_PROBLEM">
+            <span>I had a problem with payment</span>
+          </label>
+
+          <label class="reason">
+            <input type="checkbox" name="reasons" value="OTHER" id="reasonOther">
+            <span>Other</span>
+          </label>
+        </fieldset>
+
+        <div class="note">
+          <label for="note">Anything else we should know?</label>
+          <textarea id="note" name="note" rows="5" maxlength="300"
+                    placeholder="Write details here (required if you select Other)"></textarea>
+          <p class="counter"><span id="noteCount">0</span> / 300</p>
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-back" th:href="@{/client/order/detail/{id}(id=${orderId})}">Back</a>
+          <button type="submit" class="btn btn-send">Send cancel request</button>
+        </div>
+
+      </form>
+    </section>
+  </main>
+
+
+
+  <script>
+  
+    (function () {
+      var form = document.getElementById('cancelForm');
+      var note = document.getElementById('note');
+      var count = document.getElementById('noteCount');
+      var other = document.getElementById('reasonOther');
+      var error = document.getElementById('clientError');
+
+      function updateCount() {
+        count.textContent = note.value.length;
+      }
+      note.addEventListener('input', updateCount);
+      updateCount();
+
+      form.addEventListener('submit', function (e) {
+        var text = note.value.trim();
+        var message = '';
+
+        if (checked === 0 && text === '') {
+          message = 'Select at least one reason or write a note.';
+        } else if (other.checked && text === '') {
+          message = 'You selected Other. Please write a short note.';
+        }
+
+        if (message) {
+          e.preventDefault();
+          error.textContent = message;
+          error.hidden = false;
+          error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+
+      form.addEventListener('change', function () {
+        error.hidden = true;
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancel order Input </title>
+</head>
+
+<body>
+orderCancelConfirmation
+ 
+ <h1> The reason below is for the cancel the order if this is satisfied then kindly click the submit button <br>
+      after clicked the submit button the order cancel request will be sent to the admin form approval and <br>
+       after the approval the order will be cancelled and the refund will be initiated.  </h1>
+  
+<h2 > The Reason Is <span th:text="${reasons}">  </span> </h2>
+
+<div class = "actions">
+<button class ="btn btn-send">Send cancel request </button>
+
+</div>
+
+</body>
+</html>

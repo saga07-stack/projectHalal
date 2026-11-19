@@ -828,9 +828,44 @@ const count_badge = document.getElementById("count_badge");
 	
 	});
 	
-	const backBtn1 = document.getElementById("backBtn1");
-	if(backBtn1){
-		console.log("backBtn1 found");
-	}else{
-		console.log("backBtn1 not found");
-	}
+	
+	
+	/* cancel order \\\\\\\\\\\*/
+	
+	(function () {
+	      var form = document.getElementById('cancelForm');
+	      var note = document.getElementById('note');
+	      var count = document.getElementById('noteCount');
+	      var other = document.getElementById('reasonOther');
+	      var error = document.getElementById('clientError');
+
+	      function updateCount() {
+	        count.textContent = note.value.length;
+	      }
+	      note.addEventListener('input', updateCount);
+	      updateCount();
+
+	      form.addEventListener('submit', function (e) {
+	        var checked = form.querySelectorAll('input[name="reasons"]:checked').length;
+	        var text = note.value.trim();
+	        var message = '';
+
+	        if (checked === 0 && text === '') {
+	          message = 'Select at least one reason or write a note.';
+	        } else if (other.checked && text === '') {
+	          message = 'You selected Other. Please write a short note.';
+	        }
+
+	        if (message) {
+	          e.preventDefault();
+	          error.textContent = message;
+	          error.hidden = false;
+	          error.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	        }
+	      });
+
+	      form.addEventListener('change', function () {
+	        error.hidden = true;
+	      });
+	    });
+	
