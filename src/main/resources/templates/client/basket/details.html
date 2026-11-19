@@ -67,8 +67,11 @@
   </div>
 </div>
 <div th:if="${cancelStatus}" >
-<button> Cancel Order </button>
+<form th:action="@{/cancel/order/input/form}"> 
 
+<button > Cancel Order </button>
+
+</form>
 </div>
 <button onclick="goBack()" > Back to Order List </button>
 

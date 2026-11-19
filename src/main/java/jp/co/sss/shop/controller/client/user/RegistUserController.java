@@ -53,7 +53,7 @@ public class RegistUserController {
 		int randomNumber = randomNumberGenerator.RandomNumberGenerator();
 		// session.setAttribute("verificationCode", randomNumber);
 
-		System.out.println(randomNumber);
+		//System.out.println(randomNumber);
 		return "client/user/regist_email";
 	}
 
