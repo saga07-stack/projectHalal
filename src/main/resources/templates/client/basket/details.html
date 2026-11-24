@@ -13,7 +13,7 @@
 
 <body>
 <div class="tracker-card">
-  <h3>Order #1001</h3>
+  <h3 >Order# <span th:text ="${orderNumber}"  > </span></h3> 
 
   <!-- data-status: ordered | processing | out_for_delivery | delivered -->
   <ul class="tracker" th:data-status="${orderStatus}">
@@ -68,8 +68,8 @@
 </div>
 <div th:if="${cancelStatus}" >
 <form th:action="@{/cancel/order/input/form}"> 
-
-<button > Cancel Order </button>
+<input type="hidden" name ="orderNumber" th:value="${orderNumber}" >
+<button type="submit" > Cancel Order </button>
 
 </form>
 </div>

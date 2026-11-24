@@ -126,4 +126,10 @@ public class UserOrderHistoryController {
 		return"client/basket/details";
 	}
 	
+	@RequestMapping(value = "/client/order/cancel/request/send", method = {RequestMethod.GET, RequestMethod.POST})
+    public String sendCancelRequest()	{
+		
+		return "client/order/cancelRequestComplete";
+	}
+	
 }

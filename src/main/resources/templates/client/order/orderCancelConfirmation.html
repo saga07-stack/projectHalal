@@ -16,10 +16,11 @@ orderCancelConfirmation
   
 <h2 > The Reason Is <span th:text="${reasons}">  </span> </h2>
 
+<form th:action ="@{/client/order/cancel/request/send}" >
 <div class = "actions">
-<button class ="btn btn-send">Send cancel request </button>
 
+<input type="submit"    class ="btn btn-send" value = "Send Cancel Request"   >  
 </div>
-
+</form>
 </body>
 </html>

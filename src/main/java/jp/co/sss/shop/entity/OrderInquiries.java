@@ -44,12 +44,20 @@ public class OrderInquiries {
 	private String memo;
 	@Column(name = "sent_at")
 	private Date sentAt;
-	@Column(name = "expires_at")
-	private Date expiresAt;
+	@Column(name = "arrived_at")
+	private Date arrivedAt;
 	@Column(name = "used_flag")
 	private Integer usedFlag;
+	@Column (name = "cancel_status")
+	private Integer cancelStatus;
 	
-	
+	 
+	public Integer getCancelStatus() {
+		return cancelStatus;
+	}
+	public void setCancelStatus(Integer cancelStatus) {
+		this.cancelStatus = cancelStatus;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -93,10 +101,10 @@ public class OrderInquiries {
 		this.sentAt = sentAt;
 	}
 	public Date getExpiresAt() {
-		return expiresAt;
+		return arrivedAt;
 	}
 	public void setExpiresAt(Date expiresAt) {
-		this.expiresAt = expiresAt;
+		this.arrivedAt = expiresAt;
 	}
 	public Integer getUsedFlag() {
 		return usedFlag;

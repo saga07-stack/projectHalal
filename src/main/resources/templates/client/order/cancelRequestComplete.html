@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancel order complete </title>
+</head>
+<body>
+
+<p> It will take a few second for redirect to the home page of the site  <br>
+if the page is not redirect automatically then you can also click the button  </p>
+
+<form th:action ="@{/}" >
+<input type ="submit" value ="home" >
+</form>
+
+
+
+</body>
+</html>

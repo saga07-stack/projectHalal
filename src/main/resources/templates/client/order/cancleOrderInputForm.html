@@ -26,7 +26,7 @@
       <p class="form-error" id="clientError" role="alert" hidden></p>
 
       <form id="cancelForm" method="post" th:action="@{/client/order/cancel/confirmation}" novalidate>
-
+         <input type ="hidden"  th:value="${orderNumber}"  name="orderNumber">
         <fieldset class="reasons">
           <legend>Reason for cancelling <span class="hint">(select all that apply)</span></legend>
 
@@ -74,8 +74,8 @@
         </div>
 
         <div class="actions">
-          <a class="btn btn-back" th:href="@{/client/order/detail/{id}(id=${orderId})}">Back</a>
-          <button type="submit" class="btn btn-send">Send cancel request</button>
+         <a class="btn btn-back" th:href="@{/client/order/detail/{id}(id=${orderId})}">Back</a>
+          <button type="submit" name="orderNumber" th:value="${orderNumber}" class="btn btn-send">Send cancel request</button>
         </div>
 
       </form>
