@@ -50,17 +50,28 @@ public class UserOrderHistoryController {
 	    	
 	    	return "redirect:/client/login";
 	    }
-	    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
+	//    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
+	    List<Order> orders = orderRepository.findByIdAndCancelFlagNot(user.getId());
+	    List <Order > cancelledOrders = orderRepository.findByIdAndCancelFlag(user.getId());
 	    Boolean isnull = false;
-	    if(orders.isEmpty()) {
+	    Boolean isCancelledNull = false;
+	    if(orders.isEmpty()  ) {
 	    	isnull = true;
 	    		        model.addAttribute("message", "Your Order history is empty.");
 	    				model.addAttribute("isnull", isnull);
 	    				
+	    }else if (cancelledOrders.isEmpty()){
+	    	isCancelledNull = true;
+	        model.addAttribute("message", "Your Order history is empty.");
+	    	model.addAttribute("isCancelledNull", isCancelledNull);
+	    	
+	    	
 	    }else {
 			isnull = false;
 			model.addAttribute("isnull", isnull);
 			model.addAttribute("orders", orders);
+			model.addAttribute("cancelledOrders", cancelledOrders);
+	    
 						
 		}
 	    

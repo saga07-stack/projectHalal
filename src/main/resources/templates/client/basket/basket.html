@@ -33,5 +33,34 @@
   </tr>
 </table>
 </div>
+ 
+<div th:if="${isCancelledNull}" >   
+<h2> No canceled request or canceled history available  </h2>
+</div>
+<div th:unless="${isCancelledNull}" >
+<h2> canceled history or cancel request list </h2>
+<table >
+  <tr>
+    <th>Order No.</th><th>Date</th><th>Status</th><th>Total</th><th></th>
+  </tr>
+  <tr th:each="order : ${cancelledOrders}">
+    <td th:text="${order.id}"></td>
+    <td th:text="${#dates.format(order.insertDate, 'yyyy-MM-dd')}"></td>
+    <td th:text="${order.status}"></td>
+   <!-- <td th:text="${total[order.id]}"></td>-->
+   <td>
+    <form th:action="@{/client/order/detail}" method="post">
+        <input type="hidden" name="id" th:value="${order.id}">
+        <button type="submit">Detail</button>
+    </form>
+</td>
+     
+  </tr>
+</table>
+</div>
+
+
+
+
 </body>
 </html>

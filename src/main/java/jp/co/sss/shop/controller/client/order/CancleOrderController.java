@@ -1,5 +1,6 @@
 package jp.co.sss.shop.controller.client.order;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +80,11 @@ public class CancleOrderController {
  
 		session.getAttribute("cancelOrderNumber");
 		Integer orderId = (Integer) session.getAttribute("cancelOrderNumber");
+		
 		Order order = oRepo.findById(orderId).orElse(null);
 		order.setStatus("cancelled Requested");
 		order.setCancelFlag(1);
+	  Date currentDate = new Date();
 		oRepo.save(order);
 		OrderInquiries orderInquiries = new OrderInquiries();
 		orderInquiries.setOrderId(orderId);
@@ -89,7 +92,8 @@ public class CancleOrderController {
 		orderInquiries.setCancelStatus(1);
 		orderInquiries.setInquiryCode("CNCL" + orderId);
 		orderInquiries.setUsedFlag(0);
-		
+		orderInquiries.setSentBy(1);
+		orderInquiries.setSentAt(currentDate);
 		orderInquiries.setMemo(session.getAttribute("reason"));
 		
 		oIRepository.save(orderInquiries);
