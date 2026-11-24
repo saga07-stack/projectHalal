@@ -41,7 +41,7 @@ public class OrderInquiries {
 	@Column(name = "customer_address")
 	private String  customerAddress;
 	@Column(name = "memo")
-	private String memo;
+	private Object memo;
 	@Column(name = "sent_at")
 	private Date sentAt;
 	@Column(name = "arrived_at")
@@ -88,11 +88,11 @@ public class OrderInquiries {
 	public void setCustomerAddress(String customerAddress) {
 		this.customerAddress = customerAddress;
 	}
-	public String getMemo() {
+	public Object getMemo() {
 		return memo;
 	}
-	public void setMemo(String memo) {
-		this.memo = memo;
+	public void setMemo(Object object) {
+		this.memo = object;
 	}
 	public Date getSentAt() {
 		return sentAt;
@@ -118,6 +118,8 @@ public class OrderInquiries {
 	public void setSentBy(Integer sentBy) {
 		this.sentBy = sentBy;
 	}
+
+	
 
 	
 	
