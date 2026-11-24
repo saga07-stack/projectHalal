@@ -56,7 +56,16 @@ public class Order {
 
 	private String status;
 	
-	
+	@Column(name="cancel_flag")
+	private Integer cancelFlag;
+
+	public Integer getCancelFlag() {
+		return cancelFlag;
+	}
+
+	public void setCancelFlag(Integer cancelFlag) {
+		this.cancelFlag = cancelFlag;
+	}
 
 	/**
 	 * 支払方法

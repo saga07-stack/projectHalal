@@ -143,7 +143,7 @@ public class AdminOrderProcessController {
 	) {
 		
 		OrderInquiriesBean oIBean = new OrderInquiriesBean();
-		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);
+		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId).orElse(null);
 		
 		oIBean.setInquiryCode(oI.getInquiryCode());
 			oIBean.setCustomerName(oI.getCustomerName());
@@ -175,7 +175,7 @@ public class AdminOrderProcessController {
 		}
 		
 		Integer orderId = (Integer) session.getAttribute("orderId");
-		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId);
+		OrderInquiries oI = orderInquiriesRepository.findByOrderId(orderId).orElse(null);
 		oI.setInquiryCode(inquiryCode);
 		orderInquiriesRepository.save(oI);
 		session.removeAttribute("orderInquiriesBean");

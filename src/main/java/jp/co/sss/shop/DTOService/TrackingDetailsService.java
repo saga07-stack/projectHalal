@@ -15,7 +15,7 @@ public class TrackingDetailsService {
 	
 	public ItemTrackingDetailsDto  getTrackingDetails(int orderId) {
 		
-	 OrderInquiries inq = oR.findByOrderId(orderId);
+	 OrderInquiries inq = oR.findByOrderId(orderId).orElse(null);
    
 	 return new ItemTrackingDetailsDto(
 			 inq.getOrderId(),

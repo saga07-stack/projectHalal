@@ -3953,6 +3953,39 @@ p.link_center {
 .tracker[data-status="out_for_delivery"] li:nth-child(-n+2) .dot::before,
 .tracker[data-status="delivered"] li .dot::before{content:"\2713"}
 
+
+
+/* ---- cancel_requested ---- */
+.tracker[data-status="cancel_requested"] li:nth-child(1) .dot{background:#f08804;box-shadow:0 0 0 4px rgba(240,136,4,.2)}
+.tracker[data-status="cancel_requested"] li:nth-child(1){color:#222;font-weight:bold}
+
+/* ---- processing ---- */
+.tracker[data-status="processing"] li:nth-child(1) .dot{background:#2e9e4f}
+.tracker[data-status="processing"] li:nth-child(1)::after{background:#2e9e4f}
+.tracker[data-status="processing"] li:nth-child(2) .dot{background:#f08804;box-shadow:0 0 0 4px rgba(240,136,4,.2)}
+.tracker[data-status="processing"] li:nth-child(-n+2){color:#222}
+.tracker[data-status="processing"] li:nth-child(2){font-weight:bold}
+
+/* ---- refunding ---- */
+.tracker[data-status="refunding"] li:nth-child(-n+2) .dot{background:#2e9e4f}
+.tracker[data-status="refunding"] li:nth-child(-n+2)::after{background:#2e9e4f}
+.tracker[data-status="refunding"] li:nth-child(3) .dot{background:#f08804;box-shadow:0 0 0 4px rgba(240,136,4,.2)}
+.tracker[data-status="refunding"] li:nth-child(-n+3){color:#222}
+.tracker[data-status="refunding"] li:nth-child(3){font-weight:bold}
+
+/* ---- refunded (sabai green) ---- */
+.tracker[data-status="refunded"] li .dot{background:#2e9e4f}
+.tracker[data-status="refunded"] li::after{background:#2e9e4f}
+.tracker[data-status="refunded"] li{color:#222}
+.tracker[data-status="refunded"] li:last-child{font-weight:bold}
+
+/* tick mark (yo yastai nai rakhnus) */
+.tracker .dot::before{content:attr(data-n)}
+.tracker[data-status="processing"] li:nth-child(1) .dot::before,
+.tracker[data-status="refunding"] li:nth-child(-n+2) .dot::before,
+.tracker[data-status="refunded"] li .dot::before{content:"\2713"}
+
+
 @media (max-width:480px){
   .tracker li{font-size:11px}
   .tracker .dot{width:26px;height:26px;font-size:13px}
