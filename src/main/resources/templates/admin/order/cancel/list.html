@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+
+</head>
+<body>
+<div th:unless= "${cancelOrders}"  class="container">
+  <h1>Cancel Order List</h1>
+
+  <div class="order-list">
+
+    <!-- Each order = one <a> link to its detail page -->
+    <a class="order-row"
+       th:each="order : ${orders}"
+       th:href="@{/admin/order/cancel/detail/{id}(id=${order.id})}">
+
+      <span class="order-id" th:text="'#' + ${order.id}">#1</span>
+
+      <div>
+        <div class="order-name" th:text="${order.name}">User Name</div>
+        <div class="order-sub" th:text="${order.address}">Address</div>
+      </div>
+
+      <div class="order-date">2026-11-25</div>
+
+ <div class="order-price">
+        <div>
+   <tr  th:each="oi : ${order.orderItemsList}" >
+  
+   total :  <td class="num" th:text="${oi.price * oi.quantity}">0</td>
+</tr>
+        
+        
+        </div>
+        <span class="badge">Cancelled</span>
+      </div> 
+    </a>
+
+
+    <div class="empty" th:if="${cancelOrders}">
+      No cancelled orders.
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
+

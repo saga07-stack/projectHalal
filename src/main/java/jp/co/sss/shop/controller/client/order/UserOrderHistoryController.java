@@ -79,7 +79,7 @@ public class UserOrderHistoryController {
 	    return "client/basket/basket";
 	}   
 
-	@PostMapping("/client/order/detail")
+	@PostMapping("/client/order/detail") 
 	public String orderDetail(
 			@RequestParam("id") Integer orderId,
 			Model model,
