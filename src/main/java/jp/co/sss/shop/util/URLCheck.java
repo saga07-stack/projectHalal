@@ -165,6 +165,7 @@ public class URLCheck {
 				|| requestURL.indexOf("admin/category") != -1
 				|| requestURL.indexOf("admin/item") != -1
 				|| requestURL.indexOf("admin/cancel/list") != -1
+				|| requestURL.indexOf("admin/order/cancel/detail") != -1
 				|| requestURL.indexOf("admin/notification") != -1
 				|| requestURL.indexOf("admin/order") != -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
