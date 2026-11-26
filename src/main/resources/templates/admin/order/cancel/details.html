@@ -72,7 +72,7 @@
 <input type="submit" value="Reject" class="back_button" />
 </form>
 
-<form th:action="@{/}">
+<form th:action="@{/admin/order/cancel/approve/{id}(id=${orders.id})}" method="post">
 <input type="submit" value="Approve" class="back_button" />
 
 </form>

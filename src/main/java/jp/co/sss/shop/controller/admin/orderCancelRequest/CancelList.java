@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.admin.orderCancelRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 import jakarta.servlet.http.HttpSession;
+import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 
@@ -20,7 +23,7 @@ import jp.co.sss.shop.repository.OrderRepository;
 public class CancelList {
 
 	@Autowired private OrderRepository orderRepository;
-	
+	@Autowired private ItemRepository itemRepository;
   @Autowired private OrderItemRepository orderItemRepository;
 	
 	@RequestMapping(path = "/admin/order/cancel/list", method = {RequestMethod.POST , RequestMethod.GET})
@@ -71,5 +74,32 @@ public class CancelList {
 		model.addAttribute("orders", order);
 		model.addAttribute("order", orderItem);
 		return "admin/order/cancel/details";
+	}
+	
+	@RequestMapping (path ="/admin/order/cancel/approve/{id}", method = {RequestMethod.POST, RequestMethod.GET})
+	public String cancelApprove(
+			@PathVariable Integer id 
+			) {
+		
+		Order order = orderRepository.findById(id).orElse(null);
+		
+		List <OrderItem> orderItems = orderItemRepository.findByOrderIdQuery(id);
+	    
+		
+	    
+		for(OrderItem orderItem : orderItems) {
+			Item item = itemRepository.findById(orderItem.getItem().getId()).orElse(null);
+	        item.setStock(orderItem.getQuantity() + item.getStock());
+	        itemRepository.save(item);		
+			System.out.println("orderItemId : " + orderItem.getId());
+			System.out.println("orderItem"+ orderItem.getItem().getId());
+		}
+
+		
+		
+		  order.setStatus("cancelled Approved");
+		  order.setCancelFlag(2);
+		  orderRepository.save(order);
+		 return "redirect:/admin/order/cancel/list";
 	}
 }

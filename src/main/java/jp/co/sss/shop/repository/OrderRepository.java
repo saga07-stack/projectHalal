@@ -55,7 +55,7 @@ List <Order> findByIdAndCancelFlagNot(@Param("id") Integer id);
 		+ "select o from Order o where o.cancelFlag = 1")
 List <Order> findByIdAndCancelFlag(@Param("id") Integer id);
 
-@Query("select o from Order  o where o.cancelFlag = 1")
+@Query("select o from Order  o where o.cancelFlag != 0")
 List <Order> findByCancelFlag(@Param("cancelFlag") Integer cancelFlag);
 
 
