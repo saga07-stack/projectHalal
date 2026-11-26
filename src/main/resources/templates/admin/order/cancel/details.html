@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{admin.menu}+' | '+ #{shop.title}"> </title>
+	<script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #222; }
+  .container { max-width: 800px; margin: 0 auto; }
+  .back { display: inline-block; margin-bottom: 14px; color: #1a73e8; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+
+  .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 17px; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+
+  .info { display: grid; grid-template-columns: 160px 1fr; row-gap: 8px; font-size: 14px; }
+  .info .label { color: #777; }
+
+  .badge { display: inline-block; padding: 2px 10px; font-size: 12px; color: #fff; background: #e53935; border-radius: 10px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #eee; }
+  th { background: #fafafa; }
+  td.num, th.num { text-align: right; }
+  .total { text-align: right; font-weight: bold; font-size: 16px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back" th:href="@{/admin/order/cancel/list}">&larr; Back to list</a>
+
+  <div class="card">
+    <h2>Order <span th:text="'#' + ${order.id}">#1</span> <span class="badge">Cancelled</span></h2>
+    <div class="info">
+      <span class="label">Customer</span>      <span th:text="${order.userName}">-</span>
+      <span class="label">Order date</span>    <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">-</span>
+      <span class="label">Address</span>       <span th:text="${order.shippingAddress}">-</span>
+      <span class="label">Payment method</span><span th:text="${order.paymentMethod}">-</span>
+      <span class="label">Status</span>        <span th:text="${order.status}">-</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Items</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th class="num">Unit price</th>
+          <th class="num">Qty</th>
+          <th class="num">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="oi : ${order.orderItems}">
+          <td th:text="${oi.item.name}">Item name</td>
+          <td class="num" th:text="${oi.unitPrice}">0</td>
+          <td class="num" th:text="${oi.quantity}">0</td>
+          <td class="num" th:text="${oi.unitPrice * oi.quantity}">0</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="total">Total: Rs. <span th:text="${order.totalPrice}">0</span></div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -97,8 +97,8 @@ public class OrderInquiries {
 	public Date getSentAt() {
 		return sentAt;
 	}
-	public void setSentAt(Date sentAt) {
-		this.sentAt = sentAt;
+	public void  setSentAt(Date currentDate) {
+		this.sentAt = currentDate;
 	}
 	public Date getExpiresAt() {
 		return arrivedAt;
@@ -117,6 +117,10 @@ public class OrderInquiries {
 	}
 	public void setSentBy(Integer sentBy) {
 		this.sentBy = sentBy;
+	}
+	public void setSentAt(java.util.Date currentDate) {
+		// TODO Auto-generated method stub
+		this.sentAt = new Date(currentDate.getTime());
 	}
 
 	
