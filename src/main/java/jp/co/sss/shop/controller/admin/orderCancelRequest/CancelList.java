@@ -12,16 +12,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 import jakarta.servlet.http.HttpSession;
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 
 @Controller	
 public class CancelList {
-
+    
+	@Autowired private HttpSession session;
 	@Autowired private OrderRepository orderRepository;
 	@Autowired private ItemRepository itemRepository;
   @Autowired private OrderItemRepository orderItemRepository;
@@ -32,7 +35,10 @@ public class CancelList {
 			)
 	{
 		List<Order> orders = orderRepository.findByCancelFlag(1);
-		
+		  UserBean user = (UserBean) session.getAttribute("user");
+		  if(user == null) {
+			  return "redirect:/login";
+		  }
 		/* trying to print the total price of the order and the order item id but it is not working as expected.
 		 * for(Order order : orders) { for(OrderItem orderItem :
 		 * order.getOrderItemsList()) { System.out.println("orderTotal : " +
@@ -62,25 +68,35 @@ public class CancelList {
 	@RequestMapping(path = "/admin/order/cancel/detail/{id}", method = {RequestMethod.POST, RequestMethod.GET})
 	public String details (
 			Model model ,
-			@PathVariable Integer id
+			@PathVariable Integer id,
+			HttpSession session
 			) { 
+		UserBean user = (UserBean) session.getAttribute("user");
+		 if(user == null) {
+			  return "redirect:/login";
+		  }
 		OrderItem orderItem =  orderItemRepository.findById(id).orElse(null);
-		
-		
-		
-		 
+
 		Order order = orderRepository.findById(id).orElse(null);
+		 
 		
-		model.addAttribute("orders", order);
+		model.addAttribute("user",user);
+		model.addAttribute("cancelStatus", order.getCancelFlag());
+		model.addAttribute("orders", order); 
 		model.addAttribute("order", orderItem);
 		return "admin/order/cancel/details";
 	}
 	
 	@RequestMapping (path ="/admin/order/cancel/approve/{id}", method = {RequestMethod.POST, RequestMethod.GET})
 	public String cancelApprove(
-			@PathVariable Integer id 
+			@PathVariable Integer id, 
+			HttpSession session
 			) {
+		  UserBean users = (UserBean) session.getAttribute("user");
+	      if(users == null) {
 		
+	    	  return "redirect:/login";
+	      }
 		Order order = orderRepository.findById(id).orElse(null);
 		
 		List <OrderItem> orderItems = orderItemRepository.findByOrderIdQuery(id);
@@ -102,4 +118,26 @@ public class CancelList {
 		  orderRepository.save(order);
 		 return "redirect:/admin/order/cancel/list";
 	}
+	
+	@RequestMapping (path ="/admin/order/cancel/reject/{id}", method= {RequestMethod.POST, RequestMethod.GET})
+	public String cancelReject(
+			@PathVariable Integer id
+			) {
+		UserBean users = (UserBean) session.getAttribute("user");
+		if(users == null) {
+			return "redirect:/login";
+		}
+		
+		Order order = orderRepository.findById(id).orElse(null);
+		
+		
+		  order.setStatus("cancelled Rejected");
+		  System.out.println("userDetails" + order.getUser().getEmail());
+		  order.setCancelFlag(5);
+		  orderRepository.save(order);
+		
+		
+		return "redirect:/admin/order/cancel/list";
+	}
+	
 }

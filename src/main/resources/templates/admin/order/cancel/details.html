@@ -67,17 +67,21 @@
   </div>
 
 </div>
-<div> 
-<form th:action="@{/}"> 
-<input type="submit" value="Reject" class="back_button" />
-</form>
+<div th:if="${orders.cancelFlag >= 1 and orders.cancelFlag <= 4}">
 
-<form th:action="@{/admin/order/cancel/approve/{id}(id=${orders.id})}" method="post">
-<input type="submit" value="Approve" class="back_button" />
+  <form th:action="@{/admin/order/cancel/reject/{id}(id=${orders.id})}" method="post">
+    <input type="submit" class="back_button"
+           th:value="${orders.cancelFlag >= 2} ? 'Already approved' : 'Reject'"
+           th:disabled="${(orders.cancelFlag >= 2 and user.authority == 1) or orders.cancelFlag >= 4}" />
+  </form>
 
-</form>
-
+  <form th:action="@{/admin/order/cancel/approve/{id}(id=${orders.id})}" method="post">
+    <input type="submit" class="back_button"
+           th:value="${orders.cancelFlag >= 2} ? 'Already approved' : 'Approve'"
+           th:disabled="${(orders.cancelFlag >= 2 and user.authority == 1) or orders.cancelFlag >= 4}" />
+  </form>
 
 </div>
+
 </body>
 </html>

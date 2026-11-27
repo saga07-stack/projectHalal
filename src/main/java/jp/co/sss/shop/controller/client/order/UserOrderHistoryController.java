@@ -48,7 +48,7 @@ public class UserOrderHistoryController {
 	    
 	    if(user == null) {
 	    	
-	    	return "redirect:/client/login";
+	    	return "redirect:/login";
 	    }
 	//    List<Order> orders = orderRepository.findByUserIdPendingFirst(user.getId());
 	    List<Order> orders = orderRepository.findByIdAndCancelFlagNot(user.getId());
@@ -90,7 +90,7 @@ public class UserOrderHistoryController {
 		    
 		    if(user == null) {
 		    	
-		    	return "redirect:/client/login";
+		    	return "redirect:/login";
 		    }
 		
 		Boolean processing = false;
@@ -100,27 +100,12 @@ public class UserOrderHistoryController {
 	   String orderStatus;
 	   Boolean cancelStatus = false;
 
-	   if(orders.getStatus().equalsIgnoreCase("cancelled") || orders.getCancelFlag() == 1) {
+	   if(orders.getStatus().equalsIgnoreCase("cancelled") || orders.getCancelFlag() != 0) {
         
 		   cancelled = true;
             processing= false;
 	    	model.addAttribute("cancelled", cancelled);
 	   
-	    	 switch (orders.getStatus()) {
-		        case "refunding":
-		            orderStatus = "refunding";
-		            break;
-		        case "refunded":
-		            orderStatus = "refunded";
-		            break;
-		        case "cancel_requested":
-		        orderStatus = "cancel_requested";
-		        	cancelStatus = false;
-		        	break;
-		        default: // pending ra aru sabai
-		            orderStatus = "processing";
-		            cancelStatus = true;
-		    }
 		   
 	    	
 	    }else {
@@ -163,8 +148,8 @@ public class UserOrderHistoryController {
 	    	trackingDetails = true;
 	    	model.addAttribute("trackingDetails", trackingDetails);
 	    }
-	 
-	    model.addAttribute("cancelStatus", cancelStatus);
+	    model.addAttribute("cancelStatus", orders.getCancelFlag());
+	    model.addAttribute("isCancelStatus", cancelStatus);
 	    model.addAttribute("orderStatus", orderStatus);
         model.addAttribute("orderNumber", orderId);
 			model.addAttribute("orderItems", orderItems);
