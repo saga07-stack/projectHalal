@@ -27,18 +27,18 @@
         <div class="order-sub" th:text="${order.address}">Address</div>
       </div>
 
-      <div class="order-date">2026-11-25</div>
+      <div class="order-date" th:text="${order.insertDate}" >2026-11-25</div>
 
  <div class="order-price">
         <div>
-   <tr  th:each="oi : ${order.orderItemsList}" >
+  <!--  <tr  th:each="oi : ${order.orderItemsList}" >
   
-   total :  <td class="num" th:text="${oi.price * oi.quantity}">0</td>
-</tr>
+   total :  <td class="num" th:text="${oi.total}">0</td>
+</tr> -->
         
         
         </div>
-        <span class="badge">Cancelled</span>
+        <span class="badge" th:text="${order.status}" >Cancelled</span>
       </div> 
     </a>
 

@@ -118,6 +118,7 @@ public class PaymentController {
 	     order.setPhoneNumber(orderForm.getPhoneNumber());
 	     order.setPayMethod(orderForm.getPayMethod());
 	     order.setStatus("pending");
+	     order.setCancelFlag(0);
 	     order.setUser(userRepository.getReferenceById(userId));
 	     order = orderRepository.save(order);
 	     

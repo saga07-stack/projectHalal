@@ -64,9 +64,9 @@ public class OrderItem {
 
 
 
-	public void setTotal(Integer total) {
-		this.total = total;
-	}
+	public void setTotal(Integer total) { 
+		this.total = total; 
+	} 
 
 
 

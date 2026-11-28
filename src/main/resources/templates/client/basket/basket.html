@@ -46,7 +46,18 @@
   <tr th:each="order : ${cancelledOrders}">
     <td th:text="${order.id}"></td>
     <td th:text="${#dates.format(order.insertDate, 'yyyy-MM-dd')}"></td>
-    <td th:text="${order.status}"></td>
+    <td>
+  <span th:switch="${order.cancelFlag}">
+					<span th:case="1">Cancel Requested</span>
+					<span th:case="2"> Cancel Processing</span>
+					<span th:case="3">Refunding</span>
+					<span th:case="4">Refunded</span>
+					<span th:case="5">Unable to Refund</span>
+				</span>
+    
+    
+    
+    </td>
    <!-- <td th:text="${total[order.id]}"></td>-->
    <td>
     <form th:action="@{/client/order/detail}" method="post">

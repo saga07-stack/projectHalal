@@ -95,7 +95,7 @@ public class Order {
 	/**
 	 * 注文IDの取得
 	 * @return 注文ID
-	 */
+	 */ 
 	public Integer getId() {
 		return id;
 	}
@@ -107,7 +107,7 @@ public class Order {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
+ 
 	/**
 	 * お届け先郵便番号の取得
 	 * @return お届け先郵便番号
